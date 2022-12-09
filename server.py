@@ -33,7 +33,6 @@ def log_in():
     if user:
         if input_password == user.password:
             session["user_id"] = user.user_id
-            session["user_name"] = user.first_name
            
             return redirect("/user") #this works!
 
@@ -51,7 +50,6 @@ def log_out():
     """ Process user log-out """
 
     del session['user_id']
-    del session["user_name"]
     return redirect('/')  #this works!
 
 # #Create an account
