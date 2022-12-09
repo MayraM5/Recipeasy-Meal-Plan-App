@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <h1> Recipeasy </h1>
 
-<h2>Log In</h2>
+
+<h2> Log In </h2>
 <form action="/log-in" method="POST">
-  <input id="email_login" class="form_control" type="email" name="email" placeholder="email"><br>
-  <input id="password_login" class="form_control" type="password" name="password" placeholder="password"><br>
-  <button id="login_btn" type="submit" class="btn btn-default"> Log in</button><br>
+  <label for="email">Email</label> <br>
+    <input class="loginemail" type="email" name="email"> <br>
+    <br>   
+  <label for="password">Password</label> <br>
+    <input  class="loginpassword" type="password" name="password"><br>
+    <br>
+    
+    <button class="loginbtn" type="submit" > Log in</button> <br>
 </form>
 
 <h3>Dont Have an account?? 
-  <button id="sigup_btn" type="submit"> <a href="/sign-up"> Sign up here! </button>
+<button id="sigup_btn" type="submit"> <a href="/sign-up"> Sign up here! </button>
 </h3>
-

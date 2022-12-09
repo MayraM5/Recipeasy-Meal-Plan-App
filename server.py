@@ -8,7 +8,7 @@ from jinja2 import StrictUndefined
 
 app = Flask(__name__)
 
-app.secret_key = "lavidaesbella"
+app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 
 #Homepage
@@ -29,20 +29,15 @@ def log_in():
     #This return user_id, fname, lname, email by input_email
     user = crud.get_user_by_email(input_email)
 
-    #if user in db:
-    if user:
-        if input_password == user.password:
-            session["user_id"] = user.user_id
-           
-            return redirect("/user") #this works!
+    #if user in db and user password vs input password match ==> log in
+    if user and user.password == input_password:
+        flash(f'Welcome back, {user.first_name}! You are now logged in.')
+        session['user_id'] = user.user_id
+        
+    else:
+        flash(f'User email and/or password is incorrect. Please try again.')
 
-        else:
-            #incorrect password:
-            return redirect("/") #this works!
-
-    elif not user:
-        #not in db => sign up
-        return redirect("/") #thisdoes not works!!
+    return redirect('/')        
 
 #log-out
 @app.route("/log-out")
@@ -50,6 +45,7 @@ def log_out():
     """ Process user log-out """
 
     del session['user_id']
+
     return redirect('/')  #this works!
 
 # #Create an account
@@ -91,4 +87,4 @@ def user():
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5003, debug=True)
