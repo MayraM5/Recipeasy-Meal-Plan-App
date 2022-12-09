@@ -33,6 +33,7 @@ def log_in():
     if user and user.password == input_password:
         flash(f'Welcome back, {user.first_name}! You are now logged in.')
         session['user_id'] = user.user_id
+        return redirect('/user')
         
     else:
         flash(f'User email and/or password is incorrect. Please try again.')
@@ -45,6 +46,7 @@ def log_out():
     """ Process user log-out """
 
     del session['user_id']
+    flash("You have been logged out!")
 
     return redirect('/')  #this works!
 
@@ -76,7 +78,7 @@ def register():
         db.session.commit()
 
         session["user_id"] = user.user_id
-        #This email is already registered.=> homepage to log in
+        flash(f'Welcome {user.first_name}! Your account was succesfully created.')
         return redirect("/user") #this works!
 
 @app.route("/user")
@@ -87,4 +89,4 @@ def user():
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5003, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
