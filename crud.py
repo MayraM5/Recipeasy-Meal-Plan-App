@@ -14,14 +14,21 @@ def get_user():
     return User.query.all()
 
 def get_user_by_id(user_id):
-    """return an user by the given user_id"""
+    """return an user by the given user_id
+    e. g
+    """
 
     return User.query.get(user_id)
 
 def get_user_by_email(email):
-    """ return a user by the given email"""
+    """ return a user by their email. 
+    e.g
+        >>> get_user_by_email("test@test.com")
+        >>> <User user_id=1 first_name=test last_name=test email=test@test.com>
+    """
 
     return User.query.filter(User.email == email).first()
+#    return User.query.filter(email == email).first()
     
 
 if __name__ == '__main__':
@@ -37,36 +44,3 @@ if __name__ == '__main__':
 # Read	Get
 # Update	Put
 # Delete	Delete
-
-
-# def create_movie(title, overview, release_date, poster_path):
-
-#     movie = Movie(title=title, overview=overview, release_date=release_date, poster_path=poster_path)
-
-#     return movie
-
-# def get_movies():
-
-#     return Movie.query.all()
-
-# def get_movie_by_id(movie_id):
-
-#     return Movie.query.get(movie_id)    
-
-
-# def create_rating(user, movie, score):
-#     """Create and return a new rating"""
-
-#     # rating = Rating (user=user.user_id, movie=movie.movie_id, score=score)
-#     rating = Rating (user=user, movie=movie, score=score)
-
-#     return rating
-
-# def update_rating(rating_id, new_score):
-#     """ Update a rating given rating_id and the updated score. """
-#     rating = Rating.query.get(rating_id)
-#     rating.score = new_score
-
-# if __name__ == '__main__':
-#     from server import app
-#     connect_to_db(app)
