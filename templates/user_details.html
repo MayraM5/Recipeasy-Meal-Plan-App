@@ -1,29 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
+{% extends "base.html" %}
 <body>
-  <h1></h1>
-  <h2> User profile/dashboard will be here </h2>
-  <a href="/log-out"><button id="logout" type="button" class="btn btn-default">Log Out</button></a> <br>
-<br>
-<input  id="search" type="text" name="search"><br> <br>
-<button id="searchbtn" type="submit" > Search</button> 
+{% block body %}
+<!-- <a href="/log-out"><button id="logout" type="button" class="btn btn-default">Log Out</button></a> <br>
 
-<div id="search_result"> </div>
+<button id="search_input" type="submit" >Search</button>
+<input  id="search" type="text" name="search">
+
+<div id="search_result"> </div> -->
+<h2 class = "title">Find your next meal</h2>
+<form action="/dashboard" method="POST">
+  <div class = "meal_search-box">
+      <button id= "search_btn" type= "submit" class= "search-btn btn">Search</button>
+      <input id="search_input" name="search_recipe" type= "text" class= "search-control" placeholder="Enter an ingredient">
+  </div>
+
+  <div id="search_result">
+      <h1 class = "title">Build a meal plan </h1>
+      <h3 class = "title">Pick your meals for the week:</h3>
+      <div id= "meal"></div>
+  </div>
+</form>
+
 </body>
-<!-- this is the way to attach js to html -->
-<script src="../static/recipe.js"> </script> 
 
-</html>
-
-  
-  <!-- <form action="/log-out" method="POST">
-    <input type="submit" value="Log out">
-
-  </form> -->
-
+{% endblock %}

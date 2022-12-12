@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+<body>
+{% block body %}
+<h2 class = "title">Find your next meals</h2>
+    
+<div class = "meal_search-box">
+    <button id= "search_btn" type= "submit" class= "search-btn btn">Search</button>
+    <input id="search_input" type= "text" class= "search-control" placeholder="Enter a cuisine">
+</div>
+
+<div id="search_result">
+    <h1 class = "title">Build a meal plan </h1>
+    <h3 class = "title">Pick your meals for the week:</h3>
+    <div id= "meal"></div>
+</div>
+
+</body>
+<!-- this is the way to attach js to html -->
+<script src="../static/recipe.js"> </script> 
+
+{% endblock %}

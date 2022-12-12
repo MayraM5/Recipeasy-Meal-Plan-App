@@ -1,10 +1,13 @@
-<h2> Log In </h2>
+{% extends "base.html" %}
+<body>
+{% block body %}
+  <h2> Log In </h2>
 <form action="/log-in" method="POST">
   <label for="email">Email</label> <br>
     <input class="loginemail" type="email" name="email"> <br>
     <br>   
   <label for="password">Password</label> <br>
-    <input  class="loginpassword" type="password" name="password"><br>
+    <input class="loginpassword" type="password" name="password"><br>
     <br>
     
     <button class="loginbtn" type="submit" > Log in</button> <br>
@@ -13,6 +16,10 @@
 <h3>Dont Have an account?? 
 <button id="sigup_btn" type="submit"> <a href="/sign-up"> Sign up here! </button>
 </h3>
+{% endblock %}
 
+<footer>
 
-
+</footer>
+</body>
+</html>
