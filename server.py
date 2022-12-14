@@ -1,10 +1,11 @@
 """Server for meal planning app."""
 
-from flask import Flask, render_template, request, flash, session, redirect
+from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from model import connect_to_db, db
 import crud
 from jinja2 import StrictUndefined
 import requests
+import json
 
 
 app = Flask(__name__)
@@ -84,36 +85,97 @@ def register():
         flash(f'Welcome {user.first_name}! Your account was succesfully created.')
         return redirect("/user") #this works!
 
+
 @app.route("/user")
 def user():
 
     return render_template('dashboard.html')
 
+@app.route("/api/recipe", methods=['POST'])
+def get_recipe_id():
+
+    logged_in_user = session.get("user_id")
+    recipe_id = request.json.get("meal_Id")
+    print("*"*20)
+    print(recipe_id)
+
+    #check if user is logged in
+    if logged_in_user is None:
+        flash("You must log in to add to Favorites") ##Need to fix flash msg It is not showing flash msg
+
+    else:
+        user = crud.get_user_by_id(logged_in_user)
+
+        recipe_id = crud.create_fav(user, (recipe_id))
+        db.session.add(recipe_id)
+        db.session.commit()
+
+        flash("This recipe has been added to Favorites")##It is not showing flash msg
+
+    return render_template("index.html")
+
 # @app.route("/user")
 # def user():
 
-#     return render_template('/user_details.html')
+#     return render_template('recipe.html')
 
-# @app.route("/dashboard", methods=['POST']) ## return a json y taket the jason from js file to fetch data ohh pero de search fuction, maybe I can get it from html
+# @app.route("/api/recipe", methods=['POST']) ## return a json y taket the jason from js file to fetch data ohh pero de search fuction, maybe I can get it from html
 # def search_recipe():
-#     """Random recipes choices""" 
+#     """Search recipes""" 
 
 #     url = "https://api.spoonacular.com/recipes/complexSearch?"
-#     apiKey = "33f7af9664464e1fad151db6e46c6399"
-#     seacrh_recipe = request.form.get("seacrh_recipe")
+#     params = { 'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+#             'fillIngredients' : True,
+#             'instructionsRequired' : True,
+#             'cuisine' : True,
+#             'number' : 2
+#     }
 
-#     r = requests.get(f'{url}apiKey={apiKey}&cuisine=${seacrh_recipe}')
-#     data = r.json()
+#     response = requests.get(url, params)
+#     data = response.json()
+#     results = data['results']
 
-#     return data
-@app.route("/fav_recipe")
-def fav_recipe():
+#     search_result = 
+
+#     for recipe in results:
+#         title = (recipe['title'])
+#         image = (recipe['image'])
+
+#     return     
 
 
-    pass
+
+
+# @app.route("/fav_recipe")
+# def fav_recipe():
+
+
+#     pass
+
+# @app.route("/api/users")
+# def all_recipes():
+
+#     url = "https://api.spoonacular.com/recipes/complexSearch?"
+#     params = { 'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+#                 'fillIngredients' : True,
+#                 'addRecipeInformation' : True,
+#                 'instructionsRequired' : True,
+#                 'cuisine' : True,
+#                 'number' : 2
+#             }
+
+#     response = requests.get(url, params)
+#     data = response.json()
+#     results = data['results']
+#     print(data)
+
+#     return results
+
+
+
 
 
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5002, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

@@ -29,6 +29,17 @@ def get_user_by_email(email):
 
     return User.query.filter(User.email == email).first()
 #    return User.query.filter(email == email).first()
+
+def create_fav(users, recipe_id):
+
+    fav_recipe = FavoriteRecipe(users=users, recipe_id=recipe_id)
+
+    return fav_recipe
+
+
+#  favorite_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+#     recipe_id = db.Column(db.Integer)
     
 
 if __name__ == '__main__':
