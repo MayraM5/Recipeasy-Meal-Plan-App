@@ -9,20 +9,18 @@ def create_user(first_name, last_name, email, password):
     return user
 
 def get_user():
-    """return a list of all users data"""
+    """Return a list of all users data"""
     
     return User.query.all()
 
 def get_user_by_id(user_id):
-    """return an user by the given user_id
-    e. g
-    """
+    """Return an user by the given user_id"""
 
     return User.query.get(user_id)
 
 def get_user_by_email(email):
-    """ return a user by their email. 
-    e.g
+    """Return a user by their email. 
+        e.g
         >>> get_user_by_email("test@test.com")
         >>> <User user_id=1 first_name=test last_name=test email=test@test.com>
     """
@@ -31,15 +29,43 @@ def get_user_by_email(email):
 #    return User.query.filter(email == email).first()
 
 def create_fav(users, recipe_id):
+    """Create favorite recipes"""
 
     fav_recipe = FavoriteRecipe(users=users, recipe_id=recipe_id)
 
     return fav_recipe
 
+def get_favorites_by_user(user_id):
+    """Return favorite recipes by user"""
 
-#  favorite_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-#     recipe_id = db.Column(db.Integer)
+    user_favs_list = FavoriteRecipe.query.filter(FavoriteRecipe.user_id == user_id).all()
+    
+    return user_favs_list
+
+def get_favorite_recipe_ids(user_id):
+    """Return list of recipe id by user"""
+
+    user_fav = get_favorites_by_user(user_id)
+
+    fav_recipe_id_list =[]
+
+    for item in user_fav:
+        fav_info = item.recipe_id
+
+        fav_recipe_id_list.append(fav_info)
+    
+    return fav_recipe_id_list
+
+    #dict:
+    # for item in user_fav:
+    #     fav_info = {'user_id' : item.user_id, 
+    #                 'recipe_id' : item.recipe_id
+    #                 }
+
+    #     fav_recipe_id_list.append(fav_info)
+    
+    # return fav_recipe_id_list
+
     
 
 if __name__ == '__main__':

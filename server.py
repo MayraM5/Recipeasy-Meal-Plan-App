@@ -96,23 +96,39 @@ def get_recipe_id():
 
     logged_in_user = session.get("user_id")
     recipe_id = request.json.get("meal_Id")
-    print("*"*20)
-    print(recipe_id)
 
-    #check if user is logged in
+    #Get user list favorite recipe ids
+    fav_list = crud.get_favorite_recipe_ids(logged_in_user)
+    
+    #check if user is logged in:
     if logged_in_user is None:
-        flash("You must log in to add to Favorites") ##Need to fix flash msg It is not showing flash msg
-
+         #     flash("You must log in to add to Favorites") ##Need to fix flash msg It is not showing flash msg
+        return redirect('/')
+    
     else:
-        user = crud.get_user_by_id(logged_in_user)
+        #check if recipe id is in db
+        if recipe_id in fav_list:
+            print("Its already added")
+            return("Its already added") #==> flash msg not working
 
-        recipe_id = crud.create_fav(user, (recipe_id))
-        db.session.add(recipe_id)
-        db.session.commit()
+        #check if recipe id is in fav, if not add
+        else:
+            user = crud.get_user_by_id(logged_in_user)
+            recipe_id = crud.create_fav(user, (recipe_id))
+            db.session.add(recipe_id)
+            db.session.commit()
+            print("added")
 
-        flash("This recipe has been added to Favorites")##It is not showing flash msg
+            return("This recipe has been added to Favorites")##It is not showing flash msg
+        
+    # else:
+    #     recipe_id = crud.create_fav(user, (recipe_id))
+    #     db.session.add(recipe_id)
+    #     db.session.commit()
 
-    return render_template("index.html")
+    #     return("This recipe has been added to Favorites")##It is not showing flash msg
+
+    # return render_template("index.html") ##NEED TO KNOW WHERE DO WE RETURN IT
 
 # @app.route("/user")
 # def user():

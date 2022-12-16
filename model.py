@@ -36,7 +36,8 @@ class FavoriteRecipe(db.Model):
     users = db.relationship("User", back_populates="favorite_recipes")
 
     def __repr__(self):
-        return f'<FavoriteRecipe favorite_id={self.favorite_id} fav_recipe_name={self.fav_recipe_name}>'
+        return f'<FavoriteRecipe user_id={self.user_id} recipe_id={self.recipe_id}'
+        # return f'<FavoriteRecipe favorite_id={self.favorite_id} fav_recipe_name={self.fav_recipe_name}>'
 
 class MealPlan(db.Model):
     """A meal plan"""
