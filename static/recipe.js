@@ -36,13 +36,14 @@ search_btn.addEventListener("click", () => {
         mealList.innerHTML = html;
     });
     })
+
     ///ADDING ID TO FAV ======= Click fav button => SENDING ID to server
     function AddtoFavorites(mealId) { 
         console.log("clickButton")
         console.log(mealId)
         const body = {meal_Id: mealId,}
 
-        fetch("/api/recipe", {
+        fetch("/api/fav-recipe", {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {

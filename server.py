@@ -18,7 +18,7 @@ app.jinja_env.undefined = StrictUndefined
 def homepage():
     """Show homepage template"""
 
-    return render_template('homepage.html') 
+    return render_template('login_form.html') 
 
 #Log in
 @app.route("/log-in", methods=["POST"])
@@ -38,7 +38,7 @@ def log_in():
     if user and user.password == input_password:
         flash(f'Welcome back, {user.first_name}! You are now logged in.')
         session['user_id'] = user.user_id
-        return redirect('/user')
+        return redirect('/home')
         
     else:
         flash(f'User email and/or password is incorrect. Please try again.')
@@ -54,7 +54,7 @@ def log_out():
 
     return redirect('/')  #this works!
 
-# #Create an account
+#Create an account
 @app.route("/sign-up")
 def show_sign_up():
     """Show the sign up page for a new user"""
@@ -83,15 +83,15 @@ def register():
 
         session["user_id"] = user.user_id
         flash(f'Welcome {user.first_name}! Your account was succesfully created.')
-        return redirect("/user") #this works!
+        return redirect("/home") #this works!
 
 
-@app.route("/user")
+@app.route("/home")
 def user():
 
-    return render_template('dashboard.html')
+    return render_template('home.html')
 
-@app.route("/api/recipe", methods=['POST'])
+@app.route("/api/fav-recipe", methods=['POST'])
 def get_recipe_id():
 
     logged_in_user = session.get("user_id")
