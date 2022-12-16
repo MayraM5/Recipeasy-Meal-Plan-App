@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+<body>
+{% block body %}
+
+<h2 class = "title">Find your next meal</h2>
+    
+<div class = "meal_search-box">
+    <button id= "search_btn" type= "submit" class= "search-btn btn">Search</button>
+    <input id="search_input" type= "text" class= "search-control" placeholder="Enter a cuisine">
+</div>
+
+<div id="search_result">
+    <h3 class = "title">Build a meal plan </h3>
+    <h5 class = "title">Pick your meals for the week:</h5>
+    <div id= "meal"></div>
+</div>
+
+</body>
+
+<script src="../static/recipe.js"> </script> 
+
+{% endblock %}
+
+<!-- // <a href= "/recipe/${meal.id}" class = "save_btn">Add to Favorite</a>
+
+<a href= "#PENDING" class = "save_btn">Add to Meal plan</a></div> -->

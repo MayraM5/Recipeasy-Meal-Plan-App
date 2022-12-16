@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+<body>
+{% block body %}
+
+<h3>Your favorites:</h3>
+{% if favorite_recipes %}
+<ul>
+    {% for recipe in favorite_recipes %}
+        <li>{{recipe}}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+</body>

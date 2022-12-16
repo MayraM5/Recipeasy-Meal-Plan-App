@@ -10,9 +10,27 @@ import json
 #             'number' : 2
 #         }
 
-# response = requests.get(url, params)
-# data = response.json()
-# results = data['results']
+url = 'https://api.spoonacular.com/recipes/informationBulk?'
+params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+            'includeNutrition': False,
+            'ids' : '649195, 715424, 716426'
+            }
+
+response = requests.get(url, params)
+data = response.json()
+results = []
+
+for recipe in data:
+    id = recipe["id"]
+    title = recipe['title']
+    image = recipe["image"]
+    cuisine = recipe["cuisines"]
+
+    element = {'id': id, 'title': title, 'image': image, 'cuisines': cuisine}
+
+    results.append(element)
+
+print(results)
 
 # for recipe in results:
 #     print(recipe['title'])

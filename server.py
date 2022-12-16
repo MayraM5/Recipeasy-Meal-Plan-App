@@ -121,10 +121,44 @@ def get_recipe_id():
 
             return("This recipe has been added to Favorites")##It is not showing flash msg
 
-@app.route("/favorites")
-def get_favorites_recipe():
+@app.route("/fav-recipe")
+def get_favorite_recipes():
 
-    return render_template("favorites.html")
+    return redirect("/favorites")
+
+@app.route("/favorites")
+def display_fav_recipes():
+
+    logged_in_user = session.get("user_id")
+    fav_list = crud.get_favorite_recipe_ids(logged_in_user)
+
+    #Convert each element from list to string 
+    ids = ','.join(str(id) for id in fav_list)
+
+    url = 'https://api.spoonacular.com/recipes/informationBulk?'
+    params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+            'includeNutrition': False,
+            'ids' : ids,
+            }
+
+    response = requests.get(url, params)
+    data = response.json()
+    print(f'DATA RESPONSE {data}')
+    results = []
+
+    for recipe in data:
+        id = recipe["id"]
+        title = recipe['title']
+        image = recipe["image"]
+        cuisine = recipe["cuisines"]
+
+        element = {'id': id, 'title': title, 'image': image, 'cuisines': cuisine}
+
+        results.append(element)
+    
+    print(f'results: {results}')
+
+    return render_template("favorites.html", favorite_recipes=results)
 
 
 @app.route("/meal-plan")
