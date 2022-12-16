@@ -120,73 +120,17 @@ def get_recipe_id():
             print("added")
 
             return("This recipe has been added to Favorites")##It is not showing flash msg
-        
-    # else:
-    #     recipe_id = crud.create_fav(user, (recipe_id))
-    #     db.session.add(recipe_id)
-    #     db.session.commit()
 
-    #     return("This recipe has been added to Favorites")##It is not showing flash msg
+@app.route("/favorites")
+def get_favorites_recipe():
 
-    # return render_template("index.html") ##NEED TO KNOW WHERE DO WE RETURN IT
-
-# @app.route("/user")
-# def user():
-
-#     return render_template('recipe.html')
-
-# @app.route("/api/recipe", methods=['POST']) ## return a json y taket the jason from js file to fetch data ohh pero de search fuction, maybe I can get it from html
-# def search_recipe():
-#     """Search recipes""" 
-
-#     url = "https://api.spoonacular.com/recipes/complexSearch?"
-#     params = { 'apiKey' : '33f7af9664464e1fad151db6e46c6399',
-#             'fillIngredients' : True,
-#             'instructionsRequired' : True,
-#             'cuisine' : True,
-#             'number' : 2
-#     }
-
-#     response = requests.get(url, params)
-#     data = response.json()
-#     results = data['results']
-
-#     search_result = 
-
-#     for recipe in results:
-#         title = (recipe['title'])
-#         image = (recipe['image'])
-
-#     return     
+    return render_template("favorites.html")
 
 
+@app.route("/meal-plan")
+def get_meal_plan():
 
-
-# @app.route("/fav_recipe")
-# def fav_recipe():
-
-
-#     pass
-
-# @app.route("/api/users")
-# def all_recipes():
-
-#     url = "https://api.spoonacular.com/recipes/complexSearch?"
-#     params = { 'apiKey' : '33f7af9664464e1fad151db6e46c6399',
-#                 'fillIngredients' : True,
-#                 'addRecipeInformation' : True,
-#                 'instructionsRequired' : True,
-#                 'cuisine' : True,
-#                 'number' : 2
-#             }
-
-#     response = requests.get(url, params)
-#     data = response.json()
-#     results = data['results']
-#     print(data)
-
-#     return results
-
+    return render_template("mealplan.html")
 
 
 

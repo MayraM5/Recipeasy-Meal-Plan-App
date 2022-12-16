@@ -20,8 +20,6 @@ import json
 
 
 
-
-
 #-----------------------TRYING TO GET DATA FROM Python, it works on app.py file not here
 #     search_recipe = request.form.get("search_recipe")
 
@@ -36,37 +34,3 @@ import json
 #     response = requests.get(url=url, data={}, headers=headers)
 #     cuisine = response.json()
 #    # results = cuisine['results']
-
-
-
-
-
-def get_favorites_by_user(user_id):
-    """Return favorite recipes by user"""
-
-    user_favs_list = [<FavoriteRecipe user_id=1 recipe_id=12, <FavoriteRecipe user_id=1 recipe_id=82, 
-<FavoriteRecipe user_id=1 recipe_id=112, <FavoriteRecipe user_id=1 recipe_id=None, 
-<FavoriteRecipe user_id=1 recipe_id=None, <FavoriteRecipe user_id=1 recipe_id=639606, 
-<FavoriteRecipe user_id=1 recipe_id=639606, <FavoriteRecipe user_id=1 recipe_id=645646, 
-<FavoriteRecipe user_id=1 recipe_id=639606, <FavoriteRecipe user_id=1 recipe_id=649195, 
-<FavoriteRecipe user_id=1 recipe_id=660843, <FavoriteRecipe user_id=1 recipe_id=None, 
-<FavoriteRecipe user_id=1 recipe_id=649225, <FavoriteRecipe user_id=1 recipe_id=715769, 
-<FavoriteRecipe user_id=1 recipe_id=715424, <FavoriteRecipe user_id=1 recipe_id=1096161, 
-<FavoriteRecipe user_id=1 recipe_id=716426, <FavoriteRecipe user_id=1 recipe_id=715769, 
-<FavoriteRecipe user_id=1 recipe_id=795751, <FavoriteRecipe user_id=1 recipe_id=795751, 
-<FavoriteRecipe user_id=1 recipe_id=651977, <FavoriteRecipe user_id=1 recipe_id=715533,
- <FavoriteRecipe user_id=1 recipe_id=715533]
-    
-
-
-def get_favorite_recipe_ids(user_id):
-    """Return list of recipe id by user"""
-
-    user_fav = get_favorites_by_user(user_id)
-
-    fav_recipe_id_list =[]
-
-    for item in user_fav:
-        fav_recipe_id_list.append(item)
-    
-    return fav_recipe_id_list
