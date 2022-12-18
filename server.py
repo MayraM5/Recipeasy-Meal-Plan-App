@@ -7,7 +7,6 @@ from jinja2 import StrictUndefined
 import requests
 import json
 
-
 app = Flask(__name__)
 
 app.secret_key = "ABC"
@@ -41,7 +40,7 @@ def log_in():
         return redirect('/home')
         
     else:
-        flash(f'User email and/or password is incorrect. Please try again.')
+        flash(f'User email and/or password is incorrect. Please try again.') ##NOT DISPLAYING
         return redirect('/')        
 
 #log-out
@@ -50,7 +49,7 @@ def log_out():
     """ Process user log-out """
 
     del session['user_id']
-    flash("You have been logged out!")
+    flash("You have been logged out!") #displaying on the wrong page!!!!!!!!!!
 
     return redirect('/')  #this works!
 
@@ -91,7 +90,7 @@ def user():
 
     return render_template('home.html')
 
-@app.route("/api/fav-recipe", methods=['POST'])
+@app.route("/api/fav-recipe", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
 def get_recipe_id():
 
     logged_in_user = session.get("user_id")
@@ -102,14 +101,14 @@ def get_recipe_id():
     
     #check if user is logged in:
     if logged_in_user is None:
-         #     flash("You must log in to add to Favorites") ##Need to fix flash msg It is not showing flash msg
+        flash("You must log in to add to Favorites") 
         return redirect('/')
     
     else:
         #check if recipe id is in db
         if recipe_id in fav_list:
-            print("Its already added")
-            return("Its already added") #==> flash msg not working
+            flash(f"Its already added")
+            return json.dumps({'fail': True}) 
 
         #check if recipe id is in fav, if not add
         else:
@@ -117,14 +116,9 @@ def get_recipe_id():
             recipe_id = crud.create_fav(user, (recipe_id))
             db.session.add(recipe_id)
             db.session.commit()
-            print("added")
+            flash("Great! This recipe has been added to Favorites")
 
-            return("This recipe has been added to Favorites")##It is not showing flash msg
-
-@app.route("/fav-recipe")
-def get_favorite_recipes():
-
-    return redirect("/favorites")
+            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route("/favorites")
 def display_fav_recipes():
@@ -135,6 +129,7 @@ def display_fav_recipes():
     #Convert each element from list to string 
     ids = ','.join(str(id) for id in fav_list)
 
+    #NEED TO HIDE APIKEY
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
     params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
             'includeNutrition': False,
@@ -143,22 +138,60 @@ def display_fav_recipes():
 
     response = requests.get(url, params)
     data = response.json()
-    print(f'DATA RESPONSE {data}')
-    results = []
+   # print(f'DATA RESPONSE {data}')
+    fav_recipes = []
 
     for recipe in data:
         id = recipe["id"]
         title = recipe['title']
-        image = recipe["image"]
-        cuisine = recipe["cuisines"]
+        try:
+            image = recipe["image"]
+        except KeyError:
+            image = None
 
-        element = {'id': id, 'title': title, 'image': image, 'cuisines': cuisine}
+        element = {'id': id, 'title': title, 'image': image}
 
-        results.append(element)
+        fav_recipes.append(element)
+
+    return render_template("favorites.html", favorite_recipes=fav_recipes)
+
+# ##without api just ID
+# @app.route("/favorites")
+# def display_fav_recipes():
+
+#     logged_in_user = session.get("user_id")
+#     fav_list = crud.get_favorite_recipe_ids(logged_in_user)
+
+   
+#    # print(f'DATA RESPONSE {data}')
+#     # fav_recipes = []
+
+#     # for recipe in fav_list:
+#     #     id = recipe["id"]
+
+#     #     element = {'id': id}
+
+#     #     fav_recipes.append(element)
     
-    print(f'results: {results}')
+#  #   print(f'results: {results}')
+#     #return jsonify(fav_recipes)
+#     return render_template("favorites.html", favorite_recipes=fav_list)
 
-    return render_template("favorites.html", favorite_recipes=results)
+#REMOVE RECIPE FROM FAVORITE RECIPES
+@app.route("/remove-fav", methods=["POST"])
+def remove_favorite():
+    """Process to remove recipe from favorites."""
+
+    logged_in_user = session.get("user_id")
+    recipe_id = request.json.get("recipe_id")
+
+    fav_to_delete = crud.get_fav_by_user_and_recipe(logged_in_user, recipe_id)
+
+    db.session.delete(fav_to_delete)
+    db.session.commit()
+
+    return redirect("/favorites")
+
 
 
 @app.route("/meal-plan")

@@ -66,7 +66,12 @@ def get_favorite_recipe_ids(user_id):
     
     # return fav_recipe_id_list
 
-    
+def get_fav_by_user_and_recipe(user_id, recipe_id):
+    """Return favorite obj of user & recipe_id"""
+
+    fav_to_delete = FavoriteRecipe.query.filter(FavoriteRecipe.user_id == user_id, FavoriteRecipe.recipe_id == recipe_id).one()
+
+    return fav_to_delete
 
 if __name__ == '__main__':
     from server import app

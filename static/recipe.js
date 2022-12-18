@@ -1,11 +1,11 @@
-// // testing api
+
 // SEARCH RECIPES => TITLE + IMAGE
 let search_btn = document.querySelector("#search_btn")
 let search_box = document.querySelector("#search_input")
 let show_recipe = document.querySelector("#search_result")
 let mealList = document.querySelector('#meal')
 
-// TO DO: How to hide apikey 
+// TO DO: How to hide apikey =========================================
 search_btn.addEventListener("click", () => {
    // console.log(search_box.value)
     fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=33f7af9664464e1fad151db6e46c6399&cuisine=${search_box.value}`)  
@@ -29,7 +29,7 @@ search_btn.addEventListener("click", () => {
             });
             mealList.classList.remove('notFound');
         } else{
-            html = "Sorry, we didn't find any meal! Try again!";
+            html = "Sorry, we didn't find any meals! Try again!";
             mealList.classList.add('notFound');
         }
 
@@ -37,7 +37,7 @@ search_btn.addEventListener("click", () => {
     });
     })
 
-    ///ADDING ID TO FAV ======= Click fav button => SENDING ID to server
+    ///ADD ID TO FAV ======= Click fav button => SENDING ID to server
     function AddtoFavorites(mealId) { 
         console.log("clickButton")
         console.log(mealId)
