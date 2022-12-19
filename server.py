@@ -133,7 +133,7 @@ def display_fav_recipes():
 
     #NEED TO HIDE APIKEY
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : 'a2bcd060e3b446968f90d3b2639acae4',
+    params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
             'includeNutrition': False,
             'ids' : ids,
             }
@@ -208,7 +208,7 @@ def recipe_details(recipe_id):
     # recipe_id = request.json.get("recipe_Id")
 
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : 'a2bcd060e3b446968f90d3b2639acae4',
+    params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
                 'ids' : recipe_id,
                 }
     print("*"*20)
@@ -240,7 +240,7 @@ def recipe_details(recipe_id):
             except KeyError:
                 raw_instructions = None
         #Remove extra tags
-        tags_to_remove = ['<ol>', '</ol>', '<li>', '</li>']
+        tags_to_remove = ['<ol>', '</ol>', '<li>', '</li>', '<span>', '</span>']
         try:
             for tag in tags_to_remove:
                 raw_instructions = raw_instructions.replace(tag, '')
@@ -249,7 +249,7 @@ def recipe_details(recipe_id):
         except AttributeError:
             instructions = None
 
-        #NEED TO DISPLAY INGREDIENTS TOO ========== PENDING
+        #Filter ingredients and add to list just what I need now
         ingredients = recipe['extendedIngredients']
         ingredients_list = []
         for item in ingredients:
@@ -259,10 +259,11 @@ def recipe_details(recipe_id):
 
             elements = {'name': name, 'amount' : amount, "unit" : unit}
             ingredients_list.append(elements)
-    
+    # print(f'LISTTTTTTTTTTTTTT: {ingredients_list}')
     print(f'instructions: {instructions}')
 
-    return render_template("recipe_details.html", title=title, instructions=instructions, ingredients = ingredients_list, image = image)
+    return render_template("recipe_details.html", title=title, instructions=instructions, 
+                            ingredients = ingredients_list, image = image)
 
 #Add recipe to meal plan:
 @app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
@@ -307,7 +308,7 @@ def display_meal_plan():
 
     #NEED TO HIDE APIKEY
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : 'a2bcd060e3b446968f90d3b2639acae4',
+    params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
             'includeNutrition': False,
             'ids' : ids,
             }

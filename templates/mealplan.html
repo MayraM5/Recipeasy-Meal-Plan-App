@@ -12,7 +12,7 @@
             </div>
             {% if recipe.image %}
             <div class="recipe_image">
-                <img src={{recipe.image}}>
+                <a href="/recipe-details-{{recipe.id}}"><img src={{recipe.image}}></a>
     
             </div>
             {% else %}
