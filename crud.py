@@ -73,6 +73,42 @@ def get_fav_by_user_and_recipe(user_id, recipe_id):
 
     return fav_to_delete
 
+def get_neal_plan_by_user(user_id):
+    """Return favorite recipes by user"""
+
+    user_meal_plan_list = MealPlan.query.filter(MealPlan.user_id == user_id).all()
+    
+    return user_meal_plan_list
+
+def get_meal_plan_recipe_ids(user_id):
+    """Return list of recipe id by user"""
+
+    user_meal_plan = get_neal_plan_by_user(user_id)
+
+    meal_plan_id_list =[]
+
+    for item in user_meal_plan:
+        meal_plan_info = item.recipe_id
+
+        meal_plan_id_list.append(meal_plan_info)
+    
+    return meal_plan_id_list    
+
+def create_meal_plan(users, recipe_id):
+    """Create meal plan"""
+
+    meal_plan = MealPlan(users=users, recipe_id=recipe_id)
+
+    return meal_plan
+
+def get_meal_plan_by_user_and_recipe(user_id, recipe_id):
+    """Return meal plan obj of user & recipe_id"""
+
+    meal_plan_to_delete = MealPlan.query.filter(MealPlan.user_id == user_id, MealPlan.recipe_id == recipe_id).one()
+
+    return meal_plan_to_delete
+
+
 if __name__ == '__main__':
     from server import app
     connect_to_db(app, "mealplanning")

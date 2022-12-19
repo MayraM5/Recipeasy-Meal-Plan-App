@@ -1,3 +1,4 @@
 *secret.*
+.env
 env
 *.pyc

@@ -1,9 +1,35 @@
 {% extends "base.html" %}
 
 <body>
-{% block body %}
-
-<h3>Your Meals for the week: </h3>
-
-{% endblock %}
-</body>
+    {% block body %}
+    
+    <h3>Your Meals for the week: </h3>
+    {% if meal_plan_recipes %}
+        {% for recipe in meal_plan_recipes %}
+        <div id="div_{{ recipe.id }}">
+            <div class ="recipe_name">
+                <h3>{{recipe.title}}</h3>
+            </div>
+            {% if recipe.image %}
+            <div class="recipe_image">
+                <img src={{recipe.image}}>
+    
+            </div>
+            {% else %}
+            <div class="recipe_image">
+                <img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg">
+            </div>
+            {% endif %}
+            <div>
+                <button class="delete_fav" id="{{ recipe.id }}">Delete</button>
+            </div>
+        </div>
+            
+        {% endfor %}
+    {% endif %}
+    
+    <script src="../static/mealplan.js "> </script> 
+    
+    {% endblock %}
+    </body>
+    

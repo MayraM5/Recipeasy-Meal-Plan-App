@@ -8,7 +8,7 @@ let mealList = document.querySelector('#meal')
 // TO DO: How to hide apikey =========================================
 search_btn.addEventListener("click", () => {
    // console.log(search_box.value)
-    fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=33f7af9664464e1fad151db6e46c6399&cuisine=${search_box.value}`)  
+    fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=a2bcd060e3b446968f90d3b2639acae4&query=${search_box.value}`)  
     .then((response) => response.json())
     .then((data) => {
 
@@ -17,13 +17,14 @@ search_btn.addEventListener("click", () => {
             data.results.forEach(meal => {
                 html += `
                 <div class = "meal_name">
-                    <h3>${meal.title}</h3>
+                    <h3><a href="/recipe-details-${meal.id}">${meal.title}</a></h3>
                 
                 <div class = "meal_img">
-                    <img src = ${meal.image}>
+                    <a href="/recipe-details-${meal.id}"><img src = ${meal.image}></a>
                 </div>
                 <div id="meal_id" value= "${meal.id}">
-                    <button id="addToFav-${meal.id}" onclick="AddtoFavorites(${meal.id})">Add to Favorites</button>
+                    <button id="addToFav-${meal.id}" onclick="AddtoFavorites(${meal.id})">Add to favorites</button>
+                    <button id="addToMealPlan-${meal.id}" onclick="AddtoMealPlan(${meal.id})">Add to Meal Plan</button>
                 </div>
                 `;
             });
@@ -55,3 +56,43 @@ search_btn.addEventListener("click", () => {
                 console.log(responseJson)
             });
     }
+
+
+    //ADD TO MEAL PLAN :
+    function AddtoMealPlan(mealplanId) { 
+        console.log("clickButton")
+        console.log(mealplanId)
+        const body = {meal_plan_Id: mealplanId,}
+
+        fetch("/api/meal-plan", {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson)
+            });
+    }
+
+    // //SEND RECIPE ID TO DISPLAY DETAILS:
+    // function SeeRecipe(recipeId) { 
+    //     console.log("clickButton")
+    //     console.log(recipeId)
+    //     const body = {recipe_Id: recipeId,}
+
+    //     fetch("/recipe-details", {
+    //         // method: 'POST',
+    //         method: 'GET',
+    //         // body: JSON.stringify(body),
+    //         // headers: {
+    //         //     "Content-Type": "application/json",
+    //         // },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((recipIdJson) => {
+    //             console.log(recipIdJson)
+    //         });
+    // }

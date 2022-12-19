@@ -1,4 +1,4 @@
-// DELETE RECIPE WHEN USER CLICK "DELETE" BUTTON
+// DELETE RECIPE FROM FAVORITES WHEN USER CLICK "DELETE" BUTTON
 const deleteButton = document.querySelectorAll('.delete_fav');
 
 for (const button of deleteButton) {

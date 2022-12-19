@@ -41,7 +41,7 @@ def log_in():
         
     else:
         flash(f'User email and/or password is incorrect. Please try again.') ##NOT DISPLAYING
-        return redirect('/')        
+        return redirect('/')
 
 #log-out
 @app.route("/log-out")
@@ -90,6 +90,7 @@ def user():
 
     return render_template('home.html')
 
+#Add recipe to favorites
 @app.route("/api/fav-recipe", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
 def get_recipe_id():
 
@@ -120,6 +121,7 @@ def get_recipe_id():
 
             return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
+#Display favorites
 @app.route("/favorites")
 def display_fav_recipes():
 
@@ -131,7 +133,7 @@ def display_fav_recipes():
 
     #NEED TO HIDE APIKEY
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+    params = {'apiKey' : 'a2bcd060e3b446968f90d3b2639acae4',
             'includeNutrition': False,
             'ids' : ids,
             }
@@ -192,6 +194,158 @@ def remove_favorite():
 
     return redirect("/favorites")
 
+##DISPLAY RECIPE DETAILS:
+# @app.route("/details")
+# def display_recipe_details():
+    
+#     return redirect('/recipe-details')
+#     # return redirect("/recipe_details")
+
+#==============DISPLAY RECIPE DETAILS=====================
+@app.route("/recipe-details-<recipe_id>", methods=["GET","POST"]) 
+def recipe_details(recipe_id):
+
+    # recipe_id = request.json.get("recipe_Id")
+
+    url = 'https://api.spoonacular.com/recipes/informationBulk?'
+    params = {'apiKey' : 'a2bcd060e3b446968f90d3b2639acae4',
+                'ids' : recipe_id,
+                }
+    print("*"*20)
+    print(recipe_id)
+
+    response = requests.get(url, params)
+    data = response.json()
+
+    print(f'data: {data}')
+
+    for recipe in data:
+        id = recipe["id"]
+        title = recipe['title']
+        image = recipe["image"]
+        # try:
+        #     instructions = recipe["instructions"].split(".")
+        # except AttributeError:
+        #     try:
+        #         instructions = recipe['summary'].split(".")
+        #     except (KeyError, AttributeError):
+        #         instructions = None
+        try:
+            raw_instructions = recipe["instructions"]
+
+            # if recipe["instructions"] is empty or None, use recipe["summary"]
+        except KeyError:
+            try:
+                raw_instructions = recipe["summary"]
+            except KeyError:
+                raw_instructions = None
+        #Remove extra tags
+        tags_to_remove = ['<ol>', '</ol>', '<li>', '</li>']
+        try:
+            for tag in tags_to_remove:
+                raw_instructions = raw_instructions.replace(tag, '')
+            #Convert in list to display every step in a row
+            instructions = raw_instructions.split('.')
+        except AttributeError:
+            instructions = None
+
+        #NEED TO DISPLAY INGREDIENTS TOO ========== PENDING
+        ingredients = recipe['extendedIngredients']
+        ingredients_list = []
+        for item in ingredients:
+            name = item['name']
+            amount = item['amount']
+            unit = item['unit']
+
+            elements = {'name': name, 'amount' : amount, "unit" : unit}
+            ingredients_list.append(elements)
+    
+    print(f'instructions: {instructions}')
+
+    return render_template("recipe_details.html", title=title, instructions=instructions, ingredients = ingredients_list, image = image)
+
+#Add recipe to meal plan:
+@app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
+def get_recipe():
+
+    logged_in_user = session.get("user_id")
+    recipe_id = request.json.get("meal_plan_Id")
+
+    #Get user meal plan recipe ids
+    meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user)
+    
+    #check if user is logged in:
+    if logged_in_user is None:
+        flash("You must log in to add to Favorites") 
+        return redirect('/')
+    
+    else:
+        #check if recipe id is in db
+        if recipe_id in meal_plan_list:
+            flash(f"Its already added")
+            return json.dumps({'fail': True}) 
+
+        #check if recipe id is in meal plan, if not add
+        else:
+            user = crud.get_user_by_id(logged_in_user)
+            recipe_id = crud.create_meal_plan(user, (recipe_id))
+            db.session.add(recipe_id)
+            db.session.commit()
+            flash("Great! This recipe has been added to Favorites")
+
+            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+#Display meal plan
+@app.route("/meal-plan")
+def display_meal_plan():
+
+    logged_in_user = session.get("user_id")
+    meal_plan = crud.get_meal_plan_recipe_ids(logged_in_user)
+
+    #Convert each element from list to string 
+    ids = ','.join(str(id) for id in meal_plan)
+
+    #NEED TO HIDE APIKEY
+    url = 'https://api.spoonacular.com/recipes/informationBulk?'
+    params = {'apiKey' : 'a2bcd060e3b446968f90d3b2639acae4',
+            'includeNutrition': False,
+            'ids' : ids,
+            }
+
+    response = requests.get(url, params)
+    data = response.json()
+   # print(f'DATA RESPONSE {data}')
+    meal_plan_recipes = []
+
+    for recipe in data:
+        id = recipe["id"]
+        title = recipe['title']
+        try:
+            image = recipe["image"]
+        except KeyError:
+            image = None
+
+        element = {'id': id, 'title': title, 'image': image}
+
+        meal_plan_recipes.append(element)
+
+    return render_template("mealplan.html", meal_plan_recipes=meal_plan_recipes)
+
+
+#REMOVE RECIPE FROM MEAL PLAN
+@app.route("/remove-meal-plan", methods=["POST"])
+def delete_meal_plan():
+    """Process to remove recipe from meal plan."""
+
+    logged_in_user = session.get("user_id")
+    recipe_id = request.json.get("recipe_id")
+
+    mp_to_delete = crud.meal_plan_to_delete(logged_in_user, recipe_id)
+
+    db.session.delete(mp_to_delete)
+    db.session.commit()
+
+    return redirect("/meal-plan")
 
 
 @app.route("/meal-plan")

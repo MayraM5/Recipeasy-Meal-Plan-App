@@ -46,15 +46,15 @@ class MealPlan(db.Model):
 
     meal_plan_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    recipe_id = db.Column(db.Integer) #Make sure is an integer / look for the datatype
-    recipe_name = db.Column(db.String(30))
-    instruction = db.Column(db.Text)
+    recipe_id = db.Column(db.Integer) 
+    # recipe_name = db.Column(db.String(30))
+    # instruction = db.Column(db.Text)
 
     users = db.relationship("User", back_populates="meal_plans")
     grocery_items = db.relationship("GroceryItem", back_populates="meal_plans")
 
     def __repr__(self):
-        return f'<MealPlan meal_plan_id={self.meal_plan_id} recipe_id={self.recipe_id} recipe_name={self.recipe_name}>' 
+        return f'<MealPlan user_id={self.user_id} recipe_id={self.recipe_id} recipe_name={self.recipe_name}>' 
 
 class GroceryItem(db.Model):
     """A grocery item """ 

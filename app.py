@@ -51,5 +51,84 @@ import json
 #         }
 #     response = requests.get(url=url, data={}, headers=headers)
 #     cuisine = response.json()
-#    # results = cuisine['results']
+# #    # results = cuisine['results']
 
+
+
+# def play_api():
+
+#     url = 'https://api.spoonacular.com/recipes/informationBulk?'
+#     params = {'apiKey' : 'a2bcd060e3b446968f90d3b2639acae4',
+#                 'ids' : 795751,
+#                 }
+
+#     response = requests.get(url, params)
+#     data = response.json()
+#   #  print(data[0]['id'])
+#     instructions_recipe = []
+
+#     for recipe in data:
+#         id = recipe["id"]
+#         title = recipe['title']
+#         image = recipe["image"]
+#         instructions = recipe["instructions"].split(".")
+
+#         element = {'id': id, 'title': title, 'image': image, "instructions" : instructions}
+
+#         instructions_recipe.append(element) 
+
+#         ingredients = recipe['extendedIngredients']
+#         ingredients_list = []
+#         for item in ingredients:
+#             name = item['name']
+#             amount = item['amount']
+#             unit = item['unit']
+
+#             elements = {'name': name, 'amount' : amount, "unit" : unit}
+#             ingredients_list.append(elements)
+
+#         for key in instructions_recipe:
+#             for item in instructions:
+#                 print(item)
+
+#     return f'This are the instructions: {instructions_recipe}...... this are ingredients: {ingredients_list}'
+
+
+
+        
+
+# #     #return(instructions_recipe)
+# # def play_api():
+# #     url ='https://api.spoonacular.com/recipes/715497/information?&apiKey=a2bcd060e3b446968f90d3b2639acae4'
+
+# #     response = requests.get(url)
+# #     data = response.json()
+# #     print(data)
+# #     print('*'*20)
+  
+
+# #     instructions_recipe = []
+
+# #     for recipe in data:
+# #         id = recipe["id"]
+# #         title = recipe['title']
+# #         image = recipe["image"]
+# #         instructions = recipe["instructions"]
+
+# #         element = {'id': id, 'title': title, 'image': image, "instructions" : instructions}
+# #         instructions_recipe.append(element) 
+
+# #     for recipe in data:
+# #         ingredients = recipe['extendedIngredients']
+        
+# #         ingredients_list = []
+# #         for item in ingredients:
+# #             name = item['name']
+# #             amount = item['amount']
+# #             unit = item['unit']
+
+# #             elements = {'name': name, 'amount' : amount, "unit" : unit}
+# #             ingredients_list.append(elements)
+# #     print(instructions_recipe)
+# #     print('*'*20)
+# #     print(ingredients_list)
