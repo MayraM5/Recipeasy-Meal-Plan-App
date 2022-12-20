@@ -56,13 +56,13 @@ def log_out():
 #Create an account
 @app.route("/sign-up")
 def show_sign_up():
-    """Show the sign up page for a new user"""
+    """Display the sign up page for a new user"""
 
     return render_template("signup_form.html")
 
 @app.route("/register", methods=['POST'])
 def register():
-    """ Create new user"""
+    """Create new user"""
         
     email = request.form.get("email")
     first_name = request.form.get("first_name")
@@ -266,17 +266,49 @@ def recipe_details(recipe_id):
                             ingredients = ingredients_list, image = image)
 
 #Add recipe to meal plan:
+# @app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
+# def get_recipe():
+
+#     logged_in_user = session.get("user_id")
+#     recipe_id = request.json.get("meal_plan_Id")
+
+#     #Get user meal plan recipe ids
+#     meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user)
+    
+#     #check if user is logged in:
+#     if logged_in_user is None:
+#         flash("You must log in to add to Favorites") 
+#         return redirect('/')
+    
+#     else:
+#         #check if recipe id is in db
+#         if recipe_id in meal_plan_list:
+#             flash(f"Its already added")
+#             return json.dumps({'fail': True}) 
+
+#         #check if recipe id is in meal plan, if not add
+#         else:
+#             user = crud.get_user_by_id(logged_in_user)
+#             recipe_id = crud.create_meal_plan(user, (recipe_id))
+#             db.session.add(recipe_id)
+#             db.session.commit()
+#             flash("Great! This recipe has been added to Favorites")
+
+#             return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+#===============================================================================
+#ADD RECIPE TO MP AND GROCERY ITEMS TO GROCERIES
 @app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
 def get_recipe():
 
-    logged_in_user = session.get("user_id")
-    recipe_id = request.json.get("meal_plan_Id")
+    logged_in_user_id = session.get("user_id")
+    recipe_id = request.json.get("meal_plan_Id") #TO DO CHANGE NAME TO RECIPE_ID
 
     #Get user meal plan recipe ids
-    meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user)
+    meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user_id)
     
     #check if user is logged in:
-    if logged_in_user is None:
+    if logged_in_user_id is None:
         flash("You must log in to add to Favorites") 
         return redirect('/')
     
@@ -286,15 +318,41 @@ def get_recipe():
             flash(f"Its already added")
             return json.dumps({'fail': True}) 
 
-        #check if recipe id is in meal plan, if not add
+        #check if recipe id is in meal plagreekn, if not add
         else:
-            user = crud.get_user_by_id(logged_in_user)
-            recipe_id = crud.create_meal_plan(user, (recipe_id))
-            db.session.add(recipe_id)
+            meal_plan = crud.create_meal_plan(logged_in_user_id, (recipe_id))
+            db.session.add(meal_plan)
             db.session.commit()
             flash("Great! This recipe has been added to Favorites")
+            
+
+            url = 'https://api.spoonacular.com/recipes/informationBulk?'
+            params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+                        'ids' : recipe_id,
+                        }
+            print("*"*20)
+
+            response = requests.get(url, params)
+            data = response.json()
+            # print(data)
+            recipe_data = None
+            #Find our recipe from list
+            for recipe in data:
+                if recipe["id"] == recipe_id:
+                    recipe_data = recipe
+
+            for ingredient in recipe_data["extendedIngredients"]:
+                ingredient_name =(ingredient["name"])
+                unit = (ingredient["unit"])
+                amount = (ingredient["amount"])
+
+                grocery_item = crud.create_grocery_item(logged_in_user_id, ingredient_name, amount, unit)
+                
+                db.session.add(grocery_item)
+                db.session.commit()
 
             return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
 
 #Display meal plan
 @app.route("/meal-plan")
@@ -341,7 +399,7 @@ def delete_meal_plan():
     logged_in_user = session.get("user_id")
     recipe_id = request.json.get("recipe_id")
 
-    mp_to_delete = crud.meal_plan_to_delete(logged_in_user, recipe_id)
+    mp_to_delete = crud.get_meal_plan_by_user_and_recipe(logged_in_user, recipe_id)
 
     db.session.delete(mp_to_delete)
     db.session.commit()
@@ -349,13 +407,53 @@ def delete_meal_plan():
     return redirect("/meal-plan")
 
 
-@app.route("/meal-plan")
-def get_meal_plan():
+# @app.route("/meal-plan")
+# def get_meal_plan():
 
-    return render_template("mealplan.html")
+#     return render_template("mealplan.html")
+
+# @app.route("/groceries")
+# def get_meal_plan():
+
+#     return render_template("groceries.html")
 
 
+# ##Create Groceries item:
+# @app.route("/groceries", methods=["POST"]) 
+# def grocery_items():
 
+#     logged_in_user = session.get("user_id")
+#     recipe_ids = crud.get_meal_plan_by_user(logged_in_user)
+
+#     url = 'https://api.spoonacular.com/recipes/informationBulk?'
+#     params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+#                 'ids' : recipe_ids,
+#                 }
+#     print("*"*20)
+#     print(recipe_ids)
+
+#     response = requests.get(url, params)
+#     data = response.json()
+
+#     for key in data:
+#     # print(key["id"])
+#     #print(key["extendedIngredients"])
+#         for i in key["extendedIngredients"]:
+#             ingredient_name =(i["name"])
+#             unit = (i["unit"])
+#             amount = (i["amount"])
+
+#             if logged_in_user is None:
+#                 flash("You must log in to add to Favorites") 
+#                 return redirect('/')
+    
+#             else:
+#                 grocery_items = crud.create_grocery_items(logged_in_user, ingredient_name, amount, unit)
+#                 db.session.add(grocery_items)
+#                 db.session.commit()
+#                 flash("Great! This recipe has been added to Favorites")
+
+#     return render_template("groceries.html")
 
 
 if __name__ == "__main__":

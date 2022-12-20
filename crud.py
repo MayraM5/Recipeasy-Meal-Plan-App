@@ -28,10 +28,10 @@ def get_user_by_email(email):
     return User.query.filter(User.email == email).first()
 #    return User.query.filter(email == email).first()
 
-def create_fav(users, recipe_id):
+def create_fav(user_id, recipe_id):
     """Create favorite recipes"""
 
-    fav_recipe = FavoriteRecipe(users=users, recipe_id=recipe_id)
+    fav_recipe = FavoriteRecipe(user_id=user_id, recipe_id=recipe_id)
 
     return fav_recipe
 
@@ -73,8 +73,8 @@ def get_fav_by_user_and_recipe(user_id, recipe_id):
 
     return fav_to_delete
 
-def get_neal_plan_by_user(user_id):
-    """Return favorite recipes by user"""
+def get_meal_plan_by_user(user_id):
+    """Return meal plan recipes by user"""
 
     user_meal_plan_list = MealPlan.query.filter(MealPlan.user_id == user_id).all()
     
@@ -83,7 +83,7 @@ def get_neal_plan_by_user(user_id):
 def get_meal_plan_recipe_ids(user_id):
     """Return list of recipe id by user"""
 
-    user_meal_plan = get_neal_plan_by_user(user_id)
+    user_meal_plan = get_meal_plan_by_user(user_id)
 
     meal_plan_id_list =[]
 
@@ -94,19 +94,29 @@ def get_meal_plan_recipe_ids(user_id):
     
     return meal_plan_id_list    
 
-def create_meal_plan(users, recipe_id):
+def create_meal_plan(user_id, recipe_id):
     """Create meal plan"""
 
-    meal_plan = MealPlan(users=users, recipe_id=recipe_id)
+    meal_plan = MealPlan(user_id=user_id, recipe_id=recipe_id)
 
     return meal_plan
 
 def get_meal_plan_by_user_and_recipe(user_id, recipe_id):
     """Return meal plan obj of user & recipe_id"""
 
-    meal_plan_to_delete = MealPlan.query.filter(MealPlan.user_id == user_id, MealPlan.recipe_id == recipe_id).one()
+    meal_plan_to_delete = MealPlan.query.filter(MealPlan.user_id == user_id, 
+                            MealPlan.recipe_id == recipe_id).one()
 
     return meal_plan_to_delete
+
+#create groceries
+def create_grocery_item(user_id, ingredient_name, amount, units):
+    """Create grocery items"""
+    
+    grocery_item = GroceryItem(user_id=user_id, ingredient_name=ingredient_name,
+                                amount=amount, units=units)
+    
+    return grocery_item
 
 
 if __name__ == '__main__':

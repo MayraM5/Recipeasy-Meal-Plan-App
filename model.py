@@ -19,6 +19,7 @@ class User(db.Model):
 
     favorite_recipes = db.relationship("FavoriteRecipe", back_populates="users")
     meal_plans = db.relationship("MealPlan", back_populates="users")
+    grocery_items = db.relationship("GroceryItem", back_populates="users")
 
     def __repr__(self):
         return f'<User user_id={self.user_id} first_name={self.first_name} last_name={self.last_name} email={self.email}>'
@@ -36,7 +37,7 @@ class FavoriteRecipe(db.Model):
     users = db.relationship("User", back_populates="favorite_recipes")
 
     def __repr__(self):
-        return f'<FavoriteRecipe user_id={self.user_id} recipe_id={self.recipe_id}'
+        return f'<FavoriteRecipe user_id={self.user_id} recipe_id={self.recipe_id}>'
         # return f'<FavoriteRecipe favorite_id={self.favorite_id} fav_recipe_name={self.fav_recipe_name}>'
 
 class MealPlan(db.Model):
@@ -51,10 +52,9 @@ class MealPlan(db.Model):
     # instruction = db.Column(db.Text)
 
     users = db.relationship("User", back_populates="meal_plans")
-    grocery_items = db.relationship("GroceryItem", back_populates="meal_plans")
-
+    
     def __repr__(self):
-        return f'<MealPlan user_id={self.user_id} recipe_id={self.recipe_id} recipe_name={self.recipe_name}>' 
+        return f'<MealPlan user_id={self.user_id} recipe_id={self.recipe_id}>' 
 
 class GroceryItem(db.Model):
     """A grocery item """ 
@@ -62,16 +62,15 @@ class GroceryItem(db.Model):
     __tablename__ = "grocery_items"
 
     ingredient_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    meal_plan_id = db.Column(db.Integer, db.ForeignKey('meal_plans.meal_plan_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     ingredient_name = db.Column(db.String(30))
-    quantity = db.Column(db.Float) #Ingredient quantity
+    amount = db.Column(db.Float) #Ingredient quantity
     units = db.Column(db.String(15)) #unit of measure
     
-    
-    meal_plans = db.relationship("MealPlan", back_populates="grocery_items")
+    users = db.relationship("User", back_populates="grocery_items")
 
     def __repr__(self):
-        return f'<Grocery ingredients_id={self.ingredient_id} meal_plan_id={self.meal_plan_id}>'
+        return f'<Grocery user_id={self.user_id} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
 
 def connect_to_db(flask_app, mealplanning):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql:///{mealplanning}"
