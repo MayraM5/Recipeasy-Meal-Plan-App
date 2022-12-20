@@ -41,17 +41,16 @@ class FavoriteRecipe(db.Model):
         # return f'<FavoriteRecipe favorite_id={self.favorite_id} fav_recipe_name={self.fav_recipe_name}>'
 
 class MealPlan(db.Model):
-    """A meal plan"""
+    """A meal plan for the week"""
 
     __tablename__ = "meal_plans"
 
     meal_plan_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     recipe_id = db.Column(db.Integer) 
-    # recipe_name = db.Column(db.String(30))
-    # instruction = db.Column(db.Text)
 
     users = db.relationship("User", back_populates="meal_plans")
+    # grocery_items = db.relationship("GroceryItem", back_populates="meal_plans")
     
     def __repr__(self):
         return f'<MealPlan user_id={self.user_id} recipe_id={self.recipe_id}>' 
@@ -63,14 +62,17 @@ class GroceryItem(db.Model):
 
     ingredient_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    ingredient_name = db.Column(db.String(30))
+    recipe_id = db.Column(db.Integer) # db.ForeignKey('meal_plans.recipe_id'))
+    ingredient_name = db.Column(db.String(50))
     amount = db.Column(db.Float) #Ingredient quantity
-    units = db.Column(db.String(15)) #unit of measure
+    units = db.Column(db.String(30)) #unit of measure
     
     users = db.relationship("User", back_populates="grocery_items")
+    # meal_plans = db.relationship("MealPlan", back_populates="grocery_items")
 
     def __repr__(self):
-        return f'<Grocery user_id={self.user_id} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
+        return f'<Grocery user_id={self.user_id} recipe_id={self.recipe_id} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
+
 
 def connect_to_db(flask_app, mealplanning):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql:///{mealplanning}"

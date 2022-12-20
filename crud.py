@@ -110,11 +110,11 @@ def get_meal_plan_by_user_and_recipe(user_id, recipe_id):
     return meal_plan_to_delete
 
 #create groceries
-def create_grocery_item(user_id, ingredient_name, amount, units):
+def create_grocery_item(user_id, recipe_id, ingredient_name, amount, units):
     """Create grocery items"""
     
-    grocery_item = GroceryItem(user_id=user_id, ingredient_name=ingredient_name,
-                                amount=amount, units=units)
+    grocery_item = GroceryItem(user_id=user_id, recipe_id=recipe_id, 
+                    ingredient_name=ingredient_name, amount=amount, units=units)
     
     return grocery_item
 
