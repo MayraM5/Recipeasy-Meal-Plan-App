@@ -118,6 +118,15 @@ def create_grocery_item(user_id, recipe_id, ingredient_name, amount, units):
     
     return grocery_item
 
+#get rows where user_id = user_id & recipe_id = recipe_id:
+def get_grocery_item_by_user_and_recipe(user_id, recipe_id):
+    """Return grocery item obj of user & recipe"""
+
+    grocery_items_to_delete = GroceryItem.query.filter(GroceryItem.user_id == user_id, 
+                            GroceryItem.recipe_id == recipe_id).all()
+
+    return grocery_items_to_delete
+
 
 if __name__ == '__main__':
     from server import app
