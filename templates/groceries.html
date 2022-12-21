@@ -1,9 +1,18 @@
 {% extends "base.html" %}
 
 <body>
-    {% block body %}
+{% block body %}
 
-<h3>groceries will be here</h3>
+{% if total_grocery_list %}
+    <h3>Grocery list:</h3>
+    {% for item in total_grocery_list %}
+    <li>{{ item.name }} : {{ item.amount }} {{ item.unit }} </li>         
+    {% endfor %}
+{% else %}
+    <p>Sorry! There are no recipes added to the meal plan &#128542;</p>        
+{% endif %}
+
+
 
 
 {% endblock %}

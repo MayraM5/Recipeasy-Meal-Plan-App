@@ -385,11 +385,15 @@ def delete_meal_plan():
 
 # #     return render_template("mealplan.html")
 
-# # @app.route("/groceries")
-# # def get_meal_plan():
+#Display grocery items total list:
+@app.route("/groceries")
+def display_grocery_items():
+    """Process to display a list of grocery"""
 
-# #     return render_template("groceries.html")
+    logged_in_user = session.get("user_id")
+    total_grocery_list = crud.get_total_grocery_list(logged_in_user)
 
+    return render_template("groceries.html", total_grocery_list=total_grocery_list) #, name=name, amount=amount, unit=unit)
 
 # # ##Create Groceries item:
 # # @app.route("/groceries", methods=["POST"]) 
