@@ -26,7 +26,4 @@
 
 # db.session.commit()
 # print(User)
-
-
-# TODO: use create methods to add objects to database, committing
-#       database sessions as needed 
+ 

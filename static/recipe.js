@@ -8,7 +8,7 @@ let mealList = document.querySelector('#meal')
 // TO DO: How to hide apikey =========================================
 search_btn.addEventListener("click", () => {
    // console.log(search_box.value)
-    fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=33f7af9664464e1fad151db6e46c6399&query=${search_box.value}`)  
+    fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${spoonacularApiKey}&query=${search_box.value}`)  
     .then((response) => response.json())
     .then((data) => {
 

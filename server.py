@@ -6,11 +6,16 @@ import crud
 from jinja2 import StrictUndefined
 import requests
 import json
+import os
+
 
 app = Flask(__name__)
 
 app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
+
+SPOON_API_KEY = os.environ["SPOON_API_KEY"]
+
 
 #Homepage
 @app.route('/')
@@ -86,9 +91,11 @@ def register():
 
 
 @app.route("/home")
-def user():
+def home():
 
-    return render_template('home.html')
+
+
+    return render_template('home.html', SPOON_API_KEY=SPOON_API_KEY)
 
 #Add recipe to favorites
 @app.route("/api/fav-recipe", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
@@ -131,8 +138,8 @@ def display_fav_recipes():
     ids = ','.join(str(id) for id in fav_list)
 
     #NEED TO HIDE APIKEY
-    url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+    url = 'https://api.spoonacular.com/recipes/informationBulk?' 
+    params = {'apiKey' : SPOON_API_KEY,
             'includeNutrition': False,
             'ids' : ids,
             }
@@ -178,7 +185,7 @@ def recipe_details(recipe_id):
     # recipe_id = request.json.get("recipe_Id")
 
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+    params = {'apiKey' : SPOON_API_KEY,
                 'ids' : recipe_id,
                 }
     # print("*"*20)
@@ -295,7 +302,7 @@ def get_recipe():
             
 
             url = 'https://api.spoonacular.com/recipes/informationBulk?'
-            params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+            params = {'apiKey' : SPOON_API_KEY,
                         'ids' : recipe_id,
                         }
             # print("*"*20)
@@ -334,7 +341,7 @@ def display_meal_plan():
 
     #NEED TO HIDE APIKEY
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
+    params = {'apiKey' : SPOON_API_KEY,
             'includeNutrition': False,
             'ids' : ids,
             }
@@ -435,4 +442,4 @@ def display_grocery_items():
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
