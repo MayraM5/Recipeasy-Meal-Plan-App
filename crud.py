@@ -111,10 +111,10 @@ def get_meal_plan_by_user_and_recipe(user_id, recipe_id):
     return meal_plan_to_delete
 
 #create groceries
-def create_grocery_item(user_id, recipe_id, ingredient_name, amount, units):
+def create_grocery_item(user_id, recipe_id, category, ingredient_name, amount, units):
     """Create grocery items"""
     
-    grocery_item = GroceryItem(user_id=user_id, recipe_id=recipe_id, 
+    grocery_item = GroceryItem(user_id=user_id, recipe_id=recipe_id, category=category,
                     ingredient_name=ingredient_name, amount=amount, units=units)
     
     return grocery_item
@@ -129,12 +129,32 @@ def get_grocery_item_by_user_and_recipe(user_id, recipe_id):
     return grocery_items_to_delete
 
 #Get rows where user_id = user_id and grouped by ingredient_name, units and sum(amount)
-def get_grocery_items_by_user(user_id):
-    """Return list of tuples grocery_items group by ingredient_name, units & sum(amount)"""
+# def get_grocery_items_by_user(user_id):
+#     """Return list of tuples grocery_items group by ingredient_name, units & sum(amount)"""
 
-    grocery_items = db.session.query(GroceryItem.user_id == user_id, GroceryItem.ingredient_name, 
-                            db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, 
-                            GroceryItem.ingredient_name, GroceryItem.units).all()
+#     grocery_items = db.session.query(GroceryItem.user_id == user_id, GroceryItem.ingredient_name, 
+#                             db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, 
+#                             GroceryItem.ingredient_name, GroceryItem.units).all()
+
+#     return grocery_items
+
+# def get_total_grocery_list(user_id):
+
+#     results = get_grocery_items_by_user(user_id)
+
+#     total_list = []
+#     for item in results:
+#         grocery_item = {"name" :  item[1], "amount": item[2], "unit" : item[3]}
+     
+#         total_list.append(grocery_item)
+
+#     return (total_list)
+
+def get_grocery_items_by_user(user_id):
+
+    grocery_items = db.session.query(GroceryItem.user_id == 1, GroceryItem.category, GroceryItem.ingredient_name, 
+                    db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, 
+                    GroceryItem.category, GroceryItem.ingredient_name, GroceryItem.units).all()
 
     return grocery_items
 
@@ -142,15 +162,12 @@ def get_total_grocery_list(user_id):
 
     results = get_grocery_items_by_user(user_id)
 
-    total_list = []
+    grocery_item = {}
     for item in results:
-        grocery_item = {"name" :  item[1], "amount": item[2], "unit" : item[3]}
-     
-        total_list.append(grocery_item)
+        ingredients = [ (item[2]), (item[3]), (item[4]) ] 
+        grocery_item.setdefault(item[1], []).append(ingredients)
 
-    return (total_list)
-
-        
+    return grocery_item    
 
 ## select rows and group by SQL => select user_id, ingredient_name, sum(amount), units 
 # from grocery_items group by ingredient_name, user_id, units
@@ -165,7 +182,7 @@ def get_total_grocery_list(user_id):
 
 if __name__ == '__main__':
     from server import app
-    connect_to_db(app, "mealplanning")
+    connect_to_db(app, 'mealplanning')
 
 # Create	Insert => create /add new rows/reecord to db
 # Read	Select => display data ex see recipe / see fav recipe

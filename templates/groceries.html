@@ -3,17 +3,21 @@
 <body>
 {% block body %}
 
-{% if total_grocery_list %}
-    <h3>Grocery list:</h3>
-    {% for item in total_grocery_list %}
-    <li>{{ item.name }} : {{ item.amount }} {{ item.unit }} </li>         
+{% if total_grocery %}
+    <h3>Grocery list:</h3>  
+
+    {% for category, ingredient in total_grocery.items() %}
+        <h3> {{ category }} <h3>
+        {% for item in ingredient %}
+            <li>{{ item[0] }} : {{ item[1] }} {{ item[2] }} </li>
+        {% endfor %}
+    </div>
     {% endfor %}
 {% else %}
     <p>Sorry! There are no recipes added to the meal plan &#128542;</p>        
 {% endif %}
 
-
-
+<script type="text/javascript" src="{{ url_for('static', filename= 'js/groceries.js')}}"></script>
 
 {% endblock %}
 </body>

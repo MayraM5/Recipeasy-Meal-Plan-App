@@ -14,8 +14,8 @@ app = Flask(__name__)
 app.secret_key = "ABC"
 app.jinja_env.undefined = StrictUndefined
 
-SPOON_API_KEY = os.environ["SPOON_API_KEY"]
 
+SPOON_API_KEY = os.environ["SPOON_API_KEY"]
 
 #Homepage
 @app.route('/')
@@ -320,8 +320,9 @@ def get_recipe():
                 ingredient_name =(ingredient["name"])
                 unit = (ingredient["unit"])
                 amount = (ingredient["amount"])
+                category = (ingredient["aisle"])
 
-                grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, ingredient_name, amount, unit)
+                grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, category, ingredient_name, amount, unit)
                 
                 db.session.add(grocery_item)
                 db.session.commit()
@@ -398,9 +399,9 @@ def display_grocery_items():
     """Process to display a list of grocery"""
 
     logged_in_user = session.get("user_id")
-    total_grocery_list = crud.get_total_grocery_list(logged_in_user)
+    total_grocery = crud.get_total_grocery_list(logged_in_user)
 
-    return render_template("groceries.html", total_grocery_list=total_grocery_list) #, name=name, amount=amount, unit=unit)
+    return render_template("groceries.html", total_grocery=total_grocery) #, name=name, amount=amount, unit=unit)
 
 # # ##Create Groceries item:
 # # @app.route("/groceries", methods=["POST"]) 
@@ -442,4 +443,4 @@ def display_grocery_items():
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

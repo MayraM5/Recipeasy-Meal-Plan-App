@@ -66,12 +66,13 @@ class GroceryItem(db.Model):
     ingredient_name = db.Column(db.String(50))
     amount = db.Column(db.Float) #Ingredient quantity
     units = db.Column(db.String(30)) #unit of measure
+    category = db.Column(db.String(35))
     
     users = db.relationship("User", back_populates="grocery_items")
     # meal_plans = db.relationship("MealPlan", back_populates="grocery_items")
 
     def __repr__(self):
-        return f'<Grocery user_id={self.user_id} recipe_id={self.recipe_id} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
+        return f'<Grocery user_id={self.user_id} recipe_id={self.recipe_id} category={self.category} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
 
 
 def connect_to_db(flask_app, mealplanning):
@@ -84,10 +85,10 @@ def connect_to_db(flask_app, mealplanning):
 
     print("Connected to the db!")  
 
+
 if __name__ == "__main__":
     from server import app
-
-    connect_to_db(app, "mealplanning")
+    connect_to_db(app, 'mealplanning')
 
 
 #DATABASE INFO FOR TESTING PURPOSE:
