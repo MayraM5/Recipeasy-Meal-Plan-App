@@ -8,11 +8,14 @@
 
     {% for category, ingredient in total_grocery.items() %}
         <h3> {{ category }} <h3>
-        {% for item in ingredient %}
-            <li>{{ item[0] }} : {{ item[1] }} {{ item[2] }} </li>
-        {% endfor %}
-    </div>
+            <div id="check_item">
+            {% for item in ingredient %}
+                <input type="checkbox" class="strikethrough" name="itemsOff" value="1">
+                <label for="itemsOff" class="strikeThis"> {{ item[1] }} {{ item[2] }} {{ item[0] }}</label><br>
+            {% endfor %}
+            </div>    
     {% endfor %}
+    
 {% else %}
     <p>Sorry! There are no recipes added to the meal plan &#128542;</p>        
 {% endif %}

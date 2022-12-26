@@ -14,15 +14,7 @@
     display: block;
 }
 
-/* styling nav bar */
 
-.navbar {
-    padding: .8rem;
+.strikethrough:checked + .strikeThis {
+  text-decoration: line-through
 }
-.navbar-nav li {
-    padding-right: 25px;
-}
-.nav-link {
-    font-size:  1.1em !important;
-}
-
