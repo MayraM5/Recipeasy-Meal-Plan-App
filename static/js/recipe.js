@@ -3,7 +3,7 @@
 let search_btn = document.querySelector("#search_btn")
 let search_box = document.querySelector("#search_input")
 let show_recipe = document.querySelector("#search_result")
-let mealList = document.querySelector('#meal')
+let recipeList = document.querySelector('#recipe')
 
 // TO DO: How to hide apikey =========================================
 search_btn.addEventListener("click", () => {
@@ -14,35 +14,35 @@ search_btn.addEventListener("click", () => {
 
         let html = "";
         if (data.results) {
-            data.results.forEach(meal => {
+            data.results.forEach(recipe => {
                 html += `
-                <div class = "meal_name">
-                    <h3><a href="/recipe-details-${meal.id}">${meal.title}</a></h3>
+                <div class = "recipe_name">
+                    <h3><a href="/recipe-details-${recipe.id}">${recipe.title}</a></h3>
                 
-                <div class = "meal_img">
-                    <a href="/recipe-details-${meal.id}"><img src = ${meal.image}></a>
+                <div class = "recipe_img">
+                    <a href="/recipe-details-${recipe.id}"><img src = ${recipe.image}></a>
                 </div>
-                <div id="meal_id" value= "${meal.id}">
-                    <button id="addToFav-${meal.id}" onclick="AddtoFavorites(${meal.id})">Add to favorites</button>
-                    <button id="addToMealPlan-${meal.id}" onclick="AddtoMealPlan(${meal.id})">Add to Meal Plan</button>
+                <div id="recipe_id" value= "${recipe.id}">
+                    <button id="addToFav-${recipe.id}" onclick="AddtoFavorites(${recipe.id})">Add to favorites</button>
+                    <button id="addToMealPlan-${recipe.id}" onclick="AddtoMealPlan(${recipe.id})">Add to Meal Plan</button>
                 </div>
                 `;
             });
-            mealList.classList.remove('notFound');
+            recipeList.classList.remove('notFound');
         } else{
             html = "Sorry, we didn't find any meals! Try again!";
-            mealList.classList.add('notFound');
+            recipeList.classList.add('notFound');
         }
 
-        mealList.innerHTML = html;
+        recipeList.innerHTML = html;
+        })
     });
-    })
 
     ///ADD ID TO FAV ======= Click fav button => SENDING ID to server
-    function AddtoFavorites(mealId) { 
+    function AddtoFavorites(recipeId) { 
         console.log("clickButton")
-        console.log(mealId)
-        const body = {meal_Id: mealId,}
+        console.log(recipeId)
+        const body = {recipe_Id: recipeId,}
 
         fetch("/api/fav-recipe", {
             method: 'POST',
@@ -59,10 +59,10 @@ search_btn.addEventListener("click", () => {
 
 
     //ADD TO MEAL PLAN :
-    function AddtoMealPlan(mealplanId) { 
+    function AddtoMealPlan(recipeId) { 
         console.log("clickButton")
-        console.log(mealplanId)
-        const body = {meal_plan_Id: mealplanId,}
+        console.log(recipeId)
+        const body = {recipe_Id: recipeId,}
 
         fetch("/api/meal-plan", {
             method: 'POST',
@@ -77,22 +77,3 @@ search_btn.addEventListener("click", () => {
             });
     }
 
-    // //SEND RECIPE ID TO DISPLAY DETAILS:
-    // function SeeRecipe(recipeId) { 
-    //     console.log("clickButton")
-    //     console.log(recipeId)
-    //     const body = {recipe_Id: recipeId,}
-
-    //     fetch("/recipe-details", {
-    //         // method: 'POST',
-    //         method: 'GET',
-    //         // body: JSON.stringify(body),
-    //         // headers: {
-    //         //     "Content-Type": "application/json",
-    //         // },
-    //     })
-    //         .then((response) => response.json())
-    //         .then((recipIdJson) => {
-    //             console.log(recipIdJson)
-    //         });
-    // }

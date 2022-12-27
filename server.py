@@ -93,8 +93,6 @@ def register():
 @app.route("/home")
 def home():
 
-
-
     return render_template('home.html', SPOON_API_KEY=SPOON_API_KEY)
 
 #Add recipe to favorites
@@ -102,7 +100,7 @@ def home():
 def get_recipe_id():
 
     logged_in_user_id = session.get("user_id")
-    recipe_id = request.json.get("meal_Id")
+    recipe_id = request.json.get("recipe_Id")
 
     #Get user list favorite recipe ids
     fav_list = crud.get_favorite_recipe_ids(logged_in_user_id)
@@ -177,6 +175,13 @@ def remove_favorite():
     db.session.commit()
 
     return redirect("/favorites")
+
+# @app.route("/add-meal", methods=["POST"])
+# def add_fav_to_meal_plan():
+
+#     logged_in_user_id = session.get("user_id")
+#     recipe_id = request.json.get("recipe_id")
+
 
 #==============DISPLAY RECIPE DETAILS=====================
 @app.route("/recipe-details-<recipe_id>", methods=["GET","POST"]) 
@@ -277,8 +282,8 @@ def recipe_details(recipe_id):
 def get_recipe():
 
     logged_in_user_id = session.get("user_id")
-    recipe_id = request.json.get("meal_plan_Id") #TO DO CHANGE NAME TO RECIPE_ID
-
+    recipe_id = request.json.get("recipe_Id") 
+    
     #Get user meal plan recipe ids
     meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user_id)
     
@@ -309,11 +314,11 @@ def get_recipe():
 
             response = requests.get(url, params)
             data = response.json()
-            # print(data)
+            #
             recipe_data = None
             #Find our recipe from list
             for recipe in data:
-                if recipe["id"] == recipe_id:
+                if str(recipe["id"]) == recipe_id:
                     recipe_data = recipe
 
             for ingredient in recipe_data["extendedIngredients"]:

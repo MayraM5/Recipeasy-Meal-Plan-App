@@ -27,3 +27,29 @@ for (const button of deleteButton) {
 
     })
 }
+
+// ADD RECIPE TO MEAL PLAN
+const addRecipe = document.querySelectorAll('.add_to_meal_plan');
+
+for (const button of addRecipe) {
+    button.addEventListener('click', (evt) => {
+        const recipe_id = button.id
+        console.log(evt);
+        const recipeId = {
+            recipe_Id : recipe_id
+        }
+        // console.log(recipe_to_delete)
+        fetch("/api/meal-plan", {
+            method: 'POST',
+            body: JSON.stringify(recipeId),
+            headers: {
+                "Content-Type": "application/json",   
+            },
+        })
+            .then((Response) => Response.json())
+            .then((recipeJson) => {
+                console.log(recipeJson)
+        });
+
+    })
+}
