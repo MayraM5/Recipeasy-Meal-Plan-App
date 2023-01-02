@@ -180,6 +180,21 @@ def get_total_grocery_list(user_id):
 # x = db.session.query(GroceryItem.user_id, GroceryItem.ingredient_name, db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, GroceryItem.ingredient_name, GroceryItem.units).all()
 
 
+####################NEW FEATURE ######################3
+
+def create_my_recipe(user_id, recipe_id, title, image, instructions, ingredient_name, amount, units, category):
+    """Create favorite recipes"""
+
+    my_recipe = Recipe(user_id=user_id, recipe_id=recipe_id, title=title, image=image, instructions=instructions, 
+                ingredient_name=ingredient_name, amount=amount, units=units, category=category)
+
+    return my_recipe
+
+
+
+
+
+
 if __name__ == '__main__':
     from server import app
     connect_to_db(app, 'mealplanning')

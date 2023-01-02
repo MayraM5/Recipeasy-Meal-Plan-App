@@ -21,6 +21,9 @@ class User(db.Model):
     meal_plans = db.relationship("MealPlan", back_populates="users")
     grocery_items = db.relationship("GroceryItem", back_populates="users")
 
+    ### new feature
+    recipes = db.relationship("Recipe", back_populates="users")
+
     def __repr__(self):
         return f'<User user_id={self.user_id} first_name={self.first_name} last_name={self.last_name} email={self.email}>'
 
@@ -74,6 +77,26 @@ class GroceryItem(db.Model):
     def __repr__(self):
         return f'<Grocery user_id={self.user_id} recipe_id={self.recipe_id} category={self.category} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
 
+####################################NEW FEATURE ####################################
+class Recipe(db.Model):
+    """A recipe """ 
+
+    __tablename__ = "recipes"
+
+    recipe_id = db.Column(db.String, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    title = db.Column(db.String)
+    image = db.Column(db.String)
+    instructions = db.Column(db.String)
+    ingredient_name = db.Column(db.String(50))
+    amount = db.Column(db.Float) #Ingredient quantity
+    units = db.Column(db.String(30)) #unit of measure
+    category = db.Column(db.String(35))
+    
+    users = db.relationship("User", back_populates="recipes")
+
+    def __repr__(self):
+        return f'<Recipe user_id={self.user_id} recipe_id={self.recipe_id} title={self.title} image={self.image} instructions={self.instructions} category={self.category} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
 
 def connect_to_db(flask_app, mealplanning):
     flask_app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql:///{mealplanning}"

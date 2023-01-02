@@ -1,12 +1,17 @@
 """Server for meal planning app."""
 
-from flask import Flask, render_template, request, flash, session, redirect, jsonify
+from flask import Flask, render_template, request, flash, session, redirect, jsonify, url_for
 from model import connect_to_db, db
 import crud
 from jinja2 import StrictUndefined
 import requests
 import json
 import os
+import cloudinary.uploader
+import cloudinary
+import random
+import string
+import time
 
 
 app = Flask(__name__)
@@ -16,6 +21,11 @@ app.jinja_env.undefined = StrictUndefined
 
 
 SPOON_API_KEY = os.environ["SPOON_API_KEY"]
+
+CLOUD_NAME = "dhyrymmf4"
+CLOUDINARY_SECRET= os.environ["CLOUDINARY_SECRET"],
+CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
+
 
 #Homepage
 @app.route('/')
@@ -45,7 +55,7 @@ def log_in():
         return redirect('/home')
         
     else:
-        flash(f'User email and/or password is incorrect. Please try again.') ##NOT DISPLAYING
+       # flash(f'User email and/or password is incorrect. Please try again.') ##NOT DISPLAYING => displaying after logged in
         return redirect('/')
 
 #log-out
@@ -345,7 +355,6 @@ def display_meal_plan():
     #Convert each element from list to string 
     ids = ','.join(str(id) for id in meal_plan)
 
-    #NEED TO HIDE APIKEY
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
     params = {'apiKey' : SPOON_API_KEY,
             'includeNutrition': False,
@@ -408,42 +417,63 @@ def display_grocery_items():
 
     return render_template("groceries.html", total_grocery=total_grocery) #, name=name, amount=amount, unit=unit)
 
-# # ##Create Groceries item:
-# # @app.route("/groceries", methods=["POST"]) 
-# # def grocery_items():
+#############NEW FEATURE ###########################################
+@app.route("/myrecipes")
+def my_recipes():
+    """Process to create recipe"""
 
-# #     logged_in_user = session.get("user_id")
-# #     recipe_ids = crud.get_meal_plan_by_user(logged_in_user)
+    return render_template("my_recipes.html")
 
-# #     url = 'https://api.spoonacular.com/recipes/informationBulk?'
-# #     params = {'apiKey' : '33f7af9664464e1fad151db6e46c6399',
-# #                 'ids' : recipe_ids,
-# #                 }
-# #     print("*"*20)
-# #     print(recipe_ids)
 
-# #     response = requests.get(url, params)
-# #     data = response.json()
-
-# #     for key in data:
-# #     # print(key["id"])
-# #     #print(key["extendedIngredients"])
-# #         for i in key["extendedIngredients"]:
-# #             ingredient_name =(i["name"])
-# #             unit = (i["unit"])
-# #             amount = (i["amount"])
-
-# #             if logged_in_user is None:
-# #                 flash("You must log in to add to Favorites") 
-# #                 return redirect('/')
+@app.route('/create-recipe', methods=['POST'])
+def create_recipe():
+#   data = request.get_json()
+#   print(data)
+#   title = data['name']
+#   image = data['image']
+#   instructions = data['instructions']
+#   ingredient_name = data['ingredients']
+#   print(ingredient_name)
+    title = request.form['name']
+    print(f'TITLE {title}')
     
-# #             else:
-# #                 grocery_items = crud.create_grocery_items(logged_in_user, ingredient_name, amount, unit)
-# #                 db.session.add(grocery_items)
-# #                 db.session.commit()
-# #                 flash("Great! This recipe has been added to Favorites")
+    instructions = request.form['instructions']
+    print(f' INSTRUCTIONS {instructions}')
+    ingredients = request.form.getlist('ingredient')
+    print(f'INGREDIENTS {ingredients}')
+    units = request.form.getlist('unit')
+    print(f'UNITS ::::: {units}')
+    quantities = request.form.getlist('quantity')
+    print(f'Q:::: {quantities}')
+    categories = request.form.getlist('category')
+    print(f'CATEGORYYYY:::: {categories}')
 
-# #     return render_template("groceries.html")
+    logged_in_user_id = session.get("user_id")
+    print(logged_in_user_id)
+    recipe_id = (''.join(random.choices(string.ascii_letters, k=6)))
+    print(recipe_id)
+
+    # Make a request to the Cloudinary API using the current timestamp
+    # timestamp = int(time.time())
+    ## cloudinary is not working!!!!
+    try:
+        my_file = request.files['my_file']
+        result = cloudinary.uploader.upload(my_file, api_key=CLOUDINARY_KEY, api_secret=CLOUDINARY_SECRET, cloud_name=CLOUD_NAME) 
+    #, timestamp=timestamp)
+        image = result['secure_url']
+        print(f'image url {image}')
+    except KeyError:
+        flash("The file was not present")
+        return redirect("/myrecipes")
+        
+  # save the data to the database
+#   recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, image, instructions, ingredient_name) #, amount, units, category):
+#   db.session.add(recipe)
+#   db.session.commit()
+    
+    return 'Recipe saved successfully!'
+
+
 
 
 if __name__ == "__main__":
