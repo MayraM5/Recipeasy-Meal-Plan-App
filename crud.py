@@ -152,7 +152,7 @@ def get_grocery_item_by_user_and_recipe(user_id, recipe_id):
 
 def get_grocery_items_by_user(user_id):
 
-    grocery_items = db.session.query(GroceryItem.user_id == 1, GroceryItem.category, GroceryItem.ingredient_name, 
+    grocery_items = db.session.query(GroceryItem.user_id == user_id, GroceryItem.category, GroceryItem.ingredient_name, 
                     db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, 
                     GroceryItem.category, GroceryItem.ingredient_name, GroceryItem.units).all()
 
@@ -180,10 +180,10 @@ def get_total_grocery_list(user_id):
 # x = db.session.query(GroceryItem.user_id, GroceryItem.ingredient_name, db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, GroceryItem.ingredient_name, GroceryItem.units).all()
 
 ####################NEW FEATURE ######################
-def create_my_recipe(user_id, recipe_id, title, instructions):
+def create_my_recipe(user_id, recipe_id, title, image, instructions):
     """Create favorite recipes"""
 
-    new_recipe = Recipe(user_id=user_id, recipe_id=recipe_id, title=title, instructions=instructions)
+    new_recipe = Recipe(user_id=user_id, recipe_id=recipe_id, title=title, image=image, instructions=instructions)
 
     return new_recipe
 
@@ -198,20 +198,21 @@ def get_my_recipes(user_id):
     """Get all recipes created by user"""
 
     my_recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
-    
-    # for recipe in my_recipes:
-    #     print(recipe.title)
-    #     print(recipe.instructions)
 
     return my_recipes
 
+def get_recipe_by_user_and_recipeid(user_id, recipe_id):
 
+    my_recipes = Recipe.query.filter(Recipe.user_id==user_id, Recipe.recipe_id==recipe_id).one()
 
+    return my_recipes
 
-# def get_recipe_ingredients(recipe_id):
+def get_recipe_ingredients(recipe_id):
 
+    recipe_ingredient = RecipeIngredient.query.filter(RecipeIngredient.recipe_id == recipe_id).all()
 
-#     return recipe_ingredients
+    return recipe_ingredient
+
 
 
 

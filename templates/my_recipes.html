@@ -3,20 +3,39 @@
 <body>
 {% block body %}
 
-<h2>Your delicious recipes:</h2>
+<h3>Create your own recipe</h3>
+<form action="/render-page" method="POST">
+  <button type="submit">Create a recipe</button>
+</form>
+
+<h3>Your delicious recipes:</h3>
 {% if recipes %}
   {% for recipe in recipes %}
-      <h2>{{ recipe.title }}</h2>
-      <p>{{ recipe.instructions }}</p>
+  <div id="div_{{ recipe.recipe_id }}">
+    <div class ="recipe_name">
+        <h2>{{ recipe.title }}</h2>
+    </div>
+    {% if recipe.image %}
+      <div class="recipe_image">
+        <img src="{{ recipe.image }}" >
+      </div>
+      {% else %}
+      <div class="recipe_image">
+          <img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg">
+      </div>
+      {% endif %}
+      <div>
+        <button class="delete_recipe" id="{{ recipe.recipe_id }}">Delete</button>
+      </div>
+      <div>
+          <button class="add_to_meal_plan" id="{{ recipe.recipe_id }}">Add to Meal Plan</button>
+      </div>
+  </div>
+
   {% endfor %}
 {% endif %}
 
-
-
-<form action="/render-page" method="POST">
-    <button type="submit">Create a recipe</button>
-  </form>
-
+<script src="../static/js/cookbook.js "> </script>
 
 {% endblock %}
 </body>

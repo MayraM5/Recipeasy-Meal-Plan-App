@@ -416,7 +416,7 @@ def display_grocery_items():
     return render_template("groceries.html", total_grocery=total_grocery) #, name=name, amount=amount, unit=unit)
 
 #############NEW FEATURE ###########################################
-@app.route("/my-recipes")
+@app.route("/my-cookbook")
 def my_recipes():
 
     logged_in_user = session.get("user_id")
@@ -442,12 +442,8 @@ def create_recipe():
     #image
     ## cloudinary is not working!!!!
     my_file = request.files["my_file"]
-    print(my_file)
 
     if my_file:
-        print(CLOUDINARY_KEY)
-        print(CLOUDINARY_SECRET)
-        print(CLOUD_NAME)
         result = cloudinary.uploader.upload(my_file,
                     api_key=CLOUDINARY_KEY,
                     api_secret=CLOUDINARY_SECRET,
@@ -457,10 +453,8 @@ def create_recipe():
     else:
         image = None
 
-    print(image)
-
     # save to db
-    new_recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, instructions)
+    new_recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, image, instructions)
     db.session.add(new_recipe)
     db.session.commit() 
 
@@ -486,7 +480,27 @@ def create_recipe():
 
     flash('Recipe saved successfully!')
     
-    return render_template('my_recipes.html')
+    return redirect("/my-cookbook")
+
+#REMOVE RECIPE FROM COOKBOOK
+@app.route("/remove-recipe", methods=["POST"])
+def remove_recipe():
+    """Process to remove recipe created by user from Cookbook."""
+
+    logged_in_user_id = session.get("user_id")
+    recipe_id = request.json.get("recipe_id")
+    
+    recipe_to_delete = crud.get_recipe_by_user_and_recipeid(logged_in_user_id, str(recipe_id))
+    
+    ingredients_to_delete = crud.get_recipe_ingredients(recipe_id)
+    
+    for item in ingredients_to_delete:
+        db.session.delete(item)
+   
+    db.session.delete(recipe_to_delete)
+    db.session.commit()
+
+    return redirect("/favorites")
 
 
 if __name__ == "__main__":
