@@ -83,10 +83,11 @@ class Recipe(db.Model):
 
     __tablename__ = "recipes"
 
-    recipe_id = db.Column(db.String, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     title = db.Column(db.String)
     image = db.Column(db.String)
+    recipe_id = db.Column(db.String)
     instructions = db.Column(db.String)
     ingredient_name = db.Column(db.String(50))
     amount = db.Column(db.Float) #Ingredient quantity

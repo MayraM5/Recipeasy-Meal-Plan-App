@@ -26,7 +26,6 @@ CLOUD_NAME = "dhyrymmf4"
 CLOUDINARY_SECRET= os.environ["CLOUDINARY_SECRET"],
 CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 
-
 #Homepage
 @app.route('/')
 def homepage():
@@ -308,7 +307,7 @@ def get_recipe():
             flash(f"Its already added")
             return json.dumps({'fail': True}) 
 
-        #check if recipe id is in meal plagreekn, if not add
+        #check if recipe id is in meal plan, if not add
         else:
             meal_plan = crud.create_meal_plan(logged_in_user_id, (recipe_id))
             db.session.add(meal_plan)
@@ -420,60 +419,80 @@ def display_grocery_items():
 #############NEW FEATURE ###########################################
 @app.route("/myrecipes")
 def my_recipes():
-    """Process to create recipe"""
 
-    return render_template("my_recipes.html")
+    logged_in_user = session.get("user_id")
+    recipes_data = crud.get_my_recipes(logged_in_user)
+
+    # my_recipes = []
+    # for recipe in recipes_data:
+    #     recipe_id = recipe["recipe_id"]
+    #     title = recipe['title']
+    #     # try:
+    #     #     image = recipe["image"]
+    #     # except KeyError:
+    #     #     image = None
+
+    #     element = {'recipe_id': recipe_id, 'title': title}
+
+    #     my_recipes.append(element)
+
+    return render_template("my_recipes.html", my_recipes=my_recipes)
+
+    
+
+@app.route('/render-page', methods=['POST'])
+def render_page():
+  return render_template('create_recipe.html')
 
 
 @app.route('/create-recipe', methods=['POST'])
 def create_recipe():
-#   data = request.get_json()
-#   print(data)
-#   title = data['name']
-#   image = data['image']
-#   instructions = data['instructions']
-#   ingredient_name = data['ingredients']
-#   print(ingredient_name)
-    title = request.form['name']
-    print(f'TITLE {title}')
-    
-    instructions = request.form['instructions']
-    print(f' INSTRUCTIONS {instructions}')
-    ingredients = request.form.getlist('ingredient')
-    print(f'INGREDIENTS {ingredients}')
-    units = request.form.getlist('unit')
-    print(f'UNITS ::::: {units}')
-    quantities = request.form.getlist('quantity')
-    print(f'Q:::: {quantities}')
-    categories = request.form.getlist('category')
-    print(f'CATEGORYYYY:::: {categories}')
 
     logged_in_user_id = session.get("user_id")
-    print(logged_in_user_id)
+
+    #Generate random recipe id with letter to avoid matching with API recipe ID
     recipe_id = (''.join(random.choices(string.ascii_letters, k=6)))
-    print(recipe_id)
 
-    # Make a request to the Cloudinary API using the current timestamp
-    # timestamp = int(time.time())
-    ## cloudinary is not working!!!!
-    try:
-        my_file = request.files['my_file']
-        result = cloudinary.uploader.upload(my_file, api_key=CLOUDINARY_KEY, api_secret=CLOUDINARY_SECRET, cloud_name=CLOUD_NAME) 
-    #, timestamp=timestamp)
-        image = result['secure_url']
-        print(f'image url {image}')
-    except KeyError:
-        flash("The file was not present")
-        return redirect("/myrecipes")
-        
-  # save the data to the database
-#   recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, image, instructions, ingredient_name) #, amount, units, category):
-#   db.session.add(recipe)
-#   db.session.commit()
+    # ## cloudinary is not working!!!!
+    # my_file = request.files["my_file"]
+    # my_file = request.files.get("my_file")
+
+    # if my_file:
+    #     result = cloudinary.uploader.upload(my_file.stream,
+    #                 api_key=CLOUDINARY_KEY,
+    #                 api_secret=CLOUDINARY_SECRET,
+    #                 cloud_name=CLOUD_NAME)
+
+    #     image = result['secure_url']
+    # else:
+    #     image = None
+
+    # print(image)
+    title = request.form['name']    
+    instructions = request.form['instructions']
+
+    #get ingredient by column
+    ingredients = request.form.getlist('ingredient')
+    units_list = request.form.getlist('unit')
+    amounts = request.form.getlist('quantity')
+    categories = request.form.getlist('category')
+
+    #zip list to convert new list in a recipe ingredient data
+    ingredient_data = list(zip(ingredients, amounts, units_list, categories))
+    print(ingredient_data)
+    for data in ingredient_data:
+        ingredient_name = data[0]
+        amount = data[1]
+        units = data[2]
+        category = data[3]
+
+    # save the data to the database
+        recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, instructions, ingredient_name, amount, units, category)
+        db.session.add(recipe)
+        db.session.commit() 
+    flash('Recipe saved successfully!')
     
-    return 'Recipe saved successfully!'
-
-
+    return render_template('my_recipes.html')
 
 
 if __name__ == "__main__":

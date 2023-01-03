@@ -1,66 +1,16 @@
 {% extends "base.html" %}
 
 {% block body %}
-<body>
-    <h2> Create your recipe: </h2>
-        <!-- <form id="recipe-form"> -->
-        <form action="/create-recipe" method="POST" enctype="multipart/form-data"> 
-            <label for="title">Name</label>
-                <input id="recipe_name" type="name" name="name" placeholder="Enter your recipe name"> <br>
+<h2>Your delicious recipes:</h2>
 
-            <label for="image">Image</label>
-                <input type="file" name="my_file" id="image"> <br>
 
-            <label for="instructions">Instructions:</label><br>
-                <textarea name="instructions" id="instructions" placeholder="Enter your recipe instructions" rows="5" cols="40"></textarea><br><br>
-                <!-- <input class="recipe_instruction" type="name" name="instructions"> <br>     -->
-            
-            <label for="ingredient">Ingredients</label> <br>
-                <table id="ingredients-table">
-                    <tr>
-                        <th>Name</th>
-                        <th>Unit</th>
-                        <th>Quantity</th>
-                        <th>Category</th>
-                        <th></th>
-                    </tr>
-                        <td><input type="text" name="ingredient" placeholder="Enter your ingredient name" size="25"></td>
-                        <td>
-                            <select name="unit">
-                                <option value="tsp">teaspoon</option>
-                                <option value="tbsp">tablespoon</option>
-                                <option value="cup">cup</option>
-                                <option value="oz">ounce</option>
-                                <option value="lb">pound</option>
-                                <option value="container">container</option>
-                                <option value="other">unit</option>
-                            </select>    
-                        </td>
-                        <td><input type="number" name="quantity"></td>
-                        <td>
-                            <select name="category">
-                                <option value="Oil, Vinegar, Salad Dressing">Oil, Vinegar, Salad Dressing</option>
-                                <option value="Refrigerated">Refrigerated</option>
-                                <option value="Pasta and Rice">Pasta and Rice</option>
-                                <option value="Spices and Seasonings">Spices and Seasonings</option>
-                                <option value="Milk, Eggs, Other Dairy">Milk, Eggs, Other Dairy</option>
-                                <option value="Meat">Meat</option>
-                                <option value="Produce">Produce</option>
-                                <option value="Seafood">Seafood</option>
-                                <option value="Cheese">Cheese</option>
-                                <option value="Other">Other</option>
-                            <select>    
-                        </td>
-                        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
-                    </tr>
-                </table>
-                <button type="button" onclick="addRow()">Add Ingredient</button> <br>
-                <br>
-            <button type="submit">Create recipe</button>
-        </form>
 
-</body>
-<!-- <script src="https://cdn.jsdelivr.net/npm/cloudinary-core@2.8.1/cloudinary-core-shrinkwrap.min.js"></script> -->
-<script src="../static/js/myrecipes.js"> </script> 
+
+<form action="/render-page" method="POST">
+    <button type="submit">Create a recipe</button>
+  </form>
+  
+
+
 
 {% endblock %}
