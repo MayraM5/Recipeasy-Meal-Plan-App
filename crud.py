@@ -1,5 +1,5 @@
 '''CRUD operations functions'''
-from model import db, User, FavoriteRecipe, MealPlan, GroceryItem, Recipe, connect_to_db
+from model import db, User, FavoriteRecipe, MealPlan, GroceryItem, connect_to_db
 
 def create_user(first_name, last_name, email, password):
     """Create and return a new user"""
@@ -178,27 +178,6 @@ def get_total_grocery_list(user_id):
 #then group by ingredient name, units and sum amount
 #THIS GROUP BY INGREDIENT NAME, UNITS AND SUM AMOUNT
 # x = db.session.query(GroceryItem.user_id, GroceryItem.ingredient_name, db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, GroceryItem.ingredient_name, GroceryItem.units).all()
-
-
-####################NEW FEATURE ######################3
-
-def create_my_recipe(user_id, recipe_id, title, instructions, ingredient_name, amount, units, category):
-    """Create favorite recipes"""
-
-    new_recipe = Recipe(user_id=user_id, recipe_id=recipe_id, title=title, instructions=instructions,
-                ingredient_name=ingredient_name, amount=amount, units=units, category=category)
-
-    return new_recipe
-
-def get_my_recipes(user_id):
-    """Get all recipes created by user"""
-
-    my_recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
-
-    return my_recipes
-
-
-
 
 
 

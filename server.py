@@ -1,17 +1,12 @@
 """Server for meal planning app."""
 
-from flask import Flask, render_template, request, flash, session, redirect, jsonify, url_for
+from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from model import connect_to_db, db
 import crud
 from jinja2 import StrictUndefined
 import requests
 import json
 import os
-import cloudinary.uploader
-import cloudinary
-import random
-import string
-import time
 
 
 app = Flask(__name__)
@@ -22,9 +17,6 @@ app.jinja_env.undefined = StrictUndefined
 
 SPOON_API_KEY = os.environ["SPOON_API_KEY"]
 
-CLOUD_NAME = "dhyrymmf4"
-CLOUDINARY_SECRET= os.environ["CLOUDINARY_SECRET"],
-CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 
 #Homepage
 @app.route('/')
@@ -323,14 +315,17 @@ def get_recipe():
 
             response = requests.get(url, params)
             data = response.json()
-            #
+            #print(data)
             recipe_data = None
             #Find our recipe from list
             for recipe in data:
                 if str(recipe["id"]) == recipe_id:
                     recipe_data = recipe
 
+            print(recipe_data)        
+
             for ingredient in recipe_data["extendedIngredients"]:
+              #  print(recipe_data['extendedIngredients'])
                 ingredient_name =(ingredient["name"])
                 unit = (ingredient["unit"])
                 amount = (ingredient["amount"])
@@ -416,83 +411,7 @@ def display_grocery_items():
 
     return render_template("groceries.html", total_grocery=total_grocery) #, name=name, amount=amount, unit=unit)
 
-#############NEW FEATURE ###########################################
-@app.route("/myrecipes")
-def my_recipes():
 
-    logged_in_user = session.get("user_id")
-    recipes_data = crud.get_my_recipes(logged_in_user)
-
-    # my_recipes = []
-    # for recipe in recipes_data:
-    #     recipe_id = recipe["recipe_id"]
-    #     title = recipe['title']
-    #     # try:
-    #     #     image = recipe["image"]
-    #     # except KeyError:
-    #     #     image = None
-
-    #     element = {'recipe_id': recipe_id, 'title': title}
-
-    #     my_recipes.append(element)
-
-    return render_template("my_recipes.html", my_recipes=my_recipes)
-
-    
-
-@app.route('/render-page', methods=['POST'])
-def render_page():
-  return render_template('create_recipe.html')
-
-
-@app.route('/create-recipe', methods=['POST'])
-def create_recipe():
-
-    logged_in_user_id = session.get("user_id")
-
-    #Generate random recipe id with letter to avoid matching with API recipe ID
-    recipe_id = (''.join(random.choices(string.ascii_letters, k=6)))
-
-    # ## cloudinary is not working!!!!
-    # my_file = request.files["my_file"]
-    # my_file = request.files.get("my_file")
-
-    # if my_file:
-    #     result = cloudinary.uploader.upload(my_file.stream,
-    #                 api_key=CLOUDINARY_KEY,
-    #                 api_secret=CLOUDINARY_SECRET,
-    #                 cloud_name=CLOUD_NAME)
-
-    #     image = result['secure_url']
-    # else:
-    #     image = None
-
-    # print(image)
-    title = request.form['name']    
-    instructions = request.form['instructions']
-
-    #get ingredient by column
-    ingredients = request.form.getlist('ingredient')
-    units_list = request.form.getlist('unit')
-    amounts = request.form.getlist('quantity')
-    categories = request.form.getlist('category')
-
-    #zip list to convert new list in a recipe ingredient data
-    ingredient_data = list(zip(ingredients, amounts, units_list, categories))
-    print(ingredient_data)
-    for data in ingredient_data:
-        ingredient_name = data[0]
-        amount = data[1]
-        units = data[2]
-        category = data[3]
-
-    # save the data to the database
-        recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, instructions, ingredient_name, amount, units, category)
-        db.session.add(recipe)
-        db.session.commit() 
-    flash('Recipe saved successfully!')
-    
-    return render_template('my_recipes.html')
 
 
 if __name__ == "__main__":
