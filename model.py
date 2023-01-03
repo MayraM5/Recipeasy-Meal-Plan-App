@@ -20,6 +20,7 @@ class User(db.Model):
     favorite_recipes = db.relationship("FavoriteRecipe", back_populates="users")
     meal_plans = db.relationship("MealPlan", back_populates="users")
     grocery_items = db.relationship("GroceryItem", back_populates="users")
+    recipes = db.relationship("Recipe", back_populates="users")
 
    
     def __repr__(self):
@@ -70,10 +71,44 @@ class GroceryItem(db.Model):
     category = db.Column(db.String(35))
     
     users = db.relationship("User", back_populates="grocery_items")
-    # meal_plans = db.relationship("MealPlan", back_populates="grocery_items")
 
     def __repr__(self):
         return f'<Grocery user_id={self.user_id} recipe_id={self.recipe_id} category={self.category} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
+
+class Recipe(db.Model):
+    """A recipe """ 
+
+    __tablename__ = "recipes"
+
+    recipe_id = db.Column(db.String, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    title = db.Column(db.String)
+    image = db.Column(db.String)
+    instructions = db.Column(db.String)
+
+    users = db.relationship("User", back_populates="recipes")
+    recipe_ingredients = db.relationship("RecipeIngredient", back_populates="recipes")
+
+    def __repr__(self):
+        return f'<Recipe user_id={self.user_id} recipe_id={self.recipe_id} title={self.title} image={self.image} instructions={self.instructions}>'
+
+
+class RecipeIngredient(db.Model):
+    """A Recipe Ingredient"""
+
+    __tablename__ = "recipe_ingredients"
+
+    ingredient_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    recipe_id = db.Column(db.String, db.ForeignKey('recipes.recipe_id'))
+    ingredient_name = db.Column(db.String(50))
+    amount = db.Column(db.Float) #Ingredient quantity
+    units = db.Column(db.String(30)) #unit of measure
+    category = db.Column(db.String(35))
+
+    recipes = db.relationship("Recipe", back_populates="recipe_ingredients")
+
+    def __repr__(self):
+        return f'<RecipeIngredient recipe_id={self.recipe_id} category={self.category} ingredient_name={self.ingredient_name} amount={self.amount} units={self.units}>'
 
 
 def connect_to_db(flask_app, mealplanning):

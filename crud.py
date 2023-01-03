@@ -1,5 +1,5 @@
 '''CRUD operations functions'''
-from model import db, User, FavoriteRecipe, MealPlan, GroceryItem, connect_to_db
+from model import db, User, FavoriteRecipe, MealPlan, GroceryItem, Recipe, RecipeIngredient, connect_to_db
 
 def create_user(first_name, last_name, email, password):
     """Create and return a new user"""
@@ -178,6 +178,43 @@ def get_total_grocery_list(user_id):
 #then group by ingredient name, units and sum amount
 #THIS GROUP BY INGREDIENT NAME, UNITS AND SUM AMOUNT
 # x = db.session.query(GroceryItem.user_id, GroceryItem.ingredient_name, db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, GroceryItem.ingredient_name, GroceryItem.units).all()
+
+####################NEW FEATURE ######################
+def create_my_recipe(user_id, recipe_id, title, instructions):
+    """Create favorite recipes"""
+
+    new_recipe = Recipe(user_id=user_id, recipe_id=recipe_id, title=title, instructions=instructions)
+
+    return new_recipe
+
+def create_recipe_ingredient(recipe_id, ingredient_name, amount, units, category):
+
+    recipe_ingredient = RecipeIngredient(recipe_id=recipe_id, ingredient_name=ingredient_name, amount=amount, units=units, category=category)
+
+    return recipe_ingredient
+
+
+def get_my_recipes(user_id):
+    """Get all recipes created by user"""
+
+    my_recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
+    
+    # for recipe in my_recipes:
+    #     print(recipe.title)
+    #     print(recipe.instructions)
+
+    return my_recipes
+
+
+
+
+# def get_recipe_ingredients(recipe_id):
+
+
+#     return recipe_ingredients
+
+
+
 
 
 

@@ -7,7 +7,9 @@ from jinja2 import StrictUndefined
 import requests
 import json
 import os
-
+import random
+import string
+import cloudinary.uploader
 
 app = Flask(__name__)
 
@@ -17,6 +19,9 @@ app.jinja_env.undefined = StrictUndefined
 
 SPOON_API_KEY = os.environ["SPOON_API_KEY"]
 
+CLOUD_NAME = "dhyrymmf4"
+CLOUDINARY_SECRET= os.environ["CLOUDINARY_SECRET"]
+CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 
 #Homepage
 @app.route('/')
@@ -290,13 +295,13 @@ def get_recipe():
     
     #check if user is logged in:
     if logged_in_user_id is None:
-        flash("You must log in to add to Favorites") 
+        flash("You must log in to add to Meal Plan") 
         return redirect('/')
     
     else:
         #check if recipe id is in db
         if recipe_id in meal_plan_list:
-            flash(f"Its already added")
+            # flash(f"Its already added")
             return json.dumps({'fail': True}) 
 
         #check if recipe id is in meal plan, if not add
@@ -304,7 +309,6 @@ def get_recipe():
             meal_plan = crud.create_meal_plan(logged_in_user_id, (recipe_id))
             db.session.add(meal_plan)
             db.session.commit()
-            flash("Great! This recipe has been added to Favorites")
             
 
             url = 'https://api.spoonacular.com/recipes/informationBulk?'
@@ -411,9 +415,80 @@ def display_grocery_items():
 
     return render_template("groceries.html", total_grocery=total_grocery) #, name=name, amount=amount, unit=unit)
 
+#############NEW FEATURE ###########################################
+@app.route("/my-recipes")
+def my_recipes():
 
+    logged_in_user = session.get("user_id")
+    recipes = crud.get_my_recipes(logged_in_user)
+
+    return render_template("my_recipes.html", recipes=recipes)
+
+
+@app.route('/render-page', methods=['POST'])
+def render_page():
+  return render_template('create_recipe.html')
+
+
+@app.route('/create-recipe', methods=['POST'])
+def create_recipe():
+
+    logged_in_user_id = session.get("user_id")
+    #Generate random recipe id with letter to avoid matching with API recipe ID
+    recipe_id = (''.join(random.choices(string.ascii_letters, k=6)))
+    title = request.form['name']    
+    instructions = request.form['instructions']
+    
+    #image
+    ## cloudinary is not working!!!!
+    my_file = request.files["my_file"]
+    print(my_file)
+
+    if my_file:
+        print(CLOUDINARY_KEY)
+        print(CLOUDINARY_SECRET)
+        print(CLOUD_NAME)
+        result = cloudinary.uploader.upload(my_file,
+                    api_key=CLOUDINARY_KEY,
+                    api_secret=CLOUDINARY_SECRET,
+                    cloud_name=CLOUD_NAME)
+
+        image = result['secure_url']
+    else:
+        image = None
+
+    print(image)
+
+    # save to db
+    new_recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, instructions)
+    db.session.add(new_recipe)
+    db.session.commit() 
+
+    #get ingredient by column
+    ingredients = request.form.getlist('ingredient')
+    units_list = request.form.getlist('unit')
+    amounts = request.form.getlist('quantity')
+    categories = request.form.getlist('category')
+
+    #zip list to convert new list in a recipe ingredient data
+    ingredient_data = list(zip(ingredients, amounts, units_list, categories))
+    print(ingredient_data)
+    for data in ingredient_data:
+        ingredient_name = data[0]
+        amount = data[1]
+        units = data[2]
+        category = data[3]
+
+    # save the data to the database
+        recipe_ingredient = crud.create_recipe_ingredient(recipe_id, ingredient_name, amount, units, category)
+        db.session.add(recipe_ingredient)
+        db.session.commit() 
+
+    flash('Recipe saved successfully!')
+    
+    return render_template('my_recipes.html')
 
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5002, debug=True)

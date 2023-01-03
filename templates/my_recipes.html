@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+<body>
+{% block body %}
+
+<h2>Your delicious recipes:</h2>
+{% if recipes %}
+  {% for recipe in recipes %}
+      <h2>{{ recipe.title }}</h2>
+      <p>{{ recipe.instructions }}</p>
+  {% endfor %}
+{% endif %}
+
+
+
+<form action="/render-page" method="POST">
+    <button type="submit">Create a recipe</button>
+  </form>
+
+
+{% endblock %}
+</body>
