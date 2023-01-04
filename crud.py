@@ -208,7 +208,7 @@ def get_recipe_by_user_and_recipeid(user_id, recipe_id):
     return my_recipes
 
 def get_recipe_data(user_id, recipe_id):
-
+    """[<Recipe user_id=1 recipe_id=cook60220 title=Arepa image=https://res.cloudinary.com/dhyrymmf4/image/upload/v1672802232/hqjnsb2wietsallhexnw.jpg instructions=baaaaaaaaaaaaaaaaaaaaaaa>]"""
     my_recipes = Recipe.query.filter(Recipe.user_id==user_id, Recipe.recipe_id==recipe_id).all()
 
     return my_recipes

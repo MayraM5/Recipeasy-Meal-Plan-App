@@ -301,18 +301,19 @@ def get_recipe():
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_Id") 
-    print(recipe_id)
+    print(f'**************************RECIPE ID {recipe_id}')
+    print(f'**************************RECIPE ID TYPE {type(recipe_id)}') #str
     
     #Get user meal plan recipe ids
     meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user_id)
 
     try:
-        recipe_id = int(recipe_id)
+        recipe_id = str(recipe_id)
     except:
         pass
 
     if recipe_id in meal_plan_list:
-        flash('This recipe is already added to Meal Plan')
+        # flash('This recipe is already added to Meal Plan') display in wrong page
         return json.dumps({'fail': True}) 
 
     else:
@@ -320,35 +321,52 @@ def get_recipe():
         db.session.add(meal_plan)
         db.session.commit()
         
+        #retrieve data from db
+        if recipe_id.startswith('cook'):
 
-        url = 'https://api.spoonacular.com/recipes/informationBulk?'
-        params = {'apiKey' : SPOON_API_KEY,
-                    'ids' : recipe_id,
-                    }
-        # print("*"*20)
+            ingredient_data = crud.get_recipe_ingredients(recipe_id)
+            for ingredient in ingredient_data:
+                ingredient_name = ingredient.ingredient_name
+                unit = ingredient.units
+                amount = ingredient.amount
+                category = ingredient.category
 
-        response = requests.get(url, params)
-        data = response.json()
-        #print(data)
-        recipe_data = None
-        #Find our recipe from list
-        for recipe in data:
-            if str(recipe["id"]) == recipe_id:
-                recipe_data = recipe    
+                grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, category, ingredient_name, amount, unit)
+                
+                db.session.add(grocery_item)
+                db.session.commit()
 
-        for ingredient in recipe_data["extendedIngredients"]:
-            #  print(recipe_data['extendedIngredients'])
-            ingredient_name =(ingredient["name"])
-            unit = (ingredient["unit"])
-            amount = (ingredient["amount"])
-            category = (ingredient["aisle"])
+            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-            grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, category, ingredient_name, amount, unit)
-            
-            db.session.add(grocery_item)
-            db.session.commit()
+        else:
 
-        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+            url = 'https://api.spoonacular.com/recipes/informationBulk?'
+            params = {'apiKey' : SPOON_API_KEY,
+                        'ids' : recipe_id,
+                        }
+
+            response = requests.get(url, params)
+            data = response.json()
+            #print(data)
+            recipe_data = None
+            #Find our recipe from list
+            for recipe in data:
+                if str(recipe["id"]) == recipe_id:
+                    recipe_data = recipe    
+            print(recipe_data)
+            for ingredient in recipe_data["extendedIngredients"]:
+                #  print(recipe_data['extendedIngredients'])
+                ingredient_name =(ingredient["name"])
+                unit = (ingredient["unit"])
+                amount = (ingredient["amount"])
+                category = (ingredient["aisle"])
+
+                grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, category, ingredient_name, amount, unit)
+                
+                db.session.add(grocery_item)
+                db.session.commit()
+
+            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
 # #Display meal plan
@@ -357,32 +375,47 @@ def display_meal_plan():
 
     logged_in_user_id = session.get("user_id")
     meal_plan = crud.get_meal_plan_recipe_ids(logged_in_user_id)
-
-    #Convert each element from list to string 
-    ids = ','.join(str(id) for id in meal_plan)
-
-    url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : SPOON_API_KEY,
-            'includeNutrition': False,
-            'ids' : ids,
-            }
-
-    response = requests.get(url, params)
-    data = response.json()
-   # print(f'DATA RESPONSE {data}')
     meal_plan_recipes = []
 
-    for recipe in data:
-        id = recipe["id"]
-        title = recipe['title']
-        try:
-            image = recipe["image"]
-        except KeyError:
-            image = None
+    for recipe_id in meal_plan:
+        #retrieve data from db
+        if recipe_id.startswith('cook'):
 
-        element = {'id': id, 'title': title, 'image': image}
+            recipe_data = crud.get_recipe_data(logged_in_user_id, recipe_id)
 
-        meal_plan_recipes.append(element)
+            for recipe in recipe_data:
+                id = recipe.recipe_id
+                title = recipe.title
+                image = recipe.image
+
+                element = {'id': id, 'title': title, 'image': image}
+
+                meal_plan_recipes.append(element)
+            # print(meal_plan_data)
+
+        else:
+            #retrieve data from api
+            url = 'https://api.spoonacular.com/recipes/informationBulk?'
+            params = {'apiKey' : SPOON_API_KEY,
+                    'includeNutrition': False,
+                    'ids' : recipe_id,
+                    }
+
+            response = requests.get(url, params)
+            data = response.json()
+           # print(f'DATA RESPONSE {data}') 
+            for recipe in data:
+                id = recipe["id"]
+                title = recipe['title']
+                try:
+                    image = recipe["image"]
+                except KeyError:
+                    image = None
+
+                element = {'id': id, 'title': title, 'image': image}
+
+                meal_plan_recipes.append(element)
+    #print(meal_plan_recipes)
 
     return render_template("mealplan.html", meal_plan_recipes=meal_plan_recipes)
 
@@ -408,12 +441,7 @@ def delete_meal_plan():
 
     return redirect("/meal-plan")
 
-# # @app.route("/meal-plan")
-# # def get_meal_plan():
-
-# #     return render_template("mealplan.html")
-
-#Display grocery items total list:
+#Display grocery shopping list:
 @app.route("/groceries")
 def display_grocery_items():
     """Process to display a list of grocery"""
@@ -507,9 +535,10 @@ def remove_recipe():
     db.session.delete(recipe_to_delete)
     db.session.commit()
 
-    return redirect("/favorites")
+    return redirect("/my-cookbook")
+
 
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5002, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
