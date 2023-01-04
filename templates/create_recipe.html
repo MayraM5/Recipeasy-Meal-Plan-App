@@ -2,9 +2,10 @@
 
 {% block body %}
 <body>
+
     <h2> Create your own recipe: </h2>
         <!-- <form id="recipe-form"> -->
-        <form action="/create-recipe" method="POST" enctype="multipart/form-data"> 
+        <form id="create-recipe" action="/create-recipe" method="POST" enctype="multipart/form-data"> 
             <label for="title">Name</label>
                 <input id="recipe_name" type="name" name="name" placeholder="Enter your recipe name" required><br>
 

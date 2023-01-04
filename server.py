@@ -8,7 +8,6 @@ import requests
 import json
 import os
 import random
-import string
 import cloudinary.uploader
 
 app = Flask(__name__)
@@ -40,18 +39,18 @@ def log_in():
 
     #This return user_id, fname, lname, email by input_email
     user = crud.get_user_by_email(input_email)
-
+    
     #if user in db and user password vs input password match ==> log in
     if input_email == "":
-        flash("Please enter an email and password to log in")
+        flash("Please enter an email and password to log in", 'alert alert-danger')
         return redirect('/')
     
     elif not user or input_password != user.password:
-        flash("The email or password you entered is incorrect.")
+        flash("The email or password you entered is incorrect.", 'alert alert-danger')
         return redirect('/')
 
     elif user and user.password == input_password:
-        flash(f'Welcome back, {user.first_name}! You are now logged in.')
+        flash(f"Welcome back, {user.first_name}!", 'alert alert-success')
         session['user_id'] = user.user_id
         return redirect('/home')
         
@@ -64,7 +63,7 @@ def log_out():
     """ Process user log-out """
 
     del session['user_id']
-    flash("You have been logged out!") 
+    flash("You have been logged out!", 'alert alert-success') 
 
     return redirect('/')  
 
@@ -87,7 +86,7 @@ def register():
     user = crud.get_user_by_email(email)
 
     if user:
-        flash('This email is already registered. Please log in')
+        flash('This email is already registered. Please log in', 'alert alert-danger')
         return redirect('/')
 
     else:           
@@ -96,7 +95,7 @@ def register():
         db.session.commit()
 
         session["user_id"] = user.user_id
-        flash(f'Welcome {user.first_name}! Your account was succesfully created.')
+        flash(f'Welcome {user.first_name}! Your account was succesfully created.', 'alert alert-success')
         return redirect("/home")
 
 
@@ -263,37 +262,6 @@ def recipe_details(recipe_id):
 
         return render_template("recipe_details.html", title=title, instructions=instructions, 
                                 ingredients = ingredients_list, servings = servings, image = image)
-
-#Add recipe to meal plan:
-# @app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
-# def get_recipe():
-
-#     logged_in_user = session.get("user_id")
-#     recipe_id = request.json.get("meal_plan_Id")
-
-#     #Get user meal plan recipe ids
-#     meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user)
-    
-#     #check if user is logged in:
-#     if logged_in_user is None:
-#         flash("You must log in to add to Favorites") 
-#         return redirect('/')
-    
-#     else:
-#         #check if recipe id is in db
-#         if recipe_id in meal_plan_list:
-#             flash(f"Its already added")
-#             return json.dumps({'fail': True}) 
-
-#         #check if recipe id is in meal plan, if not add
-#         else:
-#             user = crud.get_user_by_id(logged_in_user)
-#             recipe_id = crud.create_meal_plan(user, (recipe_id))
-#             db.session.add(recipe_id)
-#             db.session.commit()
-#             flash("Great! This recipe has been added to Favorites")
-
-#             return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 #===============================================================================
 #ADD RECIPE TO MP AND GROCERY ITEMS TO GROCERIES
@@ -470,52 +438,56 @@ def render_page():
 @app.route('/create-recipe', methods=['POST'])
 def create_recipe():
 
-    logged_in_user_id = session.get("user_id")
-    #Generate random recipe id with letter to avoid matching with API recipe ID
-    recipe_id = "cook" + (''.join(str(random.randint(0, 9)) for _ in range(5)))
-    title = request.form['name']    
-    instructions = request.form['instructions']
-    servings = request.form['servings']
-    
-    #image
-    my_file = request.files["my_file"]
+    try:
+        logged_in_user_id = session.get("user_id")
+        #Generate random recipe id with letter to avoid matching with API recipe ID
+        recipe_id = "cook" + (''.join(str(random.randint(0, 9)) for _ in range(5)))
+        title = request.form['name']    
+        instructions = request.form['instructions']
+        servings = request.form['servings']
+        
+        #image
+        my_file = request.files["my_file"]
 
-    if my_file:
-        result = cloudinary.uploader.upload(my_file,
-                    api_key=CLOUDINARY_KEY,
-                    api_secret=CLOUDINARY_SECRET,
-                    cloud_name=CLOUD_NAME)
+        if my_file:
+            result = cloudinary.uploader.upload(my_file,
+                        api_key=CLOUDINARY_KEY,
+                        api_secret=CLOUDINARY_SECRET,
+                        cloud_name=CLOUD_NAME)
 
-        image = result['secure_url']
-    else:
-        image = None
+            image = result['secure_url']
+        else:
+            image = None
 
-    # save to db
-    new_recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, image, instructions, servings)
-    db.session.add(new_recipe)
-    db.session.commit() 
-
-    #get ingredient by column
-    ingredients = request.form.getlist('ingredient')
-    units_list = request.form.getlist('unit')
-    amounts = request.form.getlist('quantity')
-    categories = request.form.getlist('category')
-
-    #zip list to convert new list in a recipe ingredient data
-    ingredient_data = list(zip(ingredients, amounts, units_list, categories))
-    print(ingredient_data)
-    for data in ingredient_data:
-        ingredient_name = data[0]
-        amount = data[1]
-        units = data[2]
-        category = data[3]
-
-    # save the data to the database
-        recipe_ingredient = crud.create_recipe_ingredient(recipe_id, ingredient_name, amount, units, category)
-        db.session.add(recipe_ingredient)
+        # save to db
+        new_recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, image, instructions, servings)
+        db.session.add(new_recipe)
         db.session.commit() 
 
-    flash('Recipe saved successfully!')
+        #get ingredient by column
+        ingredients = request.form.getlist('ingredient')
+        units_list = request.form.getlist('unit')
+        amounts = request.form.getlist('quantity')
+        categories = request.form.getlist('category')
+
+        #zip list to convert new list in a recipe ingredient data
+        ingredient_data = list(zip(ingredients, amounts, units_list, categories))
+        print(ingredient_data)
+        for data in ingredient_data:
+            ingredient_name = data[0]
+            amount = data[1]
+            units = data[2]
+            category = data[3]
+
+        # save the data to the database
+            recipe_ingredient = crud.create_recipe_ingredient(recipe_id, ingredient_name, amount, units, category)
+            db.session.add(recipe_ingredient)
+            db.session.commit() 
+    except Exception as e:
+        flash("Error creating recipe: " + str(e), "please try again", 'alert alert-danger')
+    
+    else:
+        flash("Recipe saved successfully!", 'alert alert-success')
     
     return redirect("/my-cookbook")
 

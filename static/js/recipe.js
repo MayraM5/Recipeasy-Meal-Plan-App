@@ -1,4 +1,5 @@
 
+  
 // SEARCH RECIPES => TITLE + IMAGE
 let search_btn = document.querySelector("#search_btn")
 let search_box = document.querySelector("#search_input")

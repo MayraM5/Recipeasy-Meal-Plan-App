@@ -1,3 +1,11 @@
+.recipe_search_box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
 .meal_item{
     border-radius: 1rem;
     -webkit-border-radius: 1rem;
