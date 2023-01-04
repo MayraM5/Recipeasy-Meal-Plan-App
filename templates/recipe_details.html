@@ -3,6 +3,16 @@
 {% block body %}
 <body>
 <h3>{{ title }}</h3>
+{% if image %}
+<div class="recipe_image">
+    <img src="{{ image }}" >
+</div>
+{% else %}
+<div class="recipe_image">
+    <img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg">
+</div>
+{% endif %}
+
 {% if instructions %}
     <h3>Instructions:</h3>
     {% for instruction in instructions %}

@@ -11,10 +11,10 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, autoincrement=True, primary_key=True, nullable=False)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(30))
-    email = db.Column(db.String(30), unique=True)
+    email = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(20))
 
     favorite_recipes = db.relationship("FavoriteRecipe", back_populates="users")
@@ -33,7 +33,7 @@ class FavoriteRecipe(db.Model):
 
     favorite_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    recipe_id = db.Column(db.Integer)
+    recipe_id = db.Column(db.Integer, nullable=False)
     #recipe_name = db.Column(db.String(30))
 
     users = db.relationship("User", back_populates="favorite_recipes")
@@ -48,8 +48,8 @@ class MealPlan(db.Model):
     __tablename__ = "meal_plans"
 
     meal_plan_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    recipe_id = db.Column(db.Integer) 
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    recipe_id = db.Column(db.Integer, nullable=False)
 
     users = db.relationship("User", back_populates="meal_plans")
     # grocery_items = db.relationship("GroceryItem", back_populates="meal_plans")
@@ -80,7 +80,7 @@ class Recipe(db.Model):
 
     __tablename__ = "recipes"
 
-    recipe_id = db.Column(db.String, primary_key=True)
+    recipe_id = db.Column(db.String, primary_key=True, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     title = db.Column(db.String)
     image = db.Column(db.String)

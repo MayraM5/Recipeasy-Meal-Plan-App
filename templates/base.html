@@ -47,9 +47,15 @@
       </div>
     </nav>
     <ul>
-      {% for msg in get_flashed_messages() %}
-    <div class="alert alert-info">{{ msg }}</div>
-      {% endfor %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for msg in get_flashed_messages() %}
+            <div class="alert alert-info">{{ msg }}</div>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
     </ul>
     {% block body %}
     

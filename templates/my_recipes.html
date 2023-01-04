@@ -11,26 +11,28 @@
 <h3>Your delicious recipes:</h3>
 {% if recipes %}
   {% for recipe in recipes %}
-  <div id="div_{{ recipe.recipe_id }}">
-    <div class ="recipe_name">
+    
+    {% set id = recipe.recipe_id %}
+    <div id="div_{{ id }}">
+      <div class ="recipe_name">
         <h2>{{ recipe.title }}</h2>
+      </div>
+      {% if recipe.image %}
+        <div class="recipe_image">
+          <a href="/recipe-details-{{ id }}"><img src="{{ recipe.image }}" ></a>
+        </div>
+        {% else %}
+        <div class="recipe_image">
+            <img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg">
+        </div>
+        {% endif %}
+        <div>
+          <button class="delete_recipe" id="{{ id }}">Delete</button>
+        </div>
+        <div>
+            <button class="add_to_meal_plan" id="{{ id }}">Add to Meal Plan</button>
+        </div>
     </div>
-    {% if recipe.image %}
-      <div class="recipe_image">
-        <img src="{{ recipe.image }}" >
-      </div>
-      {% else %}
-      <div class="recipe_image">
-          <img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg">
-      </div>
-      {% endif %}
-      <div>
-        <button class="delete_recipe" id="{{ recipe.recipe_id }}">Delete</button>
-      </div>
-      <div>
-          <button class="add_to_meal_plan" id="{{ recipe.recipe_id }}">Add to Meal Plan</button>
-      </div>
-  </div>
 
   {% endfor %}
 {% endif %}

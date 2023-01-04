@@ -43,15 +43,19 @@ def log_in():
 
     #if user in db and user password vs input password match ==> log in
     if input_email == "":
+        flash("Please enter an email and password to log in")
+        return redirect('/')
+    
+    elif not user or input_password != user.password:
+        flash("The email or password you entered is incorrect.")
         return redirect('/')
 
-    if user and user.password == input_password:
+    elif user and user.password == input_password:
         flash(f'Welcome back, {user.first_name}! You are now logged in.')
         session['user_id'] = user.user_id
         return redirect('/home')
         
     else:
-       # flash(f'User email and/or password is incorrect. Please try again.') ##NOT DISPLAYING => displaying after logged in
         return redirect('/')
 
 #log-out
@@ -60,9 +64,9 @@ def log_out():
     """ Process user log-out """
 
     del session['user_id']
-    flash("You have been logged out!") #displaying on the wrong page!!!!!!!!!!
+    flash("You have been logged out!") 
 
-    return redirect('/')  #this works!
+    return redirect('/')  
 
 #Create an account
 @app.route("/sign-up")
@@ -83,8 +87,8 @@ def register():
     user = crud.get_user_by_email(email)
 
     if user:
-        #This email is already registered.=> homepage to log in
-        return redirect('/') #this works
+        flash('This email is already registered. Please log in')
+        return redirect('/')
 
     else:           
         user = crud.create_user(first_name, last_name, email, password)
@@ -93,7 +97,7 @@ def register():
 
         session["user_id"] = user.user_id
         flash(f'Welcome {user.first_name}! Your account was succesfully created.')
-        return redirect("/home") #this works!
+        return redirect("/home")
 
 
 @app.route("/home")
@@ -119,7 +123,7 @@ def get_recipe_id():
     else:
         #check if recipe id is in db
         if recipe_id in fav_list:
-            flash(f"Its already added")
+            flash(f"Its already added")  ### NOT WORKING
             return json.dumps({'fail': True}) 
 
         # #check if recipe id is in fav, if not add
@@ -141,7 +145,6 @@ def display_fav_recipes():
     #Convert each element from list to string 
     ids = ','.join(str(id) for id in fav_list)
 
-    #NEED TO HIDE APIKEY
     url = 'https://api.spoonacular.com/recipes/informationBulk?' 
     params = {'apiKey' : SPOON_API_KEY,
             'includeNutrition': False,
@@ -167,7 +170,7 @@ def display_fav_recipes():
 
     return render_template("favorites.html", favorite_recipes=fav_recipes)
 
-#REMOVE RECIPE FROM FAVORITE RECIPES
+#REMOVE RECIPE FROM FAVORITES
 @app.route("/remove-fav", methods=["POST"])
 def remove_favorite():
     """Process to remove recipe from favorites."""
@@ -182,74 +185,83 @@ def remove_favorite():
 
     return redirect("/favorites")
 
-# @app.route("/add-meal", methods=["POST"])
-# def add_fav_to_meal_plan():
-
-#     logged_in_user_id = session.get("user_id")
-#     recipe_id = request.json.get("recipe_id")
-
 
 #==============DISPLAY RECIPE DETAILS=====================
 @app.route("/recipe-details-<recipe_id>", methods=["GET","POST"]) 
 def recipe_details(recipe_id):
+    
+    logged_in_user_id = session.get("user_id")
+    #check if recipe is in database (created by user)
+    if recipe_id.startswith('cook'):
 
-    # recipe_id = request.json.get("recipe_Id")
+        recipe_data = crud.get_recipe_data(logged_in_user_id, recipe_id)
 
-    url = 'https://api.spoonacular.com/recipes/informationBulk?'
-    params = {'apiKey' : SPOON_API_KEY,
-                'ids' : recipe_id,
-                }
-    # print("*"*20)
-    # print(recipe_id)
-
-    response = requests.get(url, params)
-    data = response.json()
-    # print(f'data: {data}')
-
-    for recipe in data:
-        id = recipe["id"]
-        title = recipe['title']
-        image = recipe["image"]
-        # try:
-        #     instructions = recipe["instructions"].split(".")
-        # except AttributeError:
-        #     try:
-        #         instructions = recipe['summary'].split(".")
-        #     except (KeyError, AttributeError):
-        #         instructions = None
-        try:
-            raw_instructions = recipe["instructions"]
-
-            # if recipe["instructions"] is empty or None, use recipe["summary"]
-        except KeyError:
-            try:
-                raw_instructions = recipe["summary"]
-            except KeyError:
-                raw_instructions = None
-        #Remove extra tags
-        tags_to_remove = ['<ol>', '</ol>', '<li>', '</li>', '<span>', '</span>', '<p>', '</p>']
-        try:
-            for tag in tags_to_remove:
-                raw_instructions = raw_instructions.replace(tag, '')
-            #Convert in list to display every step in a row
-            instructions = raw_instructions.split('.')
-        except AttributeError:
-            instructions = None
-
-        #Filter ingredients and add to list just what I need now
-        ingredients = recipe['extendedIngredients']
+        for recipe in recipe_data:
+            title = recipe.title
+            image = recipe.image
+            instructions = recipe.instructions.split('.')
+            
+        recipe_ingredients = crud.get_recipe_ingredients(recipe_id)
         ingredients_list = []
-        for item in ingredients:
-            name = item['name']
-            amount = item['amount']
-            unit = item['unit']
-
+        for ingredient in recipe_ingredients:
+            name = ingredient.ingredient_name
+            amount = ingredient.amount
+            unit = ingredient.units
+            
             elements = {'name': name, 'amount' : amount, "unit" : unit}
             ingredients_list.append(elements)
-    # print(f'instructions: {instructions}')
 
-    return render_template("recipe_details.html", title=title, instructions=instructions, 
-                            ingredients = ingredients_list, image = image)
+        return render_template("recipe_details.html", title=title, instructions=instructions, 
+                        ingredients = ingredients_list, image=image)
+    
+    #Spoonacular recipe
+    else:
+
+        url = 'https://api.spoonacular.com/recipes/informationBulk?'
+        params = {'apiKey' : SPOON_API_KEY,
+                    'ids' : recipe_id,
+                    }
+
+        response = requests.get(url, params)
+        data = response.json()
+
+        for recipe in data:
+            id = recipe["id"]
+            title = recipe['title']
+            image = recipe["image"]
+        
+            try:
+                raw_instructions = recipe["instructions"]
+
+                # if recipe["instructions"] is empty or None, use recipe["summary"]
+            except KeyError:
+                try:
+                    raw_instructions = recipe["summary"]
+                except KeyError:
+                    raw_instructions = None
+            #Remove extra tags
+            tags_to_remove = ['<ol>', '</ol>', '<li>', '</li>', '<span>', '</span>', '<p>', '</p>']
+            try:
+                for tag in tags_to_remove:
+                    raw_instructions = raw_instructions.replace(tag, '')
+                #Convert in list to display every step in a row
+                instructions = raw_instructions.split('.')
+            except AttributeError:
+                instructions = None
+
+            #Filter ingredients and add to list just what I need now
+            ingredients = recipe['extendedIngredients']
+            ingredients_list = []
+            for item in ingredients:
+                name = item['name']
+                amount = item['amount']
+                unit = item['unit']
+
+                elements = {'name': name, 'amount' : amount, "unit" : unit}
+                ingredients_list.append(elements)
+
+        return render_template("recipe_details.html", title=title, instructions=instructions, 
+                                ingredients = ingredients_list, image = image)
 
 #Add recipe to meal plan:
 # @app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
@@ -289,58 +301,54 @@ def get_recipe():
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_Id") 
+    print(recipe_id)
     
     #Get user meal plan recipe ids
     meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user_id)
-    
-    #check if user is logged in:
-    if logged_in_user_id is None:
-        flash("You must log in to add to Meal Plan") 
-        return redirect('/')
-    
+
+    try:
+        recipe_id = int(recipe_id)
+    except:
+        pass
+
+    if recipe_id in meal_plan_list:
+        flash('This recipe is already added to Meal Plan')
+        return json.dumps({'fail': True}) 
+
     else:
-        #check if recipe id is in db
-        if recipe_id in meal_plan_list:
-            # flash(f"Its already added")
-            return json.dumps({'fail': True}) 
+        meal_plan = crud.create_meal_plan(logged_in_user_id, (recipe_id))
+        db.session.add(meal_plan)
+        db.session.commit()
+        
 
-        #check if recipe id is in meal plan, if not add
-        else:
-            meal_plan = crud.create_meal_plan(logged_in_user_id, (recipe_id))
-            db.session.add(meal_plan)
-            db.session.commit()
+        url = 'https://api.spoonacular.com/recipes/informationBulk?'
+        params = {'apiKey' : SPOON_API_KEY,
+                    'ids' : recipe_id,
+                    }
+        # print("*"*20)
+
+        response = requests.get(url, params)
+        data = response.json()
+        #print(data)
+        recipe_data = None
+        #Find our recipe from list
+        for recipe in data:
+            if str(recipe["id"]) == recipe_id:
+                recipe_data = recipe    
+
+        for ingredient in recipe_data["extendedIngredients"]:
+            #  print(recipe_data['extendedIngredients'])
+            ingredient_name =(ingredient["name"])
+            unit = (ingredient["unit"])
+            amount = (ingredient["amount"])
+            category = (ingredient["aisle"])
+
+            grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, category, ingredient_name, amount, unit)
             
+            db.session.add(grocery_item)
+            db.session.commit()
 
-            url = 'https://api.spoonacular.com/recipes/informationBulk?'
-            params = {'apiKey' : SPOON_API_KEY,
-                        'ids' : recipe_id,
-                        }
-            # print("*"*20)
-
-            response = requests.get(url, params)
-            data = response.json()
-            #print(data)
-            recipe_data = None
-            #Find our recipe from list
-            for recipe in data:
-                if str(recipe["id"]) == recipe_id:
-                    recipe_data = recipe
-
-            print(recipe_data)        
-
-            for ingredient in recipe_data["extendedIngredients"]:
-              #  print(recipe_data['extendedIngredients'])
-                ingredient_name =(ingredient["name"])
-                unit = (ingredient["unit"])
-                amount = (ingredient["amount"])
-                category = (ingredient["aisle"])
-
-                grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, category, ingredient_name, amount, unit)
-                
-                db.session.add(grocery_item)
-                db.session.commit()
-
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+        return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
 # #Display meal plan
@@ -435,12 +443,11 @@ def create_recipe():
 
     logged_in_user_id = session.get("user_id")
     #Generate random recipe id with letter to avoid matching with API recipe ID
-    recipe_id = (''.join(random.choices(string.ascii_letters, k=6)))
+    recipe_id = "cook" + (''.join(str(random.randint(0, 9)) for _ in range(5)))
     title = request.form['name']    
     instructions = request.form['instructions']
     
     #image
-    ## cloudinary is not working!!!!
     my_file = request.files["my_file"]
 
     if my_file:

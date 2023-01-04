@@ -9,9 +9,19 @@
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"> -->
 
     <title>Recipeasy</title>
-
+  {% block body %}
   <body>
-
+    <ul>
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul>
+            {% for msg in get_flashed_messages() %}
+              <div class="alert alert-info">{{ msg }}</div>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      </ul>
     <h2>Log In</h2>
       <form action="/log-in" method="POST">
         <label for="email">Email</label> <br>
@@ -24,7 +34,7 @@
     <h4>Dont Have an account?? 
       <button id="sigup_btn" type="submit"> <a href="/sign-up">Sign up here!</button>
     </h4>
-
+    
   </body>
 
- 
+  {% endblock %}
