@@ -200,6 +200,7 @@ def recipe_details(recipe_id):
             title = recipe.title
             image = recipe.image
             instructions = recipe.instructions.split('.')
+            servings = recipe.servings
             
         recipe_ingredients = crud.get_recipe_ingredients(recipe_id)
         ingredients_list = []
@@ -212,11 +213,10 @@ def recipe_details(recipe_id):
             ingredients_list.append(elements)
 
         return render_template("recipe_details.html", title=title, instructions=instructions, 
-                        ingredients = ingredients_list, image=image)
+                        ingredients = ingredients_list, image=image, servings=servings)
     
     #Spoonacular recipe
     else:
-
         url = 'https://api.spoonacular.com/recipes/informationBulk?'
         params = {'apiKey' : SPOON_API_KEY,
                     'ids' : recipe_id,
@@ -229,7 +229,8 @@ def recipe_details(recipe_id):
             id = recipe["id"]
             title = recipe['title']
             image = recipe["image"]
-        
+            servings = recipe["servings"]
+
             try:
                 raw_instructions = recipe["instructions"]
 
@@ -261,7 +262,7 @@ def recipe_details(recipe_id):
                 ingredients_list.append(elements)
 
         return render_template("recipe_details.html", title=title, instructions=instructions, 
-                                ingredients = ingredients_list, image = image)
+                                ingredients = ingredients_list, servings = servings, image = image)
 
 #Add recipe to meal plan:
 # @app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
@@ -474,6 +475,7 @@ def create_recipe():
     recipe_id = "cook" + (''.join(str(random.randint(0, 9)) for _ in range(5)))
     title = request.form['name']    
     instructions = request.form['instructions']
+    servings = request.form['servings']
     
     #image
     my_file = request.files["my_file"]
@@ -489,7 +491,7 @@ def create_recipe():
         image = None
 
     # save to db
-    new_recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, image, instructions)
+    new_recipe = crud.create_my_recipe(logged_in_user_id, recipe_id, title, image, instructions, servings)
     db.session.add(new_recipe)
     db.session.commit() 
 

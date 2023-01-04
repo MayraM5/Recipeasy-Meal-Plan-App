@@ -11,10 +11,24 @@
             <label for="image">Image</label>
                 <input type="file" name="my_file" id="image"><br>
 
+            <label for="servings">Servings</label>
+                <!-- <input class="recipe_servings" type="number" name="servings"><br> -->
+                <select name="servings" required>
+                    <option value="">Set serving</option>
+                    <option value="1">1 serving</option>
+                    <option value="2">2 serving</option>
+                    <option value="3">3 serving</option>
+                    <option value="4">4 serving</option>
+                    <option value="5">5 serving</option>
+                    <option value="6">6 serving</option>
+                    <option value="7">7 serving</option>
+                    <option value="8">8 serving</option>
+                </select>    
+
             <label for="instructions">Instructions:</label><br>
                 <textarea name="instructions" id="instructions" placeholder="Enter your recipe instructions" rows="8" cols="60"></textarea><br><br>
                 <!-- <input class="recipe_instruction" type="name" name="instructions"> <br>     -->
-            
+
             <label for="ingredient">Ingredients</label> <br>
                 <table id="ingredients-table">
                     <tr>

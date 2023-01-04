@@ -2,7 +2,9 @@
 
 {% block body %}
 <body>
+<button onclick="window.history.back()">Back</button>
 <h3>{{ title }}</h3>
+<h3> Servings {{ servings }}
 {% if image %}
 <div class="recipe_image">
     <img src="{{ image }}" >
@@ -15,12 +17,16 @@
 
 {% if instructions %}
     <h3>Instructions:</h3>
-    {% for instruction in instructions %}
-        <li>{{ instruction }} </li>     
+<ol> 
+    {% for i in instructions %}
+        <li>{{ i }} </li>
     {% endfor %}
+</ol>
+    
 {% else %}
     <p>Sorry! There are no instructions for this recipe yet &#128542;</p>        
 {% endif %}
+    
 
 {% if ingredients %}
     <h3>ingredients:</h3>

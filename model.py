@@ -84,6 +84,7 @@ class Recipe(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     title = db.Column(db.String)
     image = db.Column(db.String)
+    servings = db.Column(db.Integer)
     instructions = db.Column(db.String)
 
     users = db.relationship("User", back_populates="recipes")

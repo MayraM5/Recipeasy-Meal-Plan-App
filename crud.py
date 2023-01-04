@@ -180,10 +180,10 @@ def get_total_grocery_list(user_id):
 # x = db.session.query(GroceryItem.user_id, GroceryItem.ingredient_name, db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, GroceryItem.ingredient_name, GroceryItem.units).all()
 
 ####################NEW FEATURE ######################
-def create_my_recipe(user_id, recipe_id, title, image, instructions):
+def create_my_recipe(user_id, recipe_id, title, image, instructions, servings):
     """Create favorite recipes"""
 
-    new_recipe = Recipe(user_id=user_id, recipe_id=recipe_id, title=title, image=image, instructions=instructions)
+    new_recipe = Recipe(user_id=user_id, recipe_id=recipe_id, title=title, image=image, instructions=instructions, servings=servings)
 
     return new_recipe
 
