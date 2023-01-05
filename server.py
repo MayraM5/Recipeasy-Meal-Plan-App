@@ -239,15 +239,46 @@ def recipe_details(recipe_id):
                     raw_instructions = recipe["summary"]
                 except KeyError:
                     raw_instructions = None
+            # #Remove extra tags
+            # tags_to_remove = ['<ol>', '</ol>', '<li>', '</li>', '<span>', '</span>', '<p>', '</p>']
+            # try:
+            #     for tag in tags_to_remove:
+            #         raw_instructions = raw_instructions.replace(tag, '')
+            #     #Convert in list to display every step in a row
+            #     instructions = raw_instructions.split('.')
+            # except AttributeError:
+            #     instructions = None
+
+            
             #Remove extra tags
-            tags_to_remove = ['<ol>', '</ol>', '<li>', '</li>', '<span>', '</span>', '<p>', '</p>']
+            tags_to_remove = ['<ol>', '</ol>', '</li>', '<span>', '</span>', '<p>', '</p>']
             try:
                 for tag in tags_to_remove:
                     raw_instructions = raw_instructions.replace(tag, '')
                 #Convert in list to display every step in a row
-                instructions = raw_instructions.split('.')
+                temp = raw_instructions.split('<li>')
+                if len(temp) > 1:
+                    instructions = temp
+                else:
+                    # Backup method if no <li>
+                    instructions = raw_instructions.split('.')
+
+                # instructions = raw_instructions.split('<li>')
+
+                for index, instruction in enumerate(instructions):
+                    if instruction == "":
+                        instructions.pop(index)
+                
+                # for index in range(0, len(instructions)):
+                #     if instructions[index] == "":
+                #         instructions.pop(index)
+
             except AttributeError:
                 instructions = None
+
+
+
+
 
             #Filter ingredients and add to list just what I need now
             ingredients = recipe['extendedIngredients']
@@ -259,7 +290,7 @@ def recipe_details(recipe_id):
 
                 elements = {'name': name, 'amount' : amount, "unit" : unit}
                 ingredients_list.append(elements)
-
+        print(f'******************INSTRUCTIONS:********** {instructions}')
         return render_template("recipe_details.html", title=title, instructions=instructions, 
                                 ingredients = ingredients_list, servings = servings, image = image)
 
@@ -515,4 +546,4 @@ def remove_recipe():
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=True)
