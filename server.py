@@ -25,7 +25,7 @@ CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 #Homepage
 @app.route('/')
 def homepage():
-    """Show homepage template"""
+    """Display login template."""
 
     return render_template('login_form.html') 
 
@@ -60,7 +60,7 @@ def log_in():
 #log-out
 @app.route("/log-out")
 def log_out():
-    """ Process user log-out """
+    """Process user log-out."""
 
     del session['user_id']
     flash("You have been logged out!", 'alert alert-success') 
@@ -70,13 +70,13 @@ def log_out():
 #Create an account
 @app.route("/sign-up")
 def show_sign_up():
-    """Display the sign up page for a new user"""
+    """Display sign up template for a new user."""
 
     return render_template("signup_form.html")
 
 @app.route("/register", methods=['POST'])
 def register():
-    """Create new user"""
+    """Create new user."""
         
     email = request.form.get("email")
     first_name = request.form.get("first_name")
@@ -98,18 +98,20 @@ def register():
         flash(f'Welcome {user.first_name}! Your account was succesfully created.', 'alert alert-success')
         return redirect("/home")
 
-
 @app.route("/home")
 def home():
+    """Display homepage."""
 
     return render_template('home.html', SPOON_API_KEY=SPOON_API_KEY)
 
 #Add recipe to favorites
-@app.route("/api/fav-recipe", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
-def get_recipe_id():
+@app.route("/api/fav-recipe", methods=['POST']) 
+def add_recipe_to_favorites():
+    """Process to add recipe to favorites."""
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_Id")
+    print(logged_in_user_id)
 
     #Get user list favorite recipe ids
     fav_list = crud.get_favorite_recipe_ids(logged_in_user_id)
@@ -122,21 +124,20 @@ def get_recipe_id():
     else:
         #check if recipe id is in db
         if recipe_id in fav_list:
-            flash(f"Its already added")  ### NOT WORKING
-            return json.dumps({'fail': True}) 
+            return jsonify({'status': 'error', 'reason': 'duplicate'}), 400
 
         # #check if recipe id is in fav, if not add
         else:
             recipe_id_to_save = crud.create_fav(logged_in_user_id, (recipe_id))
             db.session.add(recipe_id_to_save)
             db.session.commit()
-            flash("Great! This recipe has been added to Favorites")
 
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+            return jsonify({'status': 'success'})
 
 #Display favorites
 @app.route("/favorites")
-def display_fav_recipes():
+def get_fav_recipes():
+    """Process user's favorite recipes."""
 
     logged_in_user_id = session.get("user_id")
     fav_list = crud.get_favorite_recipe_ids(logged_in_user_id)
@@ -171,7 +172,7 @@ def display_fav_recipes():
 
 #REMOVE RECIPE FROM FAVORITES
 @app.route("/remove-fav", methods=["POST"])
-def remove_favorite():
+def remove_recipe_from_favorites():
     """Process to remove recipe from favorites."""
 
     logged_in_user_id = session.get("user_id")
@@ -187,7 +188,8 @@ def remove_favorite():
 
 #==============DISPLAY RECIPE DETAILS=====================
 @app.route("/recipe-details-<recipe_id>", methods=["GET","POST"]) 
-def recipe_details(recipe_id):
+def get_recipe_details(recipe_id):
+    """Process recipe details by recipe id."""
     
     logged_in_user_id = session.get("user_id")
     #check if recipe is in database (created by user)
@@ -239,17 +241,7 @@ def recipe_details(recipe_id):
                     raw_instructions = recipe["summary"]
                 except KeyError:
                     raw_instructions = None
-            # #Remove extra tags
-            # tags_to_remove = ['<ol>', '</ol>', '<li>', '</li>', '<span>', '</span>', '<p>', '</p>']
-            # try:
-            #     for tag in tags_to_remove:
-            #         raw_instructions = raw_instructions.replace(tag, '')
-            #     #Convert in list to display every step in a row
-            #     instructions = raw_instructions.split('.')
-            # except AttributeError:
-            #     instructions = None
-
-            
+     
             #Remove extra tags
             tags_to_remove = ['<ol>', '</ol>', '</li>', '<span>', '</span>', '<p>', '</p>']
             try:
@@ -276,10 +268,6 @@ def recipe_details(recipe_id):
             except AttributeError:
                 instructions = None
 
-
-
-
-
             #Filter ingredients and add to list just what I need now
             ingredients = recipe['extendedIngredients']
             ingredients_list = []
@@ -290,19 +278,18 @@ def recipe_details(recipe_id):
 
                 elements = {'name': name, 'amount' : amount, "unit" : unit}
                 ingredients_list.append(elements)
-        print(f'******************INSTRUCTIONS:********** {instructions}')
+    
         return render_template("recipe_details.html", title=title, instructions=instructions, 
                                 ingredients = ingredients_list, servings = servings, image = image)
 
-#===============================================================================
+
 #ADD RECIPE TO MP AND GROCERY ITEMS TO GROCERIES
 @app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
-def get_recipe():
+def add_recipe_to_meal_plan():
+    """Process to add recipe to meal_plans and items to grocery_items. """
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_Id") 
-    print(f'**************************RECIPE ID {recipe_id}')
-    print(f'**************************RECIPE ID TYPE {type(recipe_id)}') #str
     
     #Get user meal plan recipe ids
     meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user_id)
@@ -313,8 +300,7 @@ def get_recipe():
         pass
 
     if recipe_id in meal_plan_list:
-        # flash('This recipe is already added to Meal Plan') display in wrong page
-        return json.dumps({'fail': True}) 
+        return jsonify({'status': 'error', 'reason': 'duplicate'}), 400
 
     else:
         meal_plan = crud.create_meal_plan(logged_in_user_id, (recipe_id))
@@ -336,7 +322,7 @@ def get_recipe():
                 db.session.add(grocery_item)
                 db.session.commit()
 
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+            return jsonify({'status': 'success'})
 
         else:
 
@@ -353,7 +339,7 @@ def get_recipe():
             for recipe in data:
                 if str(recipe["id"]) == recipe_id:
                     recipe_data = recipe    
-            print(recipe_data)
+            # print(recipe_data)
             for ingredient in recipe_data["extendedIngredients"]:
                 #  print(recipe_data['extendedIngredients'])
                 ingredient_name =(ingredient["name"])
@@ -366,12 +352,13 @@ def get_recipe():
                 db.session.add(grocery_item)
                 db.session.commit()
 
-            return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+            return jsonify({'status': 'success'})
 
 
 # #Display meal plan
 @app.route("/meal-plan")
-def display_meal_plan():
+def meal_plan_by_user():
+    """Process meal plan by user."""
 
     logged_in_user_id = session.get("user_id")
     meal_plan = crud.get_meal_plan_recipe_ids(logged_in_user_id)
@@ -415,13 +402,12 @@ def display_meal_plan():
                 element = {'id': id, 'title': title, 'image': image}
 
                 meal_plan_recipes.append(element)
-    #print(meal_plan_recipes)
 
     return render_template("mealplan.html", meal_plan_recipes=meal_plan_recipes)
 
 # #REMOVE RECIPE FROM MEAL PLAN & INGREDIENTS FROM DB
 @app.route("/remove-meal-plan", methods=["POST"])
-def delete_meal_plan():
+def del_recipe_from_mp():
     """Process to remove recipe from meal plan."""
 
     logged_in_user = session.get("user_id")
@@ -443,17 +429,18 @@ def delete_meal_plan():
 
 #Display grocery shopping list:
 @app.route("/groceries")
-def display_grocery_items():
-    """Process to display a list of grocery"""
+def get_grocery_items():
+    """Process grocery items."""
 
     logged_in_user = session.get("user_id")
     total_grocery = crud.get_total_grocery_list(logged_in_user)
 
     return render_template("groceries.html", total_grocery=total_grocery) #, name=name, amount=amount, unit=unit)
 
-#############NEW FEATURE ###########################################
+#############NEW FEATURE ####################################
 @app.route("/my-cookbook")
-def my_recipes():
+def get_recipes():
+    """Process recipes created by user."""
 
     logged_in_user = session.get("user_id")
     recipes = crud.get_my_recipes(logged_in_user)
@@ -461,13 +448,16 @@ def my_recipes():
     return render_template("my_recipes.html", recipes=recipes)
 
 
-@app.route('/render-page', methods=['POST'])
+@app.route('/create_recipe', methods=['POST'])
 def render_page():
-  return render_template('create_recipe.html')
+    """Process to render page to create_recipe."""
+
+    return render_template('create_recipe.html')
 
 
 @app.route('/create-recipe', methods=['POST'])
 def create_recipe():
+    """Process to create user's recipe."""
 
     try:
         logged_in_user_id = session.get("user_id")

@@ -1,6 +1,5 @@
 
 //ADD INGREDIENT DATA TO RECIPE
-
 function addRow() {
     const table = document.getElementById('ingredients-table');
     const row = table.insertRow();
@@ -48,7 +47,9 @@ for (const button of deleteButton) {
         })
             .then((Response) => Response.json())
             .then((recipeJson) => {
-                console.log(recipeJson)
+                //console.log(recipeJson)
+                
+
         });
 
         // Remove HTML for this recipe

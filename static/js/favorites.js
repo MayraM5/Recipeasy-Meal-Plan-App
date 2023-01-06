@@ -48,8 +48,31 @@ for (const button of addRecipe) {
         })
             .then((Response) => Response.json())
             .then((recipeJson) => {
-                console.log(recipeJson)
-        });
-
-    })
-}
+                //console.log(responseJson)
+                // Check the status of the response
+                if (recipeJson.status === "success") {
+                    // Display a success message to the user
+                    swal.fire({
+                        title: 'Recipe added to Meal Plan!',
+                        icon: 'success',
+                    });
+                } else if (recipeJson.status === "error") {
+                    // Display an error message to the user
+                    if (recipeJson.reason === "duplicate") {
+                        // Display an error message to the user
+                        swal.fire({
+                            title: 'Error adding recipe',
+                            text: 'Recipe already exists in Meal Plan',
+                            icon: 'error',
+                        });
+                    } else {
+                    // Display a generic error message to the user
+                        swal.fire({
+                            title: 'Error adding recipe',
+                            text: 'Please try again',
+                            icon: 'error',
+                        });
+                    }
+                }
+            });
+})}
