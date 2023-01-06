@@ -508,7 +508,7 @@ def create_recipe():
         flash("Error creating recipe: " + str(e), "please try again", 'alert alert-danger')
     
     else:
-        flash("Recipe saved successfully!", 'alert alert-success')
+        flash("Recipe created successfully!", 'alert alert-success')
     
     return redirect("/my-cookbook")
 
