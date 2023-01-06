@@ -10,17 +10,22 @@
         <h3> {{ category }} <h3>
             <div id="check_item">
             {% for item in ingredient %}
-                <input type="checkbox" class="strikethrough" name="itemsOff" value="1">
-                <label for="itemsOff" class="strikeThis"> {{ item[1] }} {{ item[2] }} {{ item[0] }}</label><br>
+                <input type="checkbox" id="checkbox-{{ loop.index }}"  name="itemsOff" value="1">
+                <label for="checkbox-{{ loop.index }}"  id="label-{{ loop.index }}"> {{ item[1] }} {{ item[2] }} {{ item[0] }}</label><br>
             {% endfor %}
             </div>    
     {% endfor %}
+
+<style>
+    input[type="checkbox"]:checked + label {
+        text-decoration: line-through;
+    }
+</style>    
     
 {% else %}
     <p>Sorry! There are no recipes added to the meal plan &#128542;</p>        
 {% endif %}
 
-<!-- <script type="text/javascript" src="{{ url_for('static', filename= 'js/groceries.js')}}"></script> -->
 
 {% endblock %}
 </body>
