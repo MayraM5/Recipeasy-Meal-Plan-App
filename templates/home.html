@@ -9,11 +9,37 @@
     <input id="search_input" type= "text" class= "search-control">
 </div>
 
+
 <div id="search_result">
     <h3 class = "title">Build a meal plan </h3>
     <h5 class = "title">Pick your meals for the week:</h5>
     <div id= "recipe"></div>
 </div>
+
+{% if random_recipes %}
+    {% for recipe in random_recipes %}
+    <div id="div_{{ recipe.id }}">
+        <div class ="recipe_name">
+            <h3>{{recipe.title}}</h3>
+        </div>
+        {% if recipe.image %}
+        <div class="recipe_image">
+            <a href="/recipe-details-{{recipe.id}}"><img src={{recipe.image}}></a>
+
+        </div>
+        {% else %}
+        <div class="recipe_image">
+            <a href="/recipe-details-{{ id }}"><img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg"></a>
+        </div>
+        {% endif %}
+        <div>
+            <button class="Add_to_fav" name="{{ recipe.id }}" onclick="AddtoFavorites(name)">Add to Favorites</button>
+            <button class="add_to_meal_plan" name="{{ recipe.id }}" onclick="AddtoMealPlan(name)">Add to Meal Plan</button>
+        </div>
+    </div>
+        
+    {% endfor %}
+{% endif %}
 
 </body>
 

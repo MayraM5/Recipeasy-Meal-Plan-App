@@ -1,9 +1,9 @@
-.recipe_search_box {
+/* .recipe_search_box {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-}
+} */
 
 
 .meal_item{
@@ -23,17 +23,8 @@
 }
 
 
-
-
+#Grocery items
 .strikethrough:checked + .strikeThis {
   text-decoration: line-through
 }
 
-/* Style the "x" button */
-.remove-button {
-  background: none;
-  border: none;
-  color: red;
-  font-size: 24px;
-  cursor: pointer;
-}

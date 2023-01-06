@@ -18,7 +18,7 @@ search_btn.addEventListener("click", () => {
                 <div class = "recipe_name">
                     <h3><a href="/recipe-details-${recipe.id}">${recipe.title}</a></h3>
                 
-                <div class = "recipe_img">
+                <div class = "recipe_image">
                     <a href="/recipe-details-${recipe.id}"><img src = ${recipe.image}></a>
                 </div>
                 <div id="recipe_id" value= "${recipe.id}">

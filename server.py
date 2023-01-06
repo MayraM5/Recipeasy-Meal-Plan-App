@@ -102,7 +102,34 @@ def register():
 def home():
     """Display homepage."""
 
-    return render_template('home.html', SPOON_API_KEY=SPOON_API_KEY)
+    url = 'https://api.spoonacular.com/recipes/random' 
+    params = {'apiKey' : SPOON_API_KEY,
+        'limitLicense': True,
+        'tags': 'vegan',
+        'number' : 12,
+        }
+
+    response = requests.get(url, params)
+    data = response.json()
+    recipe_data = data['recipes']
+
+    random_recipes = []
+    for recipe in recipe_data:
+        id = recipe["id"]
+        title = recipe['title']
+        try:
+            image = recipe["image"]
+        except KeyError:
+            image = None
+
+        element = {'id': id, 'title': title, 'image': image}
+
+        random_recipes.append(element)
+        print(recipe['id'])
+        print(recipe['title'])
+        print(recipe['image'])
+
+    return render_template('home.html', random_recipes=random_recipes, SPOON_API_KEY=SPOON_API_KEY)
 
 #Add recipe to favorites
 @app.route("/api/fav-recipe", methods=['POST']) 
@@ -390,7 +417,7 @@ def meal_plan_by_user():
 
             response = requests.get(url, params)
             data = response.json()
-           # print(f'DATA RESPONSE {data}') 
+            # print(f'DATA RESPONSE {data}') 
             for recipe in data:
                 id = recipe["id"]
                 title = recipe['title']
