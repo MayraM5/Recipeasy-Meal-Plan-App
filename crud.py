@@ -26,7 +26,6 @@ def get_user_by_email(email):
     """
 
     return User.query.filter(User.email == email).first()
-#    return User.query.filter(email == email).first()
 
 def create_fav(user_id, recipe_id):
     """Create favorite recipes"""
@@ -56,15 +55,6 @@ def get_favorite_recipe_ids(user_id):
     
     return fav_recipe_id_list
 
-    #dict:
-    # for item in user_fav:
-    #     fav_info = {'user_id' : item.user_id, 
-    #                 'recipe_id' : item.recipe_id
-    #                 }
-
-    #     fav_recipe_id_list.append(fav_info)
-    
-    # return fav_recipe_id_list
 
 def get_fav_by_user_and_recipe(user_id, recipe_id):
     """Return favorite obj of user & recipe_id"""

@@ -3,40 +3,42 @@
 {% block body %}
 <body>
 <button onclick="window.history.back()">Back</button>
-<h3>{{ title }}</h3>
-<h3> Servings {{ servings }}
-{% if image %}
-<div class="recipe_image">
-    <img src="{{ image }}" >
-</div>
-{% else %}
-<div class="recipe_image">
-    <img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg">
-</div>
-{% endif %}
+{% if recipe %}
 
-{% if instructions %}
-    <h3>Instructions:</h3>
-<ol> 
-    {% for i in instructions %}
-        <li>{{ i }} </li>
-    {% endfor %}
-</ol>
-    
-{% else %}
-    <p>Sorry! There are no instructions for this recipe yet &#128542;</p>        
-{% endif %}
-    
+    <h3>{{ recipe["title"] }}</h3>
+    <h3> Servings {{ recipe["servings"] }}
+    {% if recipe["image"] %}
+    <div class="recipe_image">
+        <img src='{{ recipe["image"] }}' >
+    </div>
+    {% else %}
+    <div class="recipe_image">
+        <img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg">
+    </div>
+    {% endif %}
 
-{% if ingredients %}
-    <h3>ingredients:</h3>
-    {% for ingredient in ingredients %}
-            <li>{{ ingredient['name'] }}:  {{ ingredient['amount'] }} {{ ingredient['unit'] }}</li>  
-    {% endfor %}
-{% else %}
-    <p>Sorry! There are no ingredients for this recipe yet &#128542;</p>        
-{% endif %}
+    {% if recipe['instructions'] %}
+        <h3>Instructions:</h3>
+    <ol> 
+        {% for i in recipe['instructions'] %}
+            <li>{{ i }} </li>
+        {% endfor %}
+    </ol>
+        
+    {% else %}
+        <p>Sorry! There are no instructions for this recipe yet &#128542;</p>        
+    {% endif %}
+        
 
+    {% if recipe['ingredients'] %}
+        <h3>ingredients:</h3>
+        {% for ingredient in recipe['ingredients'] %}
+                <li>{{ ingredient['name'] }}:  {{ ingredient['amount'] }} {{ ingredient['unit'] }}</li>  
+        {% endfor %}
+    {% else %}
+        <p>Sorry! There are no ingredients for this recipe yet &#128542;</p>        
+    {% endif %}
+{% endif %}
 
 </body>
 <script src="../static/js/recipe.js"> </script> 

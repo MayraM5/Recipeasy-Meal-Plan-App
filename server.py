@@ -9,6 +9,7 @@ import json
 import os
 import random
 import cloudinary.uploader
+import helpers
 
 app = Flask(__name__)
 
@@ -22,14 +23,13 @@ CLOUD_NAME = "dhyrymmf4"
 CLOUDINARY_SECRET= os.environ["CLOUDINARY_SECRET"]
 CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 
-#Homepage
-@app.route('/')
+#=======================INITAL PAGE============================
 def homepage():
     """Display login template."""
 
     return render_template('login_form.html') 
 
-#Log in
+#========================LOG IN================================
 @app.route("/log-in", methods=["POST"])
 def log_in():
     """Process user log-in."""
@@ -57,7 +57,7 @@ def log_in():
     else:
         return redirect('/')
 
-#log-out
+#=======================LOG OUT=================================
 @app.route("/log-out")
 def log_out():
     """Process user log-out."""
@@ -67,7 +67,7 @@ def log_out():
 
     return redirect('/')  
 
-#Create an account
+#=====================CREATE AN ACCOUNT=========================
 @app.route("/sign-up")
 def show_sign_up():
     """Display sign up template for a new user."""
@@ -98,6 +98,7 @@ def register():
         flash(f'Welcome {user.first_name}! Your account was succesfully created.', 'alert alert-success')
         return redirect("/home")
 
+#=====================HOMEPAGE==================================
 @app.route("/home")
 def home():
     """Display homepage."""
@@ -131,7 +132,7 @@ def home():
 
     return render_template('home.html', random_recipes=random_recipes, SPOON_API_KEY=SPOON_API_KEY)
 
-#Add recipe to favorites
+#=====================ADD RECIPES TO FAVORITES====================
 @app.route("/api/fav-recipe", methods=['POST']) 
 def add_recipe_to_favorites():
     """Process to add recipe to favorites."""
@@ -161,7 +162,7 @@ def add_recipe_to_favorites():
 
             return jsonify({'status': 'success'})
 
-#Display favorites
+#=========================DISPLAY FAVORITES=========================
 @app.route("/favorites")
 def get_fav_recipes():
     """Process user's favorite recipes."""
@@ -197,7 +198,7 @@ def get_fav_recipes():
 
     return render_template("favorites.html", favorite_recipes=fav_recipes)
 
-#REMOVE RECIPE FROM FAVORITES
+#Remove recipes from favorites =>Thinking about using delete method
 @app.route("/remove-fav", methods=["POST"])
 def remove_recipe_from_favorites():
     """Process to remove recipe from favorites."""
@@ -212,8 +213,7 @@ def remove_recipe_from_favorites():
 
     return redirect("/favorites")
 
-
-#==============DISPLAY RECIPE DETAILS=====================
+#========================DISPLAY RECIPE DETAILS===========================
 @app.route("/recipe-details-<recipe_id>", methods=["GET","POST"]) 
 def get_recipe_details(recipe_id):
     """Process recipe details by recipe id."""
@@ -222,93 +222,16 @@ def get_recipe_details(recipe_id):
     #check if recipe is in database (created by user)
     if recipe_id.startswith('cook'):
 
-        recipe_data = crud.get_recipe_data(logged_in_user_id, recipe_id)
+        db_recipe = helpers.get_database_recipe(logged_in_user_id, recipe_id)
 
-        for recipe in recipe_data:
-            title = recipe.title
-            image = recipe.image
-            instructions = recipe.instructions.split('.')
-            servings = recipe.servings
-            
-        recipe_ingredients = crud.get_recipe_ingredients(recipe_id)
-        ingredients_list = []
-        for ingredient in recipe_ingredients:
-            name = ingredient.ingredient_name
-            amount = ingredient.amount
-            unit = ingredient.units
-            
-            elements = {'name': name, 'amount' : amount, "unit" : unit}
-            ingredients_list.append(elements)
+        return render_template("recipe_details.html", recipe=db_recipe)
 
-        return render_template("recipe_details.html", title=title, instructions=instructions, 
-                        ingredients = ingredients_list, image=image, servings=servings)
-    
-    #Spoonacular recipe
+
     else:
-        url = 'https://api.spoonacular.com/recipes/informationBulk?'
-        params = {'apiKey' : SPOON_API_KEY,
-                    'ids' : recipe_id,
-                    }
 
-        response = requests.get(url, params)
-        data = response.json()
+        spoon_recipe = helpers.get_spoonacular_recipe(recipe_id)
 
-        for recipe in data:
-            id = recipe["id"]
-            title = recipe['title']
-            image = recipe["image"]
-            servings = recipe["servings"]
-
-            try:
-                raw_instructions = recipe["instructions"]
-
-                # if recipe["instructions"] is empty or None, use recipe["summary"]
-            except KeyError:
-                try:
-                    raw_instructions = recipe["summary"]
-                except KeyError:
-                    raw_instructions = None
-     
-            #Remove extra tags
-            tags_to_remove = ['<ol>', '</ol>', '</li>', '<span>', '</span>', '<p>', '</p>']
-            try:
-                for tag in tags_to_remove:
-                    raw_instructions = raw_instructions.replace(tag, '')
-                #Convert in list to display every step in a row
-                temp = raw_instructions.split('<li>')
-                if len(temp) > 1:
-                    instructions = temp
-                else:
-                    # Backup method if no <li>
-                    instructions = raw_instructions.split('.')
-
-                # instructions = raw_instructions.split('<li>')
-
-                for index, instruction in enumerate(instructions):
-                    if instruction == "":
-                        instructions.pop(index)
-                
-                # for index in range(0, len(instructions)):
-                #     if instructions[index] == "":
-                #         instructions.pop(index)
-
-            except AttributeError:
-                instructions = None
-
-            #Filter ingredients and add to list just what I need now
-            ingredients = recipe['extendedIngredients']
-            ingredients_list = []
-            for item in ingredients:
-                name = item['name']
-                amount = item['amount']
-                unit = item['unit']
-
-                elements = {'name': name, 'amount' : amount, "unit" : unit}
-                ingredients_list.append(elements)
-    
-        return render_template("recipe_details.html", title=title, instructions=instructions, 
-                                ingredients = ingredients_list, servings = servings, image = image)
-
+        return render_template("recipe_details.html", recipe=spoon_recipe)
 
 #ADD RECIPE TO MP AND GROCERY ITEMS TO GROCERIES
 @app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
@@ -563,4 +486,4 @@ def remove_recipe():
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
