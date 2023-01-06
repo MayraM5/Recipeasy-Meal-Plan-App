@@ -257,7 +257,6 @@ def add_recipe_to_meal_plan():
         db.session.add(meal_plan)
         db.session.commit()
         
-        #retrieve data from db
         if recipe_id.startswith('cook'):
 
             ingredient_data = crud.get_recipe_ingredients(recipe_id)
@@ -304,8 +303,7 @@ def add_recipe_to_meal_plan():
 
             return jsonify({'status': 'success'})
 
-
-# #Display meal plan
+#Display meal plan
 @app.route("/meal-plan")
 def meal_plan_by_user():
     """Process meal plan by user."""
@@ -318,40 +316,12 @@ def meal_plan_by_user():
         #retrieve data from db
         if recipe_id.startswith('cook'):
 
-            recipe_data = crud.get_recipe_data(logged_in_user_id, recipe_id)
-
-            for recipe in recipe_data:
-                id = recipe.recipe_id
-                title = recipe.title
-                image = recipe.image
-
-                element = {'id': id, 'title': title, 'image': image}
-
-                meal_plan_recipes.append(element)
-            # print(meal_plan_data)
+            db_recipe = helpers.get_database_recipe(logged_in_user_id, recipe_id)
+            meal_plan_recipes.append(db_recipe)
 
         else:
-            #retrieve data from api
-            url = 'https://api.spoonacular.com/recipes/informationBulk?'
-            params = {'apiKey' : SPOON_API_KEY,
-                    'includeNutrition': False,
-                    'ids' : recipe_id,
-                    }
-
-            response = requests.get(url, params)
-            data = response.json()
-            # print(f'DATA RESPONSE {data}') 
-            for recipe in data:
-                id = recipe["id"]
-                title = recipe['title']
-                try:
-                    image = recipe["image"]
-                except KeyError:
-                    image = None
-
-                element = {'id': id, 'title': title, 'image': image}
-
-                meal_plan_recipes.append(element)
+            spoon_recipe = helpers.get_spoonacular_recipe(recipe_id)
+            meal_plan_recipes.append(spoon_recipe)
 
     return render_template("mealplan.html", meal_plan_recipes=meal_plan_recipes)
 
@@ -362,13 +332,12 @@ def del_recipe_from_mp():
 
     logged_in_user = session.get("user_id")
     recipe_id = request.json.get("recipe_id")
-    #when user remove a recipe_id from the meal plan, 
-    #it will also remove ingredients attached to that recipe
+
     #remove recipe from meal plan 
     mp_to_delete = crud.get_meal_plan_by_user_and_recipe(logged_in_user, recipe_id)
     db.session.delete(mp_to_delete)
     
-    #remove ingredients
+    #remove ingredients from grocery
     grocery_items_to_delete = crud.get_grocery_item_by_user_and_recipe(logged_in_user, recipe_id)
     for item in grocery_items_to_delete:
         db.session.delete(item)

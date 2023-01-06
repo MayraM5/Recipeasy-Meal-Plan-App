@@ -11,6 +11,7 @@ def get_database_recipe(user_id, recipe_id):
     recipe_data = crud.get_recipe_data(user_id, recipe_id)
 
     for recipe in recipe_data:
+        id = recipe.recipe_id
         title = recipe.title
         image = recipe.image
         instructions = recipe.instructions.split('.')
@@ -22,11 +23,13 @@ def get_database_recipe(user_id, recipe_id):
         name = ingredient.ingredient_name
         amount = ingredient.amount
         unit = ingredient.units
-        
-        elements = {'name': name, 'amount' : amount, "unit" : unit}
+        category = ingredient.category
+
+        elements = {'name': name, 'amount' : amount, "unit" : unit, 'category' : category}
         ingredients_list.append(elements)
 
     return { 
+        "id": id,
         "title": title,
         "instructions": instructions,
         "ingredients": ingredients_list,
@@ -49,7 +52,11 @@ def get_spoonacular_recipe(recipe_id):
     for recipe in data:
         id = recipe["id"]
         title = recipe['title']
-        image = recipe["image"]
+        try:
+            image = recipe["image"]
+        except KeyError:
+            image = None
+        
         servings = recipe["servings"]
 
         try:
@@ -100,6 +107,7 @@ def get_spoonacular_recipe(recipe_id):
             ingredients_list.append(elements)
         
         return { 
+        "id" : id,
         "title": title,
         "instructions": instructions,
         "ingredients": ingredients_list,
@@ -107,9 +115,6 @@ def get_spoonacular_recipe(recipe_id):
         "servings": servings,
         "ingredients" : ingredients_list,
     }
-
-
-
 
 
 
