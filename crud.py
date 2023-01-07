@@ -1,6 +1,7 @@
 '''CRUD operations functions'''
 from model import db, User, FavoriteRecipe, MealPlan, GroceryItem, Recipe, RecipeIngredient, connect_to_db
 
+
 def create_user(first_name, last_name, email, password):
     """Create and return a new user"""
 
@@ -8,41 +9,31 @@ def create_user(first_name, last_name, email, password):
     
     return user
 
-def get_user():
-    """Return a list of all users data"""
-    
-    return User.query.all()
-
-def get_user_by_id(user_id):
-    """Return an user by the given user_id"""
-
-    return User.query.get(user_id)
 
 def get_user_by_email(email):
-    """Return a user by their email. 
-        e.g
-        >>> get_user_by_email("test@test.com")
-        >>> <User user_id=1 first_name=test last_name=test email=test@test.com>
-    """
+    """Return a user by their email."""
 
     return User.query.filter(User.email == email).first()
 
+
 def create_fav(user_id, recipe_id):
-    """Create favorite recipes"""
+    """Create a favorite recipe."""
 
     fav_recipe = FavoriteRecipe(user_id=user_id, recipe_id=recipe_id)
 
     return fav_recipe
 
+
 def get_favorites_by_user(user_id):
-    """Return favorite recipes by user"""
+    """Return favorite recipes by user."""
 
     user_favs_list = FavoriteRecipe.query.filter(FavoriteRecipe.user_id == user_id).all()
     
     return user_favs_list
 
+
 def get_favorite_recipe_ids(user_id):
-    """Return list of recipe id by user"""
+    """Return recipes id by user."""
 
     user_fav = get_favorites_by_user(user_id)
 
@@ -57,22 +48,24 @@ def get_favorite_recipe_ids(user_id):
 
 
 def get_fav_by_user_and_recipe(user_id, recipe_id):
-    """Return favorite obj of user & recipe_id"""
+    """Return favorite obj of user & recipe_id."""
 
     fav_to_delete = FavoriteRecipe.query.filter(FavoriteRecipe.user_id == user_id, 
                     FavoriteRecipe.recipe_id == recipe_id).one()
 
     return fav_to_delete
 
+
 def get_meal_plan_by_user(user_id):
-    """Return meal plan recipes by user"""
+    """Return meal plan recipes by user."""
 
     user_meal_plan_list = MealPlan.query.filter(MealPlan.user_id == user_id).all()
     
     return user_meal_plan_list
 
+
 def get_meal_plan_recipe_ids(user_id):
-    """Return list of recipe id by user"""
+    """Return meal plan recipes id by user."""
 
     user_meal_plan = get_meal_plan_by_user(user_id)
 
@@ -85,89 +78,50 @@ def get_meal_plan_recipe_ids(user_id):
     
     return meal_plan_id_list    
 
+
 def create_meal_plan(user_id, recipe_id):
-    """Create meal plan"""
+    """Create meal plan."""
 
     meal_plan = MealPlan(user_id=user_id, recipe_id=recipe_id)
 
     return meal_plan
 
+
 def get_meal_plan_by_user_and_recipe(user_id, recipe_id):
-    """Return meal plan obj of user & recipe_id"""
+    """Return meal plan obj of user & recipe_id."""
 
     meal_plan_to_delete = MealPlan.query.filter(MealPlan.user_id == user_id, 
                             MealPlan.recipe_id == recipe_id).one()
 
     return meal_plan_to_delete
 
-#create groceries
+
 def create_grocery_item(user_id, recipe_id, category, ingredient_name, amount, units):
-    """Create grocery items"""
+    """Create grocery items."""
     
     grocery_item = GroceryItem(user_id=user_id, recipe_id=recipe_id, category=category,
                     ingredient_name=ingredient_name, amount=amount, units=units)
     
     return grocery_item
 
-#get rows where user_id = user_id & recipe_id = recipe_id:
+
 def get_grocery_item_by_user_and_recipe(user_id, recipe_id):
-    """Return grocery item obj of user & recipe"""
+    """Return grocery item obj of user & recipe."""
 
     grocery_items_to_delete = GroceryItem.query.filter(GroceryItem.user_id == user_id, 
                                 GroceryItem.recipe_id == recipe_id).all()
 
     return grocery_items_to_delete
 
-#Get rows where user_id = user_id and grouped by ingredient_name, units and sum(amount)
-# def get_grocery_items_by_user(user_id):
-#     """Return list of tuples grocery_items group by ingredient_name, units & sum(amount)"""
-
-#     grocery_items = db.session.query(GroceryItem.user_id == user_id, GroceryItem.ingredient_name, 
-#                             db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, 
-#                             GroceryItem.ingredient_name, GroceryItem.units).all()
-
-#     return grocery_items
-
-# def get_total_grocery_list(user_id):
-
-#     results = get_grocery_items_by_user(user_id)
-
-#     total_list = []
-#     for item in results:
-#         grocery_item = {"name" :  item[1], "amount": item[2], "unit" : item[3]}
-     
-#         total_list.append(grocery_item)
-
-#     return (total_list)
 
 def get_grocery_items_by_user(user_id):
+    """Return grocery items by user id."""
 
     grocery_items = db.session.query(GroceryItem.user_id == user_id, GroceryItem.category, GroceryItem.ingredient_name, 
                     db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, 
                     GroceryItem.category, GroceryItem.ingredient_name, GroceryItem.units).all()
 
     return grocery_items
-
-def get_total_grocery_list(user_id):
-
-    results = get_grocery_items_by_user(user_id)
-
-    grocery_item = {}
-    for item in results:
-        ingredients = [ (item[2]), (item[3]), (item[4]) ] 
-        grocery_item.setdefault(item[1], []).append(ingredients)
-
-    return grocery_item    
-
-## select rows and group by SQL => select user_id, ingredient_name, sum(amount), units 
-# from grocery_items group by ingredient_name, user_id, units
-#result = GroceryItem.query.with_entities(GroceryItem.user_id, GroceryItem.ingredient_name, GroceryItem.amount, GroceryItem.units).all()
-#g = GroceryItem.query.filter(GroceryItem.user_id == 1).all()
-#FIRST NEEd to get user_id, ingredient name, amount, and units by user_id
-
-#then group by ingredient name, units and sum amount
-#THIS GROUP BY INGREDIENT NAME, UNITS AND SUM AMOUNT
-# x = db.session.query(GroceryItem.user_id, GroceryItem.ingredient_name, db.func.sum(GroceryItem.amount), GroceryItem.units).group_by(GroceryItem.user_id, GroceryItem.ingredient_name, GroceryItem.units).all()
 
 ####################NEW FEATURE ######################
 def create_my_recipe(user_id, recipe_id, title, image, instructions, servings):
@@ -184,27 +138,32 @@ def create_recipe_ingredient(recipe_id, ingredient_name, amount, units, category
     return recipe_ingredient
 
 
-def get_my_recipes(user_id):
-    """Get all recipes created by user"""
+def get_recipes_by_user(user_id):
+    """Get all recipes created by user."""
 
     my_recipes = Recipe.query.filter(Recipe.user_id == user_id).all()
 
     return my_recipes
 
+
 def get_recipe_by_user_and_recipeid(user_id, recipe_id):
+    """Get recipe id and user id."""
 
     my_recipes = Recipe.query.filter(Recipe.user_id==user_id, Recipe.recipe_id==recipe_id).one()
 
     return my_recipes
 
+
 def get_recipe_data(user_id, recipe_id):
-    """[<Recipe user_id=1 recipe_id=cook60220 title=Arepa image=https://res.cloudinary.com/dhyrymmf4/image/upload/v1672802232/hqjnsb2wietsallhexnw.jpg instructions=baaaaaaaaaaaaaaaaaaaaaaa>]"""
+    """Get recipes created by user from database"""
+    
     my_recipes = Recipe.query.filter(Recipe.user_id==user_id, Recipe.recipe_id==recipe_id).all()
 
     return my_recipes
 
 
 def get_recipe_ingredients(recipe_id):
+    """Get ingredients for recipe created by user from database"""
 
     recipe_ingredient = RecipeIngredient.query.filter(RecipeIngredient.recipe_id == recipe_id).all()
 
@@ -217,12 +176,3 @@ if __name__ == '__main__':
     from server import app
     connect_to_db(app, 'mealplanning')
 
-# Create	Insert => create /add new rows/reecord to db
-# Read	Select => display data ex see recipe / see fav recipe
-# Update	Update => mod existing data
-# Delete	Delete => remove record from table
-
-# Create	Post
-# Read	Get
-# Update	Put
-# Delete	Delete

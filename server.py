@@ -23,13 +23,14 @@ CLOUD_NAME = "dhyrymmf4"
 CLOUDINARY_SECRET= os.environ["CLOUDINARY_SECRET"]
 CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 
-#=======================INITAL PAGE============================
+
+#=======================INITAL PAGE============================#
 def homepage():
     """Display login template."""
 
     return render_template('login_form.html') 
 
-#========================LOG IN================================
+#========================LOG IN================================#
 @app.route("/log-in", methods=["POST"])
 def log_in():
     """Process user log-in."""
@@ -57,7 +58,7 @@ def log_in():
     else:
         return redirect('/')
 
-#=======================LOG OUT=================================
+#=======================LOG OUT================================#
 @app.route("/log-out")
 def log_out():
     """Process user log-out."""
@@ -67,12 +68,13 @@ def log_out():
 
     return redirect('/')  
 
-#=====================CREATE AN ACCOUNT=========================
+#=====================CREATE AN ACCOUNT========================#
 @app.route("/sign-up")
 def show_sign_up():
     """Display sign up template for a new user."""
 
     return render_template("signup_form.html")
+
 
 @app.route("/register", methods=['POST'])
 def register():
@@ -98,7 +100,7 @@ def register():
         flash(f'Welcome {user.first_name}! Your account was succesfully created.', 'alert alert-success')
         return redirect("/home")
 
-#=====================HOMEPAGE==================================
+#=====================HOMEPAGE=================================#
 @app.route("/home")
 def home():
     """Display homepage."""
@@ -107,7 +109,7 @@ def home():
     params = {'apiKey' : SPOON_API_KEY,
         'limitLicense': True,
         'tags': 'vegan',
-        'number' : 12,
+        'number' : 12, #number of recipe to return
         }
 
     response = requests.get(url, params)
@@ -126,13 +128,10 @@ def home():
         element = {'id': id, 'title': title, 'image': image}
 
         random_recipes.append(element)
-        print(recipe['id'])
-        print(recipe['title'])
-        print(recipe['image'])
 
     return render_template('home.html', random_recipes=random_recipes, SPOON_API_KEY=SPOON_API_KEY)
 
-#=====================ADD RECIPES TO FAVORITES====================
+#=====================ADD RECIPES TO FAVORITES=================#
 @app.route("/api/fav-recipe", methods=['POST']) 
 def add_recipe_to_favorites():
     """Process to add recipe to favorites."""
@@ -141,20 +140,20 @@ def add_recipe_to_favorites():
     recipe_id = request.json.get("recipe_Id")
     print(logged_in_user_id)
 
-    #Get user list favorite recipe ids
+    #Get user list of favorite recipe ids
     fav_list = crud.get_favorite_recipe_ids(logged_in_user_id)
   
     #check if user is logged in:
     if logged_in_user_id is None:
         flash("You must log in to add to Favorites") 
         return redirect('/')
-    
+
+    #check if recipe id is in db
     else:
-        #check if recipe id is in db
         if recipe_id in fav_list:
             return jsonify({'status': 'error', 'reason': 'duplicate'}), 400
 
-        # #check if recipe id is in fav, if not add
+        #if recipe id no in fav => add it
         else:
             recipe_id_to_save = crud.create_fav(logged_in_user_id, (recipe_id))
             db.session.add(recipe_id_to_save)
@@ -162,7 +161,7 @@ def add_recipe_to_favorites():
 
             return jsonify({'status': 'success'})
 
-#=========================DISPLAY FAVORITES=========================
+#=========================DISPLAY FAVORITES===================#
 @app.route("/favorites")
 def get_fav_recipes():
     """Process user's favorite recipes."""
@@ -193,12 +192,11 @@ def get_fav_recipes():
             image = None
 
         element = {'id': id, 'title': title, 'image': image}
-
         fav_recipes.append(element)
 
     return render_template("favorites.html", favorite_recipes=fav_recipes)
 
-#Remove recipes from favorites =>Thinking about using delete method
+#Remove recipes from fav==>Change to delete method (future)===#
 @app.route("/remove-fav", methods=["POST"])
 def remove_recipe_from_favorites():
     """Process to remove recipe from favorites."""
@@ -207,13 +205,12 @@ def remove_recipe_from_favorites():
     recipe_id = request.json.get("recipe_id")
 
     fav_to_delete = crud.get_fav_by_user_and_recipe(logged_in_user_id, recipe_id)
-
     db.session.delete(fav_to_delete)
     db.session.commit()
 
     return redirect("/favorites")
 
-#========================DISPLAY RECIPE DETAILS===========================
+#========================DISPLAY RECIPE DETAILS===============#
 @app.route("/recipe-details-<recipe_id>", methods=["GET","POST"]) 
 def get_recipe_details(recipe_id):
     """Process recipe details by recipe id."""
@@ -223,24 +220,20 @@ def get_recipe_details(recipe_id):
     if recipe_id.startswith('cook'):
 
         db_recipe = helpers.get_database_recipe(logged_in_user_id, recipe_id)
-
         return render_template("recipe_details.html", recipe=db_recipe)
 
-
     else:
-
         spoon_recipe = helpers.get_spoonacular_recipe(recipe_id)
-
         return render_template("recipe_details.html", recipe=spoon_recipe)
 
-#ADD RECIPE TO MP AND GROCERY ITEMS TO GROCERIES
-@app.route("/api/meal-plan", methods=['POST'])  #==> FLASH MSG NOT DISPLAY
+#=========ADD RECIPE TO MP AND GROCERY ITEMS TO GROCERIES=====#
+@app.route("/api/meal-plan", methods=['POST'])  
 def add_recipe_to_meal_plan():
     """Process to add recipe to meal_plans and items to grocery_items. """
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_Id") 
-    
+
     #Get user meal plan recipe ids
     meal_plan_list = crud.get_meal_plan_recipe_ids(logged_in_user_id)
 
@@ -257,8 +250,8 @@ def add_recipe_to_meal_plan():
         db.session.add(meal_plan)
         db.session.commit()
         
+        #get ingredients for recipe created by user from database
         if recipe_id.startswith('cook'):
-
             ingredient_data = crud.get_recipe_ingredients(recipe_id)
             for ingredient in ingredient_data:
                 ingredient_name = ingredient.ingredient_name
@@ -267,14 +260,13 @@ def add_recipe_to_meal_plan():
                 category = ingredient.category
 
                 grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, category, ingredient_name, amount, unit)
-                
                 db.session.add(grocery_item)
                 db.session.commit()
 
             return jsonify({'status': 'success'})
 
+        #get ingredients from spoonacular api
         else:
-
             url = 'https://api.spoonacular.com/recipes/informationBulk?'
             params = {'apiKey' : SPOON_API_KEY,
                         'ids' : recipe_id,
@@ -297,13 +289,12 @@ def add_recipe_to_meal_plan():
                 category = (ingredient["aisle"])
 
                 grocery_item = crud.create_grocery_item(logged_in_user_id, recipe_id, category, ingredient_name, amount, unit)
-                
                 db.session.add(grocery_item)
                 db.session.commit()
 
             return jsonify({'status': 'success'})
 
-#Display meal plan
+#=======================DISPLAY MEAN PLAN=====================#
 @app.route("/meal-plan")
 def meal_plan_by_user():
     """Process meal plan by user."""
@@ -315,7 +306,6 @@ def meal_plan_by_user():
     for recipe_id in meal_plan:
         #retrieve data from db
         if recipe_id.startswith('cook'):
-
             db_recipe = helpers.get_database_recipe(logged_in_user_id, recipe_id)
             meal_plan_recipes.append(db_recipe)
 
@@ -325,7 +315,7 @@ def meal_plan_by_user():
 
     return render_template("mealplan.html", meal_plan_recipes=meal_plan_recipes)
 
-# #REMOVE RECIPE FROM MEAL PLAN & INGREDIENTS FROM DB
+#===REMOVE RECIPE FROM MEAL PLAN & INGREDIENTS FROM GROCERY===#
 @app.route("/remove-meal-plan", methods=["POST"])
 def del_recipe_from_mp():
     """Process to remove recipe from meal plan."""
@@ -333,11 +323,11 @@ def del_recipe_from_mp():
     logged_in_user = session.get("user_id")
     recipe_id = request.json.get("recipe_id")
 
-    #remove recipe from meal plan 
+    #remove recipe from meal plans
     mp_to_delete = crud.get_meal_plan_by_user_and_recipe(logged_in_user, recipe_id)
     db.session.delete(mp_to_delete)
     
-    #remove ingredients from grocery
+    #remove ingredients from grocery items 
     grocery_items_to_delete = crud.get_grocery_item_by_user_and_recipe(logged_in_user, recipe_id)
     for item in grocery_items_to_delete:
         db.session.delete(item)
@@ -346,33 +336,32 @@ def del_recipe_from_mp():
 
     return redirect("/meal-plan")
 
-#Display grocery shopping list:
+#=========================DISPLAY GROCERY ITEMS===============#
 @app.route("/groceries")
 def get_grocery_items():
-    """Process grocery items."""
+    """Get total of grocery items."""
 
     logged_in_user = session.get("user_id")
-    total_grocery = crud.get_total_grocery_list(logged_in_user)
+    total_grocery = helpers.get_total_grocery_list(logged_in_user)
 
-    return render_template("groceries.html", total_grocery=total_grocery) #, name=name, amount=amount, unit=unit)
+    return render_template("groceries.html", total_grocery=total_grocery)
 
-#############NEW FEATURE ####################################
+#=======================COOKBOOK FEATURE======================#
 @app.route("/my-cookbook")
 def get_recipes():
     """Process recipes created by user."""
 
     logged_in_user = session.get("user_id")
-    recipes = crud.get_my_recipes(logged_in_user)
+    recipes = crud.get_recipes_by_user(logged_in_user)
 
     return render_template("my_recipes.html", recipes=recipes)
 
-
+#=======================CREATE RECIPE=========================#
 @app.route('/create_recipe', methods=['POST'])
 def render_page():
     """Process to render page to create_recipe."""
 
     return render_template('create_recipe.html')
-
 
 @app.route('/create-recipe', methods=['POST'])
 def create_recipe():
@@ -381,14 +370,13 @@ def create_recipe():
     try:
         logged_in_user_id = session.get("user_id")
         #Generate random recipe id with letter to avoid matching with API recipe ID
-        recipe_id = "cook" + (''.join(str(random.randint(0, 9)) for _ in range(5)))
+        recipe_id = "cook" + (''.join(str(random.randint(0, 9)) for num in range(5)))
         title = request.form['name']    
         instructions = request.form['instructions']
         servings = request.form['servings']
         
         #image
         my_file = request.files["my_file"]
-
         if my_file:
             result = cloudinary.uploader.upload(my_file,
                         api_key=CLOUDINARY_KEY,
@@ -431,7 +419,7 @@ def create_recipe():
     
     return redirect("/my-cookbook")
 
-#REMOVE RECIPE FROM COOKBOOK
+#===================REMOVE RECIPE FROM COOKBOOK===============#
 @app.route("/remove-recipe", methods=["POST"])
 def remove_recipe():
     """Process to remove recipe created by user from Cookbook."""
@@ -440,7 +428,6 @@ def remove_recipe():
     recipe_id = request.json.get("recipe_id")
     
     recipe_to_delete = crud.get_recipe_by_user_and_recipeid(logged_in_user_id, str(recipe_id))
-    
     ingredients_to_delete = crud.get_recipe_ingredients(recipe_id)
     
     for item in ingredients_to_delete:
@@ -450,7 +437,6 @@ def remove_recipe():
     db.session.commit()
 
     return redirect("/my-cookbook")
-
 
 
 if __name__ == "__main__":

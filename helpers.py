@@ -6,7 +6,7 @@ import os
 SPOON_API_KEY = os.environ["SPOON_API_KEY"]
 
 def get_database_recipe(user_id, recipe_id):
-    """Retrieve recipe data from database"""
+    """Retrieve recipe data from database."""
 
     recipe_data = crud.get_recipe_data(user_id, recipe_id)
 
@@ -40,6 +40,8 @@ def get_database_recipe(user_id, recipe_id):
 
 
 def get_spoonacular_recipe(recipe_id):
+    """Retrieve recipe data from spoonacular api."""
+
 
     url = 'https://api.spoonacular.com/recipes/informationBulk?'
     params = {'apiKey' : SPOON_API_KEY,
@@ -117,6 +119,17 @@ def get_spoonacular_recipe(recipe_id):
     }
 
 
+def get_total_grocery_list(user_id):
+    """Return dictionary of grocery items by user id"""
+
+    results = crud.get_grocery_items_by_user(user_id)
+
+    grocery_item = {}
+    for item in results:
+        ingredients = [ (item[2]), (item[3]), (item[4]) ] 
+        grocery_item.setdefault(item[1], []).append(ingredients)
+
+    return grocery_item    
 
 
 if __name__ == '__main__':

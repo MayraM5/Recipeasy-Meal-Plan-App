@@ -5,7 +5,6 @@ from flask import Flask
 
 db = SQLAlchemy()
 
-# class User(db.Model):
 class User(db.Model):
     """A user"""
 
@@ -34,14 +33,12 @@ class FavoriteRecipe(db.Model):
     favorite_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     recipe_id = db.Column(db.Integer, nullable=False)
-    #recipe_name = db.Column(db.String(30))
 
     users = db.relationship("User", back_populates="favorite_recipes")
 
     def __repr__(self):
         return f'<FavoriteRecipe user_id={self.user_id} recipe_id={self.recipe_id}>'
-        # return f'<FavoriteRecipe favorite_id={self.favorite_id} fav_recipe_name={self.fav_recipe_name}>'
-
+    
 class MealPlan(db.Model):
     """A meal plan for the week"""
 
@@ -52,7 +49,6 @@ class MealPlan(db.Model):
     recipe_id = db.Column(db.String, nullable=False)
 
     users = db.relationship("User", back_populates="meal_plans")
-    # grocery_items = db.relationship("GroceryItem", back_populates="meal_plans")
     
     def __repr__(self):
         return f'<MealPlan user_id={self.user_id} recipe_id={self.recipe_id}>' 
@@ -64,7 +60,7 @@ class GroceryItem(db.Model):
 
     ingredient_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    recipe_id = db.Column(db.String) # db.ForeignKey('meal_plans.recipe_id'))
+    recipe_id = db.Column(db.String)
     ingredient_name = db.Column(db.String(50))
     amount = db.Column(db.Float) #Ingredient quantity
     units = db.Column(db.String(30)) #unit of measure
@@ -126,41 +122,3 @@ def connect_to_db(flask_app, mealplanning):
 if __name__ == "__main__":
     from server import app
     connect_to_db(app, 'mealplanning')
-
-
-#DATABASE INFO FOR TESTING PURPOSE:
-# user1 = User(first_name="Maui", last_name="Doggie", email="maui@test.com", password="12345")
-# user2 = User(first_name="Scott", last_name="Smith", email="scott@test.com", password="56789")
-# user3 = User(first_name="Anna", last_name="Dodson", email="anna@test.com", password="36985")
-
-# db.session.add(user1)
-# db.session.commit()
-
-# fav1 = FavoriteRecipe(recipe_id=12, recipe_name="Veggie quesadilla")
-# fav2 = FavoriteRecipe(recipe_id=82, recipe_name="Pizza")
-# fav3 = FavoriteRecipe(recipe_id=112, recipe_name="pasta")
-# fav4 = FavoriteRecipe(recipe_id=12, recipe_name="Veggie quesadilla")
-
-# user1.favorite_recipes.append(fav)
-# db.session.commit()
-
-
-# mp1 = MealPlan(recipe_id=82, recipe_name="Pizza", instruction="Blah blah and blah")
-# mp2 = MealPlan(recipe_id=112, recipe_name="Pasta", instruction="Blah blah and add a lot cheese!")
-
-# user1.meal_plans.append(mp1)
-# db.session.commit()
-
-# gi1 = GroceryItem(ingredient_name="parmensan cheese", quantity=4, units="Oz")
-# gi2 = GroceryItem(ingredient_name="grape tomatoes", quantity=2, units="pints")
-# gi3 = GroceryItem(ingredient_name="linguine pasta", quantity=10, units="Oz")
-
-# gi4 = GroceryItem(ingredient_name="Parmensan cheese", quantity=8, units="Oz") 
-# gi5 = GroceryItem(ingredient_name="naan", quantity=4, units="unit")
-
-# mp1.grocery_items.append(gi1)
-# mp1.grocery_items.append(gi1)
-
-
-# a_name = Class.query.all()
-
