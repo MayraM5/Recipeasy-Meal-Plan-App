@@ -25,6 +25,7 @@ CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 
 
 #=======================INITAL PAGE============================#
+@app.route('/')
 def homepage():
     """Display login template."""
 
