@@ -31,7 +31,7 @@ class FavoriteRecipe(db.Model):
     __tablename__ = "favorite_recipes"
 
     favorite_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     recipe_id = db.Column(db.Integer, nullable=False)
 
     users = db.relationship("User", back_populates="favorite_recipes")
@@ -64,7 +64,7 @@ class GroceryItem(db.Model):
     ingredient_name = db.Column(db.String(50))
     amount = db.Column(db.Float) #Ingredient quantity
     units = db.Column(db.String(30)) #unit of measure
-    category = db.Column(db.String(35))
+    category = db.Column(db.String)
     
     users = db.relationship("User", back_populates="grocery_items")
 
@@ -77,7 +77,7 @@ class Recipe(db.Model):
     __tablename__ = "recipes"
 
     recipe_id = db.Column(db.String, primary_key=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     title = db.Column(db.String)
     image = db.Column(db.String)
     servings = db.Column(db.Integer)

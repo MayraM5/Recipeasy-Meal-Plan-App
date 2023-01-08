@@ -139,7 +139,7 @@ def add_recipe_to_favorites():
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_Id")
-    print(logged_in_user_id)
+    # print(logged_in_user_id)
 
     #Get user list of favorite recipe ids
     fav_list = crud.get_favorite_recipe_ids(logged_in_user_id)
