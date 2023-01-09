@@ -2,6 +2,7 @@
 
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from model import connect_to_db, db
+from functools import wraps
 import crud
 from jinja2 import StrictUndefined
 import requests
@@ -10,6 +11,7 @@ import os
 import random
 import cloudinary.uploader
 import helpers
+
 
 app = Flask(__name__)
 
@@ -23,6 +25,14 @@ CLOUD_NAME = "dhyrymmf4"
 CLOUDINARY_SECRET= os.environ["CLOUDINARY_SECRET"]
 CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 
+
+# def login_required(f):
+#     @wraps(f)
+#     def decorate_function(*args, **kwargs):
+#         if session.get('user_id') is None:
+#             return redirect('/log-in', code=302)
+#         return f(*args, **kwargs)
+#     return decorate_function
 
 #=======================INITAL PAGE============================#
 @app.route('/')
@@ -103,6 +113,7 @@ def register():
 
 #=====================HOMEPAGE=================================#
 @app.route("/home")
+# @login_required
 def home():
     """Display homepage."""
 
@@ -355,7 +366,7 @@ def get_recipes():
     logged_in_user = session.get("user_id")
     recipes = crud.get_recipes_by_user(logged_in_user)
 
-    return render_template("my_recipes.html", recipes=recipes)
+    return render_template("users_recipes.html", recipes=recipes)
 
 #=======================CREATE RECIPE=========================#
 @app.route('/create_recipe', methods=['POST'])

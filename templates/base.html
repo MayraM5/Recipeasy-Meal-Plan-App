@@ -11,6 +11,11 @@
     <!-- custom styles -->
     <link rel="stylesheet" href="/static/css/style.css">
 
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500&display=swap" rel="stylesheet">
+
     <title>{% block title %}Recipeasy{% endblock %}</title>
   </head>
   <body>
@@ -18,15 +23,16 @@
     <!-- nav bar-->
     <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
       <div class="container-fluid">
-        <a class="nav-link" href="/home">Recipeasy</a>
+        <a class="navbar-brand" href="/home">
+          <img src="/static/images/recipeasy logo-cropped.svg" width="135" height="35" class="d-inline-block align-top" alt=""></a>
       
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive">
         <span class="navbar-toggler-icon"></span>
       </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
-          <ul class="navbar-nav ml-auto">
+          <ul class="navbar-nav ms-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="/home">Home</a>
+              <a class="nav-link" href="/home">Home</a> 
             </li>
             <li class="nav-item active">
               <a class="nav-link" href="/favorites">Favorites</a>
@@ -41,7 +47,7 @@
               <a class="nav-link" href="/groceries">Groceries</a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="/log-out">Log Out</a>
+              <a class="nav-link-btn" href="/log-out">Log Out</a>
             </li> 
       </div>
     </nav>

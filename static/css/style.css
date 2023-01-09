@@ -1,3 +1,34 @@
+/* nav-bar */
+.navbar a{
+  font-family: 'El Messiri', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #1E212B;
+}
+
+.nav-item a:hover {
+  background-color: #ffde59;
+}
+
+.nav-link-btn {
+    width: 100%;
+    display: flex;
+    -moz-box-align: center;
+    align-items: center;
+    -moz-box-pack: center;
+    justify-content: center;
+    border-radius: 12px;
+    border-style: none;
+    font-size: 16px;
+    line-height: 24px;
+    padding: 8px 12px;
+    border-color: #69b550;
+    box-shadow: 0px 0px 0px 1px inset;
+    text-decoration: none;
+    color: rgb(6, 122, 70);
+    cursor: pointer;
+  }
+
 /* .recipe_search_box {
   position: absolute;
   top: 50%;
@@ -6,24 +37,98 @@
 } */
 
 
-.meal_item{
-    border-radius: 1rem;
-    -webkit-border-radius: 1rem;
-    -moz-border-radius: 1rem;
-    -ms-border-radius: 1rem;
-    -o-border-radius: 1rem;
-    overflow: hidden;
-    box-shadow: 0 4px 21px -12px rgba(0, 0, 0, 0.79);
-    margin: 2rem 0;
-}
-
-.meal_img img{
-    width: 100%;
-    display: block;
-}
-
-
+/* text decorator grocery items */
 input[type="checkbox"]:checked + label {
   text-decoration: line-through;
 }
 
+
+/* recipe container */
+/* .recipe-card {
+  border-radius: 1rem;
+  -webkit-border-radius: 1rem;
+  -moz-border-radius: 1rem;
+  -ms-border-radius: 1rem;
+  -o-border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 21px -12px rgba(0, 0, 0, 0.79);
+  margin: 2rem 0;
+} */
+
+/* .recipe-card {
+  width: 300px;
+  height: 400px;
+  padding: 20px;
+  margin: 1rem 0;
+} */
+
+.recipe-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
+  max-width: 800px;
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Style the recipe image */
+.recipe-card .recipe-image img { 
+  width: 100%;
+  display: block;
+}
+
+ /* Style the recipe name */
+ .recipe-card .recipe-name {
+  width: 100%;
+  height: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FFE8D9;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  color: #E74C3C;
+}
+
+/* Style the delete and add buttons */
+.recipe-card button {
+  width: 50%;
+  height: 30%;
+  background-color: #E74C3C;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.8em;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}
+
+
+.recipe-card button:hover {
+  background-color: #CB4335;
+} 
+
+/* Add some style to the recipe card container */
+#recipe-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;  
+}
+
+/* Use media queries to adjust the number of columns based on the screen width */
+@media (max-width: 1023px) {
+  .recipe-card {
+    width: 45%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .recipe-card {
+    width: 30%;
+  }
+}
