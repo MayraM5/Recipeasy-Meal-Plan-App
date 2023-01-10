@@ -120,17 +120,56 @@ h6 {
   background-color: #FFDE59;
 }
 
-.cookbook-head {
+/* .cookbook-head {
   overflow: auto;
 }
 
 .cookbook-text {
   float: left;
+  
 }
 
-.create-recipe-btn {
+.create-btn {
   float: right;
+  display: flex;
+  -moz-box-align: center;
+  align-items: center;
+  -moz-box-pack: center;
+  justify-content: center;
+  text-align: center;
+  letter-spacing: 0.33px;
+  color: white;
+  background-color: rgb(94, 189, 33);
+  border: medium none;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: background-color 0.15s ease 0s, opacity 0.2s ease 0s;
+  height: 2rem;
+  font-size: 16px;
+  font-weight: 400;
+  padding-left: 1rem;
+  padding-right: 1rem;
+} */
+
+.create-recipe-header {
+  padding-top: 100;
+  padding-bottom: 100;
+  background: url("/static/images/pexels-ella-olsson-1640777.jpg");
+  background-size: auto;
+  background-size: cover;
 }
+
+.create-recipe-heading {
+  color: #1E212B;
+  text-align: center;
+  font-size: 40px;
+  font-family: "Chronicle Ssm";
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+
+
 
 /* text decorator grocery items */
 input[type="checkbox"]:checked + label {
