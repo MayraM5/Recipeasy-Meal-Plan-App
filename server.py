@@ -438,13 +438,24 @@ def remove_recipe():
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_id")
-    
+
+    #Remove recipe from CookBook
     recipe_to_delete = crud.get_recipe_by_user_and_recipeid(logged_in_user_id, str(recipe_id))
     ingredients_to_delete = crud.get_recipe_ingredients(recipe_id)
-    
     for item in ingredients_to_delete:
         db.session.delete(item)
-   
+
+    #Check if recipe is in Meal Plan, if so process to delete recipe from Meal Plan
+    try:
+        mp_to_delete = crud.get_meal_plan_by_user_and_recipe(logged_in_user_id, recipe_id)
+        grocery_items_to_delete = crud.get_grocery_item_by_user_and_recipe(logged_in_user_id, recipe_id)
+        for item in grocery_items_to_delete:
+            db.session.delete(item)
+        db.session.delete(mp_to_delete)
+
+    except:
+        pass
+
     db.session.delete(recipe_to_delete)
     db.session.commit()
 

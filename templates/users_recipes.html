@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+<body>
+{% block body %}
+<div class="cookbook-head">
+  <div class="create-recipe-btn">
+    <form action="/create_recipe" method="POST">
+      <button class="right" type="submit">Create a recipe</button>
+    </form>
+  </div>
+  <div class="cookbook-text">
+    <h3>Build a meal plan</h3>
+    <h6>Pick your meals for the week.</h6>
+  </div>
+</div>
+
+  
+  {% if recipes %}
+  <div class="container">
+    <div class="row g-3">
+    {% for recipe in recipes %}
+      {% set id = recipe.recipe_id %}
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="card" id="div_{{ id }}">
+        {% if recipe.image %}  
+          <a href="/recipe-details-{{ id }}"><img src="{{ recipe.image }}" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+        {% else %}
+          <a href="/recipe-details-{{ id }}"><img src="/static/images/no_recipe_picture.jpg" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+        {% endif %}
+          <div class="card-body">
+            <h5 class="card-title" class="recipe_name">{{ recipe.title }}</h5>
+            <div class="buttons">
+              <button class="add_to_meal_plan" id="{{ id }}">Add to Meal Plan</button>
+              <button class="delete_recipe" id="{{ id }}">Delete</button>
+            </div>
+          </div>  
+        </div>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+<script src="../static/js/cookbook.js "> </script>
+
+{% endblock %}
+</body>

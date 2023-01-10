@@ -9,6 +9,7 @@ def get_database_recipe(user_id, recipe_id):
     """Retrieve recipe data from database."""
 
     recipe_data = crud.get_recipe_data(user_id, recipe_id)
+    print(recipe_data)
 
     for recipe in recipe_data:
         id = recipe.recipe_id
@@ -129,7 +130,7 @@ def get_total_grocery_list(user_id):
         ingredients = [ (item[2]), (item[3]), (item[4]) ] 
         grocery_item.setdefault(item[1], []).append(ingredients)
 
-    return grocery_item    
+    return grocery_item
 
 
 if __name__ == '__main__':
