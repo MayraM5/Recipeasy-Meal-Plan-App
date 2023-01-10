@@ -154,19 +154,32 @@ h6 {
 .create-recipe-header {
   padding-top: 100;
   padding-bottom: 100;
-  background: url("/static/images/pexels-ella-olsson-1640777.jpg");
+  background: url("/static/images/pexels-ella-olsson-16407702.jpg");
   background-size: auto;
   background-size: cover;
 }
 
-.create-recipe-heading {
-  color: #1E212B;
+.create-btn {
+  letter-spacing: 0.33px;
+  padding: 0.1rem;
+  font-size: 1.1rem;
   text-align: center;
-  font-size: 40px;
-  font-family: "Chronicle Ssm";
-  font-weight: 900;
-  line-height: 1.05;
+  color: #FFFFFF;
+  background-color: #69B550;
+  border: medium none;
+  border-radius: 0.5rem;
+  transition: 0.2s;
+  display: inline-block;
+  width: calc(50% - 4px);
+  margin: 0 auto;
+  
 }
+
+.create-btn:hover,
+.create-btn:active {
+  background-color: #FFDE59;
+}
+
 
 
 
