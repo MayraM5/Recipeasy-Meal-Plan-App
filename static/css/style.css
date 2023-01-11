@@ -216,6 +216,8 @@ h6 {
   margin: 0 auto;
 }
 
+
+/* back button */
 .back-button {
   padding: 0.1rem;
   font-size: 0.8rem;
@@ -230,8 +232,8 @@ h6 {
   margin: 10;
 }
 
-.add_to_meal_plan:hover, .delete_recipe:hover, .add_ingredient:hover, .delete:hover, .back-button:hover,
-.add_to_meal_plan:active, .delete_recipe:active, .add_ingredient:active .delete:active .back-button:active {
+.add_to_meal_plan:hover, .delete_recipe:hover, .add_ingredient:hover, .delete:hover, .back-button:hover, .large-btn:hover,
+.add_to_meal_plan:active, .delete_recipe:active, .add_ingredient:active .delete:active .back-button:active .large-btn:active {
   background-color: #FFDE59;
 }
 
@@ -239,7 +241,33 @@ h6 {
   text-align: center;
 }
 
+/* Log In */
+.bg-image-vertical {
+  position: relative;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: auto 100%;
+  }
 
+.form-control {
+  background-color: rgb(248, 248, 248);
+}
+
+.large-btn {
+  letter-spacing: 0.33px;
+  padding: 0.1rem;
+  font-size: 1.1rem;
+  text-align: center;
+  color: #FFFFFF;
+  background-color: #69B550;
+  border: medium none;
+  border-radius: 0.5rem;
+  transition: 0.2s;
+  display: inline-block;
+  width: calc(100% - 4px);
+  margin: 0 auto;
+}
 
 /* text decorator grocery items */
 input[type="checkbox"]:checked + label {
