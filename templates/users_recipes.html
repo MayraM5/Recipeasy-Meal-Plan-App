@@ -27,7 +27,7 @@
         {% if recipe.image %}  
           <a href="/recipe-details-{{ id }}"><img src="{{ recipe.image }}" alt="recipe image" class="card-img-top" class="recipe_image"></a>
         {% else %}
-          <a href="/recipe-details-{{ id }}"><img src="/static/images/no_recipe_picture.jpg" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+          <a href="/recipe-details-{{ id }}"><img src="/static/images/no_recipe_img.jpg" alt="recipe image" class="card-img-top" class="recipe_image"></a>
         {% endif %}
           <div class="card-body">
             <h5 class="card-title" class="recipe_name">{{ recipe.title }}</h5>

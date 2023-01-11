@@ -2,81 +2,121 @@
 
 {% block body %}
 <body>
+    <button class="back-button" onclick="window.history.back()">Back</button>
+    
+    <section>
+        <div class="container">
+          <div class="row d-flex justify-content-center align-items-center">
+            <div class="col">
+              <div class="recipe-registration">
+                <div class="row g-0">
+                  <div class="col-xl-6 d-none d-xl-block">
+                    <img src="/static/images/pexels-alexy-almond-3758133.jpg"
+                      alt="food-photo" class="img-fluid" />
+                  </div>
 
-    <h2> Create your own recipe: </h2>
-        <!-- <form id="recipe-form"> -->
-        <form id="create-recipe" action="/create-recipe" method="POST" enctype="multipart/form-data"> 
-            <label for="title">Name</label>
-                <input id="recipe_name" type="name" name="name" placeholder="Enter your recipe name" required><br>
+                  <div class="col-xl-6">
+                    <div class="create-recipe-card-body">
+                      <h3 class="create-recipe-title">Create your own recipe</h3>
+                    <!-- <form id="recipe-form"> -->
+                      <form id="create-recipe" action="/create-recipe" method="POST" enctype="multipart/form-data"> 
+                          
+                      <div class="row">
+                        <div class="col-md-9 mb-4" clas="column-4">
+                          <div class="form-outline">
+                            <label class="form-label" for="title">Title</label>
+                            <input id="recipe_name" class="form-control form-control-sm" type="name" name="name" placeholder="Enter recipe title" required>
+                          </div>
+                        </div>
 
-            <label for="image">Image</label>
-                <input type="file" name="my_file" id="image"><br>
+                        <div class="col-md-3 mb-4">
+                          <div class="form-outline">
+                            <label for="servings" class="form-label">Servings</label>
+                                <select name="servings" class="form-control form-control-sm"required>
+                                    <option value="">Set serving</option>
+                                    <option value="1">1 serving</option>
+                                    <option value="2">2 serving</option>
+                                    <option value="3">3 serving</option>
+                                    <option value="4">4 serving</option>
+                                    <option value="5">5 serving</option>
+                                    <option value="6">6 serving</option>
+                                    <option value="7">7 serving</option>
+                                    <option value="8">8 serving</option>
+                                </select>    
+                          </div>
+                        </div>
+                      </div>
 
-            <label for="servings">Servings</label>
-                <!-- <input class="recipe_servings" type="number" name="servings"><br> -->
-                <select name="servings" required>
-                    <option value="">Set serving</option>
-                    <option value="1">1 serving</option>
-                    <option value="2">2 serving</option>
-                    <option value="3">3 serving</option>
-                    <option value="4">4 serving</option>
-                    <option value="5">5 serving</option>
-                    <option value="6">6 serving</option>
-                    <option value="7">7 serving</option>
-                    <option value="8">8 serving</option>
-                </select>    
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="instructions">Instructions:</label>
+                            <textarea name="instructions" id="instructions" class="form-control form-control-sm" placeholder="Enter recipe instructions" rows="4" cols="30"></textarea>
+                        </div>
 
-            <label for="instructions">Instructions:</label><br>
-                <textarea name="instructions" id="instructions" placeholder="Enter your recipe instructions" rows="8" cols="60"></textarea><br><br>
-                <!-- <input class="recipe_instruction" type="name" name="instructions"> <br>     -->
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="image">Image</label>
+                            <input type="file" name="my_file" id="image" class="form-control form-control-sm">
+                        </div>
 
-            <label for="ingredient">Ingredients</label> <br>
-                <table id="ingredients-table">
-                    <tr>
-                        <th>Name</th>
-                        <th>Unit</th>
-                        <th>Quantity</th>
-                        <th>Category</th>
-                        <th></th>
-                    </tr>
-                        <td><input type="text" name="ingredient" placeholder="Enter your ingredient name" size="25" required></td>
-                        <td>
-                            <select name="unit">
-                                <option value=""></option>
-                                <option value="tsp">teaspoon</option>
-                                <option value="tbsp">tablespoon</option>
-                                <option value="cup">cup</option>
-                                <option value="oz">ounce</option>
-                                <option value="lb">pound</option>
-                                <option value="servings">serving</option>
-                                <option value="container">container</option>
-                            </select>    
-                        </td>
-                        <td><input type="number" name="quantity" step="0.01" required></td>
-                        <td>
-                            <select name="category" required>
-                                <option value="Oil, Vinegar, Salad Dressing">Oil, Vinegar, Salad Dressing</option>
-                                <option value="Refrigerated">Refrigerated</option>
-                                <option value="Pasta and Rice">Pasta and Rice</option>
-                                <option value="Spices and Seasonings">Spices and Seasonings</option>
-                                <option value="Milk, Eggs, Other Dairy">Milk, Eggs, Other Dairy</option>
-                                <option value="Meat">Meat</option>
-                                <option value="Produce">Produce</option>
-                                <option value="Seafood">Seafood</option>
-                                <option value="Cheese">Cheese</option>
-                                <option value="Other">Other</option>
-                            <select>    
-                        </td>
-                        <td><button type="button" onclick="removeRow(this)">Remove</button></td>
-                    </tr>
-                </table>
-                <button type="button" onclick="addRow()">Add Ingredient</button> <br>
-                <br>
-            <button type="submit">Create recipe</button>
-        </form>
+                        <div class="row">
+                            <div class="form-outline">
+                                <table class="ingredient-label" id="ingredients-table">
+                                    <tr>
+                                        <th class="col-md-4 mb-4" style="font-family: 'Lato', sans-serif; font-weight: 400;">Name</th>
+                                        <th class="col-md-2 mb-4" style="font-family: 'Lato', sans-serif; font-weight: 400;">Unit</th>
+                                        <th class="col-md-2 mb-4" style="font-family: 'Lato', sans-serif; font-weight: 400;">Quantity</th>
+                                        <th class="col-md-4 mb-4" style="font-family: 'Lato', sans-serif; font-weight: 400;">Category</th>
+                                    </tr>
+                                        <td>
+                                            <input type="text" name="ingredient" placeholder="Enter ingredient name" size="25" required class="form-control form-control-sm">
+                                        </td>
+                                        <td>
+                                            <select name="unit" class="form-control form-control-sm">
+                                                <option value=""></option>
+                                                <option value="tsp">teaspoon</option>
+                                                <option value="tbsp">tablespoon</option>
+                                                <option value="cup">cup</option>
+                                                <option value="oz">ounce</option>
+                                                <option value="lb">pound</option>
+                                                <option value="servings">serving</option>
+                                                <option value="container">container</option>
+                                            </select>  
+                                        </td>  
+                                        <td><input type="number" name="quantity" step="0.01" class="form-control form-control-sm" required></td>
+                                        <td>
+                                            <select name="category" class="form-control form-control-sm" required>
+                                                <option value="Oil, Vinegar, Salad Dressing">Oil, Vinegar, Salad Dressing</option>
+                                                <option value="Refrigerated">Refrigerated</option>
+                                                <option value="Pasta and Rice">Pasta and Rice</option>
+                                                <option value="Spices and Seasonings">Spices and Seasonings</option>
+                                                <option value="Milk, Eggs, Other Dairy">Milk, Eggs, Other Dairy</option>
+                                                <option value="Meat">Meat</option>
+                                                <option value="Produce">Produce</option>
+                                                <option value="Seafood">Seafood</option>
+                                                <option value="Cheese">Cheese</option>
+                                                <option value="Other">Other</option>
+                                            <select>    
+                                        </td>
+                                        <td><button class="delete" type="button" onclick="removeRow(this)">Remove</button></td>
+                                    </tr>
+                                </table>
+                                <button class="add_ingredient" type="button" onclick="addRow()">Add ingredient</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end pt-3">
+                        <button class="create-recipe-btn" type="submit" style="text-align: center;">Create recipe</button>
+                    </div>
+                    </form> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </section>
 
 </body>
-<!-- <script src="https://cdn.jsdelivr.net/npm/cloudinary-core@2.8.1/cloudinary-core-shrinkwrap.min.js"></script> -->
+
 <script src="../static/js/cookbook.js"> </script> 
 
 {% endblock %}

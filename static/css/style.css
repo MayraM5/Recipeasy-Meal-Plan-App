@@ -8,12 +8,12 @@ body {
 h1, h2, h3 {
   font-family: 'Playfair Display', serif;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 h4, h5 {
   font-family: 'Playfair Display', serif;
-  font-weight: 700;
+  font-weight: 300;
 } 
 
 h6 {
@@ -86,9 +86,9 @@ h6 {
 }
 
 .add_to_meal_plan {
-  letter-spacing: 0.33px;
+  letter-spacing: 0.1px;
   padding: 0.1rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-align: center;
   color: #FFFFFF;
   background-color: #69B550;
@@ -101,9 +101,9 @@ h6 {
 }
 
 .delete_recipe {
-  letter-spacing: 0.33px;
+  letter-spacing: 0.1px;
   padding: 0.1rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-align: center;
   color: #FFFFFF;
   background-color: #69B550;
@@ -120,36 +120,7 @@ h6 {
   background-color: #FFDE59;
 }
 
-/* .cookbook-head {
-  overflow: auto;
-}
-
-.cookbook-text {
-  float: left;
-  
-}
-
-.create-btn {
-  float: right;
-  display: flex;
-  -moz-box-align: center;
-  align-items: center;
-  -moz-box-pack: center;
-  justify-content: center;
-  text-align: center;
-  letter-spacing: 0.33px;
-  color: white;
-  background-color: rgb(94, 189, 33);
-  border: medium none;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  transition: background-color 0.15s ease 0s, opacity 0.2s ease 0s;
-  height: 2rem;
-  font-size: 16px;
-  font-weight: 400;
-  padding-left: 1rem;
-  padding-right: 1rem;
-} */
+/* Cookbook */
 
 .create-recipe-header {
   padding-top: 100;
@@ -159,7 +130,7 @@ h6 {
   background-size: cover;
 }
 
-.create-btn {
+.create-btn, .create-recipe-btn {
   letter-spacing: 0.33px;
   padding: 0.1rem;
   font-size: 1.1rem;
@@ -175,12 +146,98 @@ h6 {
   
 }
 
-.create-btn:hover,
-.create-btn:active {
+.create-btn:hover, .create-recipe-btn:hover,
+.create-btn:active, .create-recipe-btn:active {
   background-color: #FFDE59;
 }
 
+/* Create recipe form */
 
+@media (min-width: 1025px) {
+  .h-custom {
+  height: 100vh !important;
+  }
+}
+
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+.create-recipe-card-body {
+  padding-top: 0%;
+  margin-left: 2%;
+  margin-right: 2%;
+  margin-bottom: 0%;
+}
+
+
+.recipe-registration {
+  margin-top: 0%;
+  margin-bottom: 0%;
+  border: medium none;
+  border-radius: 0.5rem;
+  border-style: solid;
+  border-color: #69B550;
+}
+
+.create-recipe-title {
+  text-align: center;
+}
+
+.add_ingredient {
+  letter-spacing: 0.1px;
+  padding: 0.1rem;
+  font-size: 1rem;
+  text-align: center;
+  color: #FFFFFF;
+  background-color: #69B550;
+  border: medium none;
+  border-radius: 0.5rem;
+  transition: 0.2s;
+  display: inline-block;
+  width: calc(30% - 4px);
+  margin: 0 auto;
+}
+
+.delete {
+  letter-spacing: 0.1px;
+  padding: 0.4rem;
+  font-size: 1rem;
+  text-align: center;
+  color: #FFFFFF;
+  background-color: #69B550;
+  border: medium none;
+  border-radius: 0.5rem;
+  transition: 0.2s;
+  display: inline-block;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.back-button {
+  padding: 0.1rem;
+  font-size: 0.8rem;
+  text-align: center;
+  color: #FFFFFF;
+  background-color: #69B550;
+  border: medium none;
+  border-radius: 0.5rem;
+  transition: 0.2s;
+  display: inline-block;
+  width: 5%;
+  margin: 10;
+}
+
+.add_to_meal_plan:hover, .delete_recipe:hover, .add_ingredient:hover, .delete:hover, .back-button:hover,
+.add_to_meal_plan:active, .delete_recipe:active, .add_ingredient:active .delete:active .back-button:active {
+  background-color: #FFDE59;
+}
+
+.create-recipe-btn {
+  text-align: center;
+}
 
 
 
