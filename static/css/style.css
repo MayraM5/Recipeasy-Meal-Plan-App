@@ -16,8 +16,9 @@ h4, h5 {
   font-weight: 300;
 } 
 
-h6 {
+h6, li {
   font-family: 'Lato', sans-serif;
+  font-size: 1.1rem;
 }
 
 /* nav-bar */
@@ -299,61 +300,36 @@ h6 {
 input[type="checkbox"]:checked + label {
   text-decoration: line-through;
 }
+/* 
 
-.recipe {
-  width: 80%;
-  margin: 0 auto;
-  text-align: center;
-  margin-right: 15%;
-  margin-left: 15%;
-  border: 3px solid #69B550;
-}
+/* Recipe details - Bootstrap */
 
-.recipe-header {
-  display: flex;
-  align-items: center;
-}
-
-.recipe-image {
-  width: 25%;
-  margin-right: 20px;
-  margin-left: 2%;
-  text-align: center;
-  width: 45%;
-  border: 1px solid #69B550;
-  margin-top: 2%;
-  margin-bottom: 2%;
-}
-
-.recipe-title {
-  font-size: 2em;
-  margin-bottom: 0em;
-  
-}
-
-.recipe-title-serving {
-  display: flex;
-  flex-direction: column;
+#recipe-details {
   margin-left: 10%;
-  margin-right: 0%;
+  margin-right: 10%;
+  border: 3.5px solid #69B550;
 }
 
 .recipe-serving {
-  font-size: 1em;
+  text-align: center;
+  padding: 12;
 }
 
-.recipe-content {
-  margin-top: 40px;
+.recipe-title {
+  margin-bottom: 0em;
+  text-align: center;
 }
 
-.ingredient-list {
-  list-style-type: none;
-  padding: 0;
-  font-size: 1.2em;
+.recipe-details-col {
+  padding: 1%;
 }
 
-.instruction-list {
-  list-style-type: decimal;
-  padding: 0;
-  font-size: 1.2em;
+.recipe-image {
+  text-align: center;
 }
+
+.instruction-list, .ingredient-list {
+  padding: 15;
+  padding-left: 5%;
+}
+

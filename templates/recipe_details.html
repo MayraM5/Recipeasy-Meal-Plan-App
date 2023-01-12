@@ -2,54 +2,48 @@
 
 {% block body %}
 <body>
-<!-- back button -->
+    <!-- back button -->
 <button class="back-button" onclick="window.history.back()">Back</button>
 {% if recipe %}
-    <div class="recipe">
-        {% if recipe["image"] %}
-        <div class="recipe-image">
-            <img src='{{ recipe["image"] }}'>
-        {% else %}
-            <img src="../static/images/no_recipe_img.jpg">
-        {% endif %}
-        <div class="recipe-title-serving">
-            <h3 class="recipe-title">{{ recipe["title"] }}</h3>
-            <h6 class="recipe-serving">Servings {{ recipe["servings"] }}</h6>
-        </div>
-        </div>
-        <div class="container justify-content-center">
-            <div class="row">
-                {% if recipe['ingredients'] %}
-                <div class="col-4">
-                    <h2>Ingredients</h2>
-                    {% for ingredient in recipe['ingredients'] %}
-                    <ul class="ingredient-list">
-                        <li>{{ ingredient['amount'] }} {{ ingredient['unit'] }} {{ ingredient['name'] }}</li>
-                    </ul>
-                    {% endfor %}
+    <div class="container" id="recipe-details">
+        <div class="row">
+            <div class="col-md-6 recipe-details-col">
+            
+                <div class="recipe-image">
+                {% if recipe["image"] %}
+                    <img src="{{ recipe['image'] }}" alt="Recipe Image"  class="img-fluid">
                 {% else %}
-                    <p>Sorry! There are no ingredients for this recipe yet &#128542;</p>        
+                    <img src="/static/images/no_recipe_img.jpg" alt="Recipe Image"  class="img-fluid"">
                 {% endif %}
                 </div>
+                <h2 class="recipe-title">{{ recipe["title"] }}</h2>
+                <h6 class="recipe-serving">Servings: {{ recipe["servings"] }}</h6>
+                <h4 class="recipe-title">Ingredient List</h4>
+                {% if recipe['ingredients'] %}
+                    <ul class="ingredient-list">
+                        {% for ingredient in recipe['ingredients'] %}
+                            <li>{{ ingredient['amount'] }} {{ ingredient['unit'] }} {{ ingredient['name'] }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                        <p>Sorry! There are no ingredients for this recipe yet &#128542;</p>        
+                    {% endif %} 
+            </div>
+            <div class="col-md-6 recipe-details-col">
+                <h4 class="recipe-title">Instructions</h4>
                 {% if recipe['instructions'] %}
-                <div class="col-8">
-                    <h2>Instructions</h2>
                     <ol class="instruction-list">
                         {% for i in recipe['instructions'] %}
                             <li>{{ i }} </li>
                         {% endfor %}
                     </ol>
-                </div>
                 {% else %}
-                    <p>Sorry! There are no instructions for this recipe yet &#128542;</p>        
+                    <h6>Sorry! There are no instructions for this recipe yet &#128542;</h6>        
                 {% endif %}
             </div>
-        </div>
+         </div>
     </div>
-{% endif %}  
-
-
-
+{% endif %}
 
 </body>
 <script src="../static/js/recipe.js"> </script> 
