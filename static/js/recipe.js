@@ -4,6 +4,7 @@ let search_btn = document.querySelector("#search_btn")
 let search_box = document.querySelector("#search_input")
 let show_recipe = document.querySelector("#search_result")
 let recipeList = document.querySelector('#recipe')
+let randomRecipe = document.querySelector('#random-recipes')
 
 search_btn.addEventListener("click", () => {
    // console.log(search_box.value)
@@ -15,16 +16,20 @@ search_btn.addEventListener("click", () => {
         if (data.results) {
             data.results.forEach(recipe => {
                 html += `
-                <div class = "recipe_name">
-                    <h3><a href="/recipe-details-${recipe.id}">${recipe.title}</a></h3>
-                
-                <div class = "recipe_image">
-                    <a href="/recipe-details-${recipe.id}"><img src = ${recipe.image}></a>
-                </div>
-                <div id="recipe_id" value= "${recipe.id}">
-                    <button id="addToFav-${recipe.id}" onclick="AddtoFavorites(${recipe.id})">Favorite</button>
-                    <button id="addToMealPlan-${recipe.id}" onclick="AddtoMealPlan(${recipe.id})">Add to Meal Plan</button>
-                </div>
+                    <div class="card-container"> 
+                        <div class="card">
+                            <a href="/recipe-details-${recipe.id}"><img src= ${recipe.image} alt="recipe image" class="card-img-top" class="recipe_image"></a>
+                        <div class="card-body">
+                            <h5 class="card-title"> ${recipe.title}</h5>
+                            <div class="buttons">
+                                <div id="recipe_id" value= "${recipe.id}">
+                                <button class="add_to_meal_plan"  id="addToFav-${recipe.id}" onclick="AddtoFavorites(${recipe.id})">Favorite</button>
+                                <button class="add_to_fav" id="addToMealPlan-${recipe.id}" onclick="AddtoMealPlan(${recipe.id})">Add to Meal Plan</button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
                 `;
             });
             recipeList.classList.remove('notFound');
@@ -35,6 +40,10 @@ search_btn.addEventListener("click", () => {
 
         recipeList.innerHTML = html;
         })
+
+        // Hide random recipes result
+        randomRecipe.style.visibility = "hidden";
+
     });
 
 

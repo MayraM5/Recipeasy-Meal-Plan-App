@@ -2,44 +2,51 @@
 
 {% block body %}
 <body>
-    
-<div class = "recipe_search_box">
-    <h2 class = "title">Find your next meal</h2>
-    <button id= "search_btn" type= "submit" class= "search-btn btn">Search</button>
-    <input id="search_input" type= "text" class= "search-control">
-</div>
-
-
-<div id="search_result">
-    <h3 class = "title">Build a meal plan </h3>
-    <h5 class = "title">Pick your meals for the week:</h5>
-    <div id= "recipe"></div>
-</div>
-
-{% if random_recipes %}
-    {% for recipe in random_recipes %}
-    <div id="div_{{ recipe.id }}">
-        <div class ="recipe_name">
-            <h3>{{recipe.title}}</h3>
+    <section class="header">
+        <div class="container">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class = "recipe_search_box">
+                <h2 class = "title">Find your next meal</h2>
+                <div class="input-group mb-3">
+                <button id= "search_btn" type= "submit" class= "search-btn btn btn-outline-secondary">Search</button>
+                <input id="search_input" type= "text" class= "form-control">
+                </div>
+              </div>
+            </div>
         </div>
-        {% if recipe.image %}
-        <div class="recipe_image">
-            <a href="/recipe-details-{{recipe.id}}"><img src={{recipe.image}}></a>
+    </section>
 
-        </div>
-        {% else %}
-        <div class="recipe_image">
-            <a href="/recipe-details-{{ id }}"><img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg"></a>
-        </div>
-        {% endif %}
-        <div>
-            <button class="Add_to_fav" name="{{ recipe.id }}" onclick="AddtoFavorites(name)">Add to Favorites</button>
-            <button class="add_to_meal_plan" name="{{ recipe.id }}" onclick="AddtoMealPlan(name)">Add to Meal Plan</button>
-        </div>
+    <div id="search_result">
+        <h3 class = "title">Build a meal plan </h3>
+        <h6 class = "title">Pick your meals for the week.</h6>
+        <div id= "recipe" class="recipes-container"></div>
     </div>
-        
-    {% endfor %}
-{% endif %}
+    
+    
+    {% if random_recipes %}
+    <div id="random-recipes" class="recipes-container">          
+        {% for recipe in random_recipes %}
+            <div class="card-container"> 
+                <div class="card" id="div_{{ recipe.id }}">
+                    {% if recipe.image %} 
+                        <a href="/recipe-details-{{recipe.id}}"><img src="{{ recipe.image }}" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+                    {% else %}
+                        <a href="/recipe-details-{{recipe.id}}"><img src="/static/images/no_recipe_img.jpg" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title" class="recipe_name">{{ recipe.title }}</h5>
+                        <div class="buttons">
+                            <button class="add_to_meal_plan" name="{{ recipe.id }}" onclick="AddtoFavorites(name)">Add to Favorites</button>
+                            <button class="add_to_fav" name="{{ recipe.id }}" onclick="AddtoMealPlan(name)">Add to Meal Plan</button>
+                        </div>
+                    </div>  
+                </div>
+            </div>
+         
+        {% endfor %}
+    </div>
+    {% endif %}
 
 </body>
 
@@ -48,6 +55,5 @@
 </script>
 
 <script src="../static/js/recipe.js"> </script> 
-
 
 {% endblock %}

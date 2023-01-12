@@ -51,7 +51,9 @@ h6 {
     cursor: pointer;
   }
 
-/* Recipe Card */
+
+
+/* Recipe Card - bootstrap*/
 .card-title {
   font-family: 'Playfair Display', serif;
   text-align-last: center;
@@ -73,19 +75,16 @@ h6 {
   box-shadow: 0 4rem 8rem rgba(0, 0, 0, 0.5);
 }
 
-/* .card-img-top {
-  width: 356;
-  height: 184;
-} */
-
 /* Buttons */
+
+/* recipe card buttons */
 .buttons {
   width: 200px;
   margin: auto;
   display: inline;
 }
 
-.add_to_meal_plan {
+.add_to_meal_plan, .add_to_fav, .delete_recipe {
   letter-spacing: 0.1px;
   padding: 0.1rem;
   font-size: 1rem;
@@ -100,29 +99,13 @@ h6 {
   margin: 0 auto;
 }
 
-.delete_recipe {
-  letter-spacing: 0.1px;
-  padding: 0.1rem;
-  font-size: 1rem;
-  text-align: center;
-  color: #FFFFFF;
-  background-color: #69B550;
-  border: medium none;
-  border-radius: 0.5rem;
-  transition: 0.2s;
-  display: inline-block;
-  width: calc(50% - 4px);
-  margin: 0 auto;
-}
-
-.add_to_meal_plan:hover, .delete_recipe:hover,
-.add_to_meal_plan:active, .delete_recipe:active {
+.add_to_meal_plan:hover, .delete_recipe:hover, .add_to_fav:hover
+.add_to_meal_plan:active, .delete_recipe:active .add_to_fav:active {
   background-color: #FFDE59;
 }
 
 /* Cookbook */
-
-.create-recipe-header {
+.header {
   padding-top: 100;
   padding-bottom: 100;
   background: url("/static/images/pexels-ella-olsson-16407702.jpg");
@@ -130,7 +113,7 @@ h6 {
   background-size: cover;
 }
 
-.create-btn, .create-recipe-btn {
+.create-btn {
   letter-spacing: 0.33px;
   padding: 0.1rem;
   font-size: 1.1rem;
@@ -142,23 +125,21 @@ h6 {
   transition: 0.2s;
   display: inline-block;
   width: calc(50% - 4px);
-  margin: 0 auto;
-  
+  margin: 0 auto;  
 }
 
-.create-btn:hover, .create-recipe-btn:hover,
-.create-btn:active, .create-recipe-btn:active {
+.create-btn:hover,
+.create-btn:active {
   background-color: #FFDE59;
 }
 
-/* Create recipe form */
 
+/* Create recipe form */
 @media (min-width: 1025px) {
   .h-custom {
   height: 100vh !important;
   }
 }
-
 
 .img-fluid {
   max-width: 100%;
@@ -171,7 +152,6 @@ h6 {
   margin-right: 2%;
   margin-bottom: 0%;
 }
-
 
 .recipe-registration {
   margin-top: 0%;
@@ -232,16 +212,13 @@ h6 {
   margin: 10;
 }
 
-.add_to_meal_plan:hover, .delete_recipe:hover, .add_ingredient:hover, .delete:hover, .back-button:hover, .large-btn:hover,
-.add_to_meal_plan:active, .delete_recipe:active, .add_ingredient:active .delete:active .back-button:active .large-btn:active {
+/* highlight buttons */
+.add_ingredient:hover, .delete:hover, .back-button:hover, .large-btn:hover, .btn:hover,
+.add_ingredient:active .delete:active .back-button:active .large-btn:active .btn:active {
   background-color: #FFDE59;
 }
 
-.create-recipe-btn {
-  text-align: center;
-}
-
-/* Log In */
+/* Log In & Sign up form */
 .bg-image-vertical {
   position: relative;
   overflow: hidden;
@@ -269,7 +246,38 @@ h6 {
   margin: 0 auto;
 }
 
+/* recipe card - no bootstrap */
+.card-container {
+  display: inline-block;
+  width: 25%;
+  padding: 1.5%;
+}
+
+.recipes-container {
+  position: relative;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.card-img-top {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+/* search button */
+.btn {
+  letter-spacing: 0.33px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  text-align: center;
+  color: #FFFFFF;
+  background-color: #69B550;
+}
+
 /* text decorator grocery items */
 input[type="checkbox"]:checked + label {
   text-decoration: line-through;
 }
+
