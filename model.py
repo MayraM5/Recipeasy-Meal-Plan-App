@@ -32,7 +32,7 @@ class FavoriteRecipe(db.Model):
 
     favorite_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
-    recipe_id = db.Column(db.Integer, nullable=False)
+    recipe_id = db.Column(db.String, nullable=False)
 
     users = db.relationship("User", back_populates="favorite_recipes")
 

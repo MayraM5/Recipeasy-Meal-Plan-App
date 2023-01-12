@@ -76,7 +76,7 @@ search_btn.addEventListener("click", () => {
                         // Display an error message to the user
                         swal.fire({
                             title: 'Error saving recipe',
-                            text: 'Recipe already exists in database',
+                            text: 'Recipe already exists in Favorites',
                             icon: 'error',
                         });
                     } else {

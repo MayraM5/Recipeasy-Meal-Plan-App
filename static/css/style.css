@@ -84,7 +84,7 @@ h6 {
   display: inline;
 }
 
-.add_to_meal_plan, .add_to_fav, .delete_recipe {
+.add_to_meal_plan, .add_to_fav, .delete_recipe, .delete_fav {
   letter-spacing: 0.1px;
   padding: 0.1rem;
   font-size: 1rem;
@@ -99,8 +99,8 @@ h6 {
   margin: 0 auto;
 }
 
-.add_to_meal_plan:hover, .delete_recipe:hover, .add_to_fav:hover
-.add_to_meal_plan:active, .delete_recipe:active .add_to_fav:active {
+.add_to_meal_plan:hover, .delete_recipe:hover, .add_to_fav:hover, .delete_fav:hover,
+.add_to_meal_plan:active, .delete_recipe:active .add_to_fav:active, .delete_fav:active {
   background-color: #FFDE59;
 }
 
@@ -111,6 +111,7 @@ h6 {
   background: url("/static/images/pexels-ella-olsson-16407702.jpg");
   background-size: auto;
   background-size: cover;
+  position: relative;
 }
 
 .create-btn {
@@ -251,6 +252,7 @@ h6 {
   display: inline-block;
   width: 25%;
   padding: 1.5%;
+  height: 20%;
 }
 
 .recipes-container {
@@ -259,6 +261,8 @@ h6 {
   margin: 0;
   padding: 0;
   text-align: center;
+  display: flex;
+  flex-wrap: wrap;
 }
 
 .card-img-top {
@@ -266,6 +270,21 @@ h6 {
   width: 100%;
   height: 100%;
 }
+
+.text-header {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+/* #card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 20px;
+} */
+
 /* search button */
 .btn {
   letter-spacing: 0.33px;
@@ -281,3 +300,60 @@ input[type="checkbox"]:checked + label {
   text-decoration: line-through;
 }
 
+.recipe {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+  margin-right: 15%;
+  margin-left: 15%;
+  border: 3px solid #69B550;
+}
+
+.recipe-header {
+  display: flex;
+  align-items: center;
+}
+
+.recipe-image {
+  width: 25%;
+  margin-right: 20px;
+  margin-left: 2%;
+  text-align: center;
+  width: 45%;
+  border: 1px solid #69B550;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.recipe-title {
+  font-size: 2em;
+  margin-bottom: 0em;
+  
+}
+
+.recipe-title-serving {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10%;
+  margin-right: 0%;
+}
+
+.recipe-serving {
+  font-size: 1em;
+}
+
+.recipe-content {
+  margin-top: 40px;
+}
+
+.ingredient-list {
+  list-style-type: none;
+  padding: 0;
+  font-size: 1.2em;
+}
+
+.instruction-list {
+  list-style-type: decimal;
+  padding: 0;
+  font-size: 1.2em;
+}

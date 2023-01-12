@@ -9,7 +9,6 @@ def get_database_recipe(user_id, recipe_id):
     """Retrieve recipe data from database."""
 
     recipe_data = crud.get_recipe_data(user_id, recipe_id)
-    print(recipe_data)
 
     for recipe in recipe_data:
         id = recipe.recipe_id
@@ -17,6 +16,10 @@ def get_database_recipe(user_id, recipe_id):
         image = recipe.image
         instructions = recipe.instructions.split('.')
         servings = recipe.servings
+
+    for index, instruction in enumerate(instructions):
+            if instruction == "":
+                instructions.pop(index)
         
     recipe_ingredients = crud.get_recipe_ingredients(recipe_id)
     ingredients_list = []
@@ -38,7 +41,6 @@ def get_database_recipe(user_id, recipe_id):
         "servings": servings,
         "ingredients" : ingredients_list,
     }
-
 
 def get_spoonacular_recipe(recipe_id):
     """Retrieve recipe data from spoonacular api."""

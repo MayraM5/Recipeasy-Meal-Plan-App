@@ -150,28 +150,25 @@ def add_recipe_to_favorites():
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_Id")
-    # print(logged_in_user_id)
 
     #Get user list of favorite recipe ids
     fav_list = crud.get_favorite_recipe_ids(logged_in_user_id)
-  
-    #check if user is logged in:
-    if logged_in_user_id is None:
-        flash("You must log in to add to Favorites") 
-        return redirect('/')
 
-    #check if recipe id is in db
+    try:
+        recipe_id = str(recipe_id)
+    except:
+        pass
+    #check if recipe id is in db    
+    if recipe_id in fav_list:
+        return jsonify({'status': 'error', 'reason': 'duplicate'}), 400
+
+    #if recipe id no in fav => add it
     else:
-        if recipe_id in fav_list:
-            return jsonify({'status': 'error', 'reason': 'duplicate'}), 400
+        recipe_id_to_save = crud.create_fav(logged_in_user_id, (recipe_id))
+        db.session.add(recipe_id_to_save)
+        db.session.commit()
 
-        #if recipe id no in fav => add it
-        else:
-            recipe_id_to_save = crud.create_fav(logged_in_user_id, (recipe_id))
-            db.session.add(recipe_id_to_save)
-            db.session.commit()
-
-            return jsonify({'status': 'success'})
+        return jsonify({'status': 'success'})
 
 #=========================DISPLAY FAVORITES===================#
 @app.route("/favorites")
@@ -217,6 +214,7 @@ def remove_recipe_from_favorites():
     recipe_id = request.json.get("recipe_id")
 
     fav_to_delete = crud.get_fav_by_user_and_recipe(logged_in_user_id, recipe_id)
+    
     db.session.delete(fav_to_delete)
     db.session.commit()
 

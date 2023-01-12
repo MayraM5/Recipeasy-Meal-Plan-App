@@ -2,33 +2,38 @@
 
 <body>
 {% block body %}
-
-<h3>Your favorites:</h3>
-{% if favorite_recipes %}
-    {% for recipe in favorite_recipes %}
-    <div id="div_{{ recipe.id }}">
-        <div class ="recipe_name">
-            <h3>{{recipe.title}}</h3>
+<section class="header" style="background-image: url('/static/images/food4.jpg')">
+    <div class="container">
+      <div class="row">
+          <h3 class="text-header">Favorites</h3>
         </div>
-        {% if recipe.image %}
-        <div class="recipe_image">
-            <a href="/recipe-details-{{recipe.id}}"><img src={{recipe.image}}></a>
-
-        </div>
-        {% else %}
-        <div class="recipe_image">
-            <a href="/recipe-details-{{ id }}"><img style="width:200px; height:auto" src="../static/images/no_recipe_picture.jpg"></a>
-        </div>
-        {% endif %}
-        <div>
-            <button class="delete_fav" id="{{ recipe.id }}">x</button>
-        </div>
-        <div>
-            <button class="add_to_meal_plan" id="{{ recipe.id }}">Add to Meal Plan</button>
-        </div>
+      </div>
     </div>
-        
+</section>
+
+{% if favorite_recipes %}
+<div class="recipes-container">   
+    {% for recipe in favorite_recipes %}
+        <div class="card-container"> 
+            <div class="card" id="div_{{ recipe.id }}">
+                {% if recipe.image %}
+                    <a href="/recipe-details-{{recipe.id}}">
+                        <img src="{{ recipe.image }}" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+                {% else %}
+                    <a href="/recipe-details-{{recipe.id}}">
+                        <img src="/static/images/no_recipe_img.jpg" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title" class="recipe_name">{{ recipe.title }}</h5>
+                    <div class="buttons">
+                        <button class="delete_fav" id="{{ recipe.id }}">Delete</button>
+                        <button class="add_to_meal_plan" id="{{ recipe.id }}">Add to Meal Plan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     {% endfor %}
+</div>
 {% endif %}
 
 <script src="../static/js/favorites.js "> </script>
