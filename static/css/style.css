@@ -280,12 +280,6 @@ h6, li {
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-/* #card-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  grid-gap: 20px;
-} */
-
 /* search button */
 .btn {
   letter-spacing: 0.33px;
@@ -333,3 +327,34 @@ input[type="checkbox"]:checked + label {
   padding-left: 5%;
 }
 
+/* @media screen and (max-width:960px) {
+  .footer-container{
+    max-width: 600px;
+  }
+.right-col{
+  width: 100%;
+  margin-bottom: 60px;
+}
+} */
+
+
+.logo{
+  width: 180px;
+  text-align: center;
+}
+
+.legal-right-example {
+  margin-bottom: 0.5%;
+}
+
+.social-media a{
+  color: #69B550;
+  font-size:28px;
+  text-decoration: none;
+  transition: .3s linear;
+  margin-right: 1.5%;
+}
+
+.social-media a:hover{
+  color: #FFDE59;
+}
