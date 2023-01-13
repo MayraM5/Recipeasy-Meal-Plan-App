@@ -1,25 +1,44 @@
 {% extends "base.html" %}
 
-<body>
 {% block body %}
 
-{% if total_grocery %}
-    <h3>Grocery list:</h3>  
+<section class="header" style="background-image: url('/static/images/groceries.jpg')">
+    <div class="container">
+      <div class="row">
+          <h3 class="text-header">Grocery List</h3>
+        </div>
+      </div>
+</section>
 
-    {% for category, ingredient in total_grocery.items() %}
-        <h3> {{ category }} <h3>
+ <!-- back button -->
+<button class="back-button" onclick="window.history.back()">Back</button>
+
+{% if total_grocery %} 
+<div class="container" id="recipe-details">
+    <div class="ingredients-container" style="overflow-y: scroll; height: 80%">
+        {% for category, ingredient in total_grocery.items() %}
+            <h3> {{ category }} <h3>
             <div id="check_item">
-            {% for item in ingredient %}
+                {% for item in ingredient %}
                 <input type="checkbox" id="checkbox-{{ loop.index }}"  name="itemsOff" value="1">
-                <label for="checkbox-{{ loop.index }}"  id="label-{{ loop.index }}"> {{ item[1] }} {{ item[2] }} {{ item[0] }}</label><br>
-            {% endfor %}
-            </div>    
-    {% endfor %}
+                <label for="checkbox-{{ loop.index }}"  id="label-{{ loop.index }}"><h6>{{ item[1] }} {{ item[2] }} {{ item[0] }}</h6></label>
+                {% endfor %}
+            </div> 
+        {% endfor %}
 
-{% else %}
-    <p>Sorry! There are no recipes added to the meal plan &#128542;</p>        
+        {% else %}
+            <p>Sorry! There are no recipes added to the meal plan &#128542;</p>
 {% endif %}
+    </div>
+</div>
 
+  
+
+
+
+
+
+<script src="../static/js/recipe.js"> </script> 
 
 {% endblock %}
-</body>
+

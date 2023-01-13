@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-<body>
 {% block body %}
 <section class="header">
   <div class="container">
@@ -19,10 +18,10 @@
 <h6>Pick your meals for the week.</h6>
   {% if recipes %}
   <div class="container">
-    <div class="row g-3">
+    <div class="row">
     {% for recipe in recipes %}
       {% set id = recipe.recipe_id %}
-      <div class="col-12 col-md-6 col-lg-4">
+      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12">
         <div class="card" id="div_{{ id }}">
         {% if recipe.image %}  
           <a href="/recipe-details-{{ id }}"><img src="{{ recipe.image }}" alt="recipe image" class="card-img-top" class="recipe_image"></a>
@@ -44,4 +43,3 @@
 <script src="../static/js/cookbook.js "> </script>
 
 {% endblock %}
-</body>

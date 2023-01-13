@@ -458,7 +458,7 @@ def remove_recipe():
     db.session.commit()
 
     return redirect("/my-cookbook")
-
+    # return jsonify({'status': 'success'})
 
 if __name__ == "__main__":
     connect_to_db(app, "mealplanning")

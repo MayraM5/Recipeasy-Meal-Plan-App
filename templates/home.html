@@ -1,56 +1,55 @@
 {% extends "base.html" %}
 
 {% block body %}
-<body>
-    <section class="header">
-        <div class="container">
-            <div class="row">
-              <div class="col-sm-6">
-                <div class = "recipe_search_box">
-                <h2 class = "title">Find your next meal</h2>
-                <div class="input-group mb-3">
-                <button id= "search_btn" type= "submit" class= "search-btn btn btn-outline-secondary">Search</button>
-                <input id="search_input" type= "text" class= "form-control">
-                </div>
-              </div>
+
+<section class="header">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+            <div class = "recipe_search_box">
+            <h2 class = "title">Find your next meal</h2>
+            <div class="input-group mb-3">
+            <button id= "search_btn" type= "submit" class= "search-btn btn btn-outline-secondary">Search</button>
+            <input id="search_input" type= "text" class= "form-control">
+            </div>
             </div>
         </div>
-    </section>
-
-    <div id="search_result">
-        <h3 class = "title">Build a meal plan </h3>
-        <h6 class = "title">Pick your meals for the week.</h6>
-        <div id= "recipe" class="recipes-container"></div>
     </div>
-    
-    
-    {% if random_recipes %}
-    <div id="random-recipes" class="recipes-container">          
-        {% for recipe in random_recipes %}
-            <div class="card-container"> 
-                <div class="card" id="div_{{ recipe.id }}">
-                    {% if recipe.image %} 
-                        <a href="/recipe-details-{{recipe.id}}">
-                            <img src="{{ recipe.image }}" alt="recipe image" class="card-img-top" class="recipe_image"></a>
-                    {% else %}
-                        <a href="/recipe-details-{{recipe.id}}">
-                            <img src="/static/images/no_recipe_img.jpg" alt="recipe image" class="card-img-top" class="recipe_image"></a>
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title" class="recipe_name">{{ recipe.title }}</h5>
-                        <div class="buttons">
-                            <button class="add_to_meal_plan" name="{{ recipe.id }}" onclick="AddtoFavorites(name)">Add to Favorites</button>
-                            <button class="add_to_fav" name="{{ recipe.id }}" onclick="AddtoMealPlan(name)">Add to Meal Plan</button>
-                        </div>
-                    </div>  
-                </div>
+</section>
+
+<div id="search_result">
+    <h3 class = "title">Build a meal plan </h3>
+    <h6 class = "title">Pick your meals for the week.</h6>
+    <div id= "recipe" class="container"></div>
+
+</div>
+
+{% if random_recipes %}
+<div id="random-recipes" class="container">  
+    <div class="row">          
+    {% for recipe in random_recipes %}
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12">            
+            <div class="card" id="div_{{ recipe.id }}">
+                {% if recipe.image %} 
+                    <a href="/recipe-details-{{recipe.id}}">
+                        <img src="{{ recipe.image }}" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+                {% else %}
+                    <a href="/recipe-details-{{recipe.id}}">
+                        <img src="/static/images/no_recipe_img.jpg" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title" class="recipe_name">{{ recipe.title }}</h5>
+                    <div class="buttons">
+                        <button class="add_to_meal_plan" name="{{ recipe.id }}" onclick="AddtoFavorites(name)">Add to Favorites</button>
+                        <button class="add_to_fav" name="{{ recipe.id }}" onclick="AddtoMealPlan(name)">Add to Meal Plan</button>
+                    </div>
+                </div>  
             </div>
-         
-        {% endfor %}
+        </div>        
+    {% endfor %}
     </div>
-    {% endif %}
-
-</body>
+</div>
+{% endif %}
 
 <script type="text/javascript">
     const spoonacularApiKey = '{{ SPOON_API_KEY }}';

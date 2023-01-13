@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block body %}
-<body>
-    <!-- back button -->
+
+<!-- back button -->
 <button class="back-button" onclick="window.history.back()">Back</button>
+
 {% if recipe %}
     <div class="container" id="recipe-details">
         <div class="row">
@@ -45,7 +46,7 @@
     </div>
 {% endif %}
 
-</body>
 <script src="../static/js/recipe.js"> </script> 
+
 {% endblock %}
 

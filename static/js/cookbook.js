@@ -22,56 +22,45 @@ function addRow() {
     cell5.innerHTML = '<button class="delete" type="button" onclick="removeRow(this)">Remove</button>';
   }
   
-  function removeRow(button) {
-    const row = button.parentNode.parentNode;
-    row.parentNode.removeChild(row);
-  }
+    function removeIngredientRow(button) {
+        const row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
 
 // DELETE RECIPE FROM COOKBOOK
 const deleteButton = document.querySelectorAll('.delete_recipe');
 
 for (const button of deleteButton) {
     button.addEventListener('click', (evt) => {
-        Swal.fire({
-            title: 'Are you sure you want to delete this recipe?',
-            text: 'This action cannot be undone.',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Delete',
-            cancelButtonText: 'Cancel',
-            dangerMode: true,
-        }).then((result)=> {
-            if (result.value) {
-                Swal.fire("Your recipe has been deleted!", {
-                    icon: "success",
-                });
+        const recipeId = button.id
+        console.log(evt);
+        const recipe_to_delete = {
+            recipe_id : recipeId
+        }
+        
+        // console.log(recipe_to_delete)
+        fetch("/remove-recipe", {
+            method: 'POST',
+            body: JSON.stringify(recipe_to_delete),
+            headers: {
+                "Content-Type": "application/json",   
+            },
+        })
+            .then((response) => response.json())
+            .then((recipeJson) => {
+                console.log(recipeJson)
 
-                const recipeId = button.id
-                console.log(evt);
-                const recipe_to_delete = {
-                    recipe_id : recipeId
-                }
-                // console.log(recipe_to_delete)
-                fetch("/remove-recipe", {
-                    method: 'POST',
-                    body: JSON.stringify(recipe_to_delete),
-                    headers: {
-                        "Content-Type": "application/json",   
-                    },
-                })
-                    .then((response) => response.json())
-                    .then((recipeJson) => {
-                        console.log(recipeJson)
-
-                });
-
-                // Remove HTML for this recipe
-                let el = document.getElementById('div_' + recipeId);
-                el.parentNode.removeChild(el);
-            }
         });
-    });
+
+        // Remove HTML for this recipe
+        let el = document.getElementById('div_' + recipeId);
+        el.parentNode.removeChild(el);
+        setTimeout(() => {
+            location.reload();
+            }, 500); // wait for 600ms before reloading
+    })
 }
+
 
 // ADD RECIPE TO MEAL PLAN
 const addRecipe = document.querySelectorAll('.add_to_meal_plan');

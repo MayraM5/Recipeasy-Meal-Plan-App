@@ -1,4 +1,3 @@
-
 // SEARCH RECIPES => TITLE + IMAGE
 let search_btn = document.querySelector("#search_btn")
 let search_box = document.querySelector("#search_input")
@@ -11,40 +10,39 @@ search_btn.addEventListener("click", () => {
     fetch(`https://api.spoonacular.com/recipes/complexSearch?apiKey=${spoonacularApiKey}&query=${search_box.value}`)  
     .then((response) => response.json())
     .then((data) => {
+        console.log(data.result)
 
-        let html = "";
-        if (data.results) {
+        let html = `<div class='row'>`;
+        if (data.results) {    
             data.results.forEach(recipe => {
                 html += `
-                    <div class="card-container"> 
-                        <div class="card">
-                            <a href="/recipe-details-${recipe.id}"><img src= ${recipe.image} alt="recipe image" class="card-img-top" class="recipe_image"></a>
-                        <div class="card-body">
-                            <h5 class="card-title"> ${recipe.title}</h5>
-                            <div class="buttons">
-                                <div id="recipe_id" value= "${recipe.id}">
-                                <button class="add_to_meal_plan"  id="addToFav-${recipe.id}" onclick="AddtoFavorites(${recipe.id})">Favorite</button>
-                                <button class="add_to_fav" id="addToMealPlan-${recipe.id}" onclick="AddtoMealPlan(${recipe.id})">Add to Meal Plan</button>
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+                            <div class="card">
+                                <a href="/recipe-details-${recipe.id}"><img src= ${recipe.image} alt="recipe image" class="card-img-top" class="recipe_image"></a>
+                            <div class="card-body">
+                                <h5 class="card-title"> ${recipe.title}</h5>
+                                <div class="buttons">
+                                    <div id="recipe_id" value= "${recipe.id}">
+                                    <button class="add_to_meal_plan"  id="addToFav-${recipe.id}" onclick="AddtoFavorites(${recipe.id})">Favorite</button>
+                                    <button class="add_to_fav" id="addToMealPlan-${recipe.id}" onclick="AddtoMealPlan(${recipe.id})">Add to Meal Plan</button>
                                 </div>
+                            </div>    
                             </div>
                         </div>
-                        </div>
                     </div>
-                `;
+                `;             
             });
-            recipeList.classList.remove('notFound');
+
         } else{
-            html = "Sorry, we didn't find any meals! Try again!";
+            recipeList.innerHTML = "Sorry, we didn't find any meals! Try again!";
             recipeList.classList.add('notFound');
         }
-
         recipeList.innerHTML = html;
         })
 
         // Hide random recipes result
         randomRecipe.style.visibility = "hidden";
-
-    });
+});
 
 
     ///ADD ID TO FAV ======= Click fav button => SENDING ID to server
@@ -133,4 +131,4 @@ search_btn.addEventListener("click", () => {
                     }
                 }
             });
-    }
+        }
