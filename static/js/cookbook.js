@@ -19,7 +19,7 @@ function addRow() {
                       <option value="Milk, Eggs, Other Dairy">Milk, Eggs, Other Dairy</option><option value="Meat">Meat</option>\
                       <option value="Produce">Produce</option><option value="Seafood">Seafood</option><option value="Cheese">Cheese</option>\
                       <option value="Other">Other</option><select> ';
-    cell5.innerHTML = '<button class="delete" type="button" onclick="removeRow(this)">Remove</button>';
+    cell5.innerHTML = '<button class="delete" type="button" onclick="removeIngredientRow(this)">Remove</button>';
   }
   
     function removeIngredientRow(button) {
