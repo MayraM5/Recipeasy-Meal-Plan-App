@@ -24,7 +24,10 @@ for (const button of deleteButton) {
         // Remove HTML for this recipe
         let el = document.getElementById('div_' + recipeId);
         el.parentNode.removeChild(el);
-    location.reload()
+        setTimeout(() => {
+            location.reload();
+            }, 600); // wait for 500ms before reloading
+    // location.reload()
 
     })
 }
