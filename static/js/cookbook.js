@@ -57,7 +57,7 @@ for (const button of deleteButton) {
         el.parentNode.removeChild(el);
         setTimeout(() => {
             location.reload();
-            }, 600); // wait for 500ms before reloading
+            }, 600); // wait for 600ms before reloading
     })
 }
 
