@@ -8,17 +8,17 @@ _recipeasy_ is a fullstack web application for meal planning. Integration of the
 - **Login and Sign In**
 <img src="https://media.giphy.com/media/WcKyjjJmyWhldVAxfC/giphy.gif">
 
-- **Search recipes by cuisine or ingredient name**
-<img src="https://media.giphy.com/media/MOglZp0DA4CeNeldo8/giphy.gif">
-
 - **View recipe details**
 <img src="https://media.giphy.com/media/xO0jQtl4TEbE7OYOBT/giphy.gif">
 
 - **Get grocery list**
 <img src="https://media.giphy.com/media/SCLm4Im1znZVLHMF3i/giphy.gif">
 
-- **Add recipe to favorites and meal plan**
 - **Create recipe**
+<img src="https://media.giphy.com/media/y0ydanHGuldJkzNpNE/giphy.gif">
+
+- **Search recipes by cuisine or ingredient name**
+- **Add recipe to favorites and meal plan**
 
 ## Installation
 - $virtualenv env
