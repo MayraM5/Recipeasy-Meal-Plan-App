@@ -3,9 +3,9 @@
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from model import connect_to_db, db
 from functools import wraps
-import crud
 from jinja2 import StrictUndefined
 import requests
+import crud
 import json
 import os
 import random
@@ -25,14 +25,6 @@ CLOUD_NAME = "dhyrymmf4"
 CLOUDINARY_SECRET= os.environ["CLOUDINARY_SECRET"]
 CLOUDINARY_KEY= os.environ["CLOUDINARY_KEY"]
 
-
-# def login_required(f):
-#     @wraps(f)
-#     def decorate_function(*args, **kwargs):
-#         if session.get('user_id') is None:
-#             return redirect('/log-in', code=302)
-#         return f(*args, **kwargs)
-#     return decorate_function
 
 #=======================INITAL PAGE============================#
 @app.route('/')
@@ -113,35 +105,41 @@ def register():
 
 #=====================HOMEPAGE=================================#
 @app.route("/home")
-# @login_required
 def home():
     """Display homepage."""
 
-    url = 'https://api.spoonacular.com/recipes/random' 
-    params = {'apiKey' : SPOON_API_KEY,
-        'limitLicense': True,
-        'tags': 'vegan',
-        'number' : 12, #number of recipe to return
-        }
+    logged_in_user_id = session.get("user_id")
 
-    response = requests.get(url, params)
-    data = response.json()
-    recipe_data = data['recipes']
+    if logged_in_user_id == None:
+        return render_template('404.html'), 404
 
-    random_recipes = []
-    for recipe in recipe_data:
-        id = recipe["id"]
-        title = recipe['title']
-        try:
-            image = recipe["image"]
-        except KeyError:
-            image = None
+    else:
 
-        element = {'id': id, 'title': title, 'image': image}
+        url = 'https://api.spoonacular.com/recipes/random' 
+        params = {'apiKey' : SPOON_API_KEY,
+            'limitLicense': True,
+            'tags': 'vegan',
+            'number' : 12, #number of recipe to return
+            }
 
-        random_recipes.append(element)
+        response = requests.get(url, params)
+        data = response.json()
+        recipe_data = data['recipes']
 
-    return render_template('home.html', random_recipes=random_recipes, SPOON_API_KEY=SPOON_API_KEY)
+        random_recipes = []
+        for recipe in recipe_data:
+            id = recipe["id"]
+            title = recipe['title']
+            try:
+                image = recipe["image"]
+            except KeyError:
+                image = None
+
+            element = {'id': id, 'title': title, 'image': image}
+
+            random_recipes.append(element)
+
+        return render_template('home.html', random_recipes=random_recipes, SPOON_API_KEY=SPOON_API_KEY)
 
 #=====================ADD RECIPES TO FAVORITES=================#
 @app.route("/api/fav-recipe", methods=['POST']) 
@@ -150,7 +148,7 @@ def add_recipe_to_favorites():
 
     logged_in_user_id = session.get("user_id")
     recipe_id = request.json.get("recipe_Id")
-
+   
     #Get user list of favorite recipe ids
     fav_list = crud.get_favorite_recipe_ids(logged_in_user_id)
 
@@ -178,32 +176,36 @@ def get_fav_recipes():
     logged_in_user_id = session.get("user_id")
     fav_list = crud.get_favorite_recipe_ids(logged_in_user_id)
 
-    #Convert each element from list to string 
-    ids = ','.join(str(id) for id in fav_list)
+    if logged_in_user_id == None:
+        return render_template('404.html'), 404
+ 
+    else:        
+        #Convert each element from list to string 
+        ids = ','.join(str(id) for id in fav_list)
 
-    url = 'https://api.spoonacular.com/recipes/informationBulk?' 
-    params = {'apiKey' : SPOON_API_KEY,
-            'includeNutrition': False,
-            'ids' : ids,
-            }
+        url = 'https://api.spoonacular.com/recipes/informationBulk?' 
+        params = {'apiKey' : SPOON_API_KEY,
+                'includeNutrition': False,
+                'ids' : ids,
+                }
 
-    response = requests.get(url, params)
-    data = response.json()
-   # print(f'DATA RESPONSE {data}')
-    fav_recipes = []
+        response = requests.get(url, params)
+        data = response.json()
+    # print(f'DATA RESPONSE {data}')
+        fav_recipes = []
 
-    for recipe in data:
-        id = recipe["id"]
-        title = recipe['title']
-        try:
-            image = recipe["image"]
-        except KeyError:
-            image = None
+        for recipe in data:
+            id = recipe["id"]
+            title = recipe['title']
+            try:
+                image = recipe["image"]
+            except KeyError:
+                image = None
 
-        element = {'id': id, 'title': title, 'image': image}
-        fav_recipes.append(element)
+            element = {'id': id, 'title': title, 'image': image}
+            fav_recipes.append(element)
 
-    return render_template("favorites.html", favorite_recipes=fav_recipes)
+        return render_template("favorites.html", favorite_recipes=fav_recipes)
 
 #Remove recipes from fav==>Change to delete method (future)===#
 @app.route("/remove-fav", methods=["POST"])
@@ -313,17 +315,22 @@ def meal_plan_by_user():
     meal_plan = crud.get_meal_plan_recipe_ids(logged_in_user_id)
     meal_plan_recipes = []
 
-    for recipe_id in meal_plan:
-        #retrieve data from db
-        if recipe_id.startswith('cook'):
-            db_recipe = helpers.get_database_recipe(logged_in_user_id, recipe_id)
-            meal_plan_recipes.append(db_recipe)
+    if logged_in_user_id == None:
+        return render_template('404.html'), 404
+    
+    else:        
 
-        else:
-            spoon_recipe = helpers.get_spoonacular_recipe(recipe_id)
-            meal_plan_recipes.append(spoon_recipe)
+        for recipe_id in meal_plan:
+            #retrieve data from db
+            if recipe_id.startswith('cook'):
+                db_recipe = helpers.get_database_recipe(logged_in_user_id, recipe_id)
+                meal_plan_recipes.append(db_recipe)
 
-    return render_template("mealplan.html", meal_plan_recipes=meal_plan_recipes)
+            else:
+                spoon_recipe = helpers.get_spoonacular_recipe(recipe_id)
+                meal_plan_recipes.append(spoon_recipe)
+
+        return render_template("mealplan.html", meal_plan_recipes=meal_plan_recipes)
 
 #===REMOVE RECIPE FROM MEAL PLAN & INGREDIENTS FROM GROCERY===#
 @app.route("/remove-meal-plan", methods=["POST"])
@@ -351,20 +358,28 @@ def del_recipe_from_mp():
 def get_grocery_items():
     """Get total of grocery items."""
 
-    logged_in_user = session.get("user_id")
-    total_grocery = helpers.get_total_grocery_list(logged_in_user)
+    logged_in_user_id = session.get("user_id")
+    total_grocery = helpers.get_total_grocery_list(logged_in_user_id)
 
-    return render_template("groceries.html", total_grocery=total_grocery)
+    if logged_in_user_id == None:
+        return render_template('404.html'), 404
+    
+    else:
+        return render_template("groceries.html", total_grocery=total_grocery)
 
 #=======================COOKBOOK FEATURE======================#
 @app.route("/my-cookbook")
 def get_recipes():
     """Process recipes created by user."""
 
-    logged_in_user = session.get("user_id")
-    recipes = crud.get_recipes_by_user(logged_in_user)
+    logged_in_user_id = session.get("user_id")
+    recipes = crud.get_recipes_by_user(logged_in_user_id)
 
-    return render_template("users_recipes.html", recipes=recipes)
+    if logged_in_user_id == None:
+        return render_template('404.html'), 404
+    
+    else:
+        return render_template("users_recipes.html", recipes=recipes)
 
 #=======================CREATE RECIPE=========================#
 @app.route('/create_recipe', methods=['POST'])

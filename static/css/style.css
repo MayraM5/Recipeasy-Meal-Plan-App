@@ -11,7 +11,7 @@ h4, h5 {
   font-weight: 300;
 } 
 
-h6, li {
+h6, li, p {
   font-family: 'Lato', sans-serif;
   font-size: 1.1rem;
 }
@@ -321,3 +321,36 @@ input[type="checkbox"]:checked + label {
   color: #FFDE59;
 }
 
+/* 400 error */
+.wrapper {
+  position: relative;
+  max-width: 1298px;
+  height: auto;
+  margin: 2em auto 0 auto;
+}
+
+.error-box {
+  max-width: 70%;
+  min-height: auto;
+  margin: 0 auto;
+  padding: 1em 1em;
+  text-align: center;
+}
+
+.error-msg {
+  margin-bottom: 0.5em;
+  font-size: 3em;
+  font-family: 'Playfair Display', serif;
+}
+
+.error-msg :first-of-type { margin-top: 4em; }
+
+.error-msg  > a {
+  border-bottom: 1px dashed #69B550;
+  text-decoration: none;
+  color: #69B550;
+}
+
+.error-msg  > a:hover { text-shadow: 0 0 6px #FFDE59 }
+
+.error-msg  img { vertical-align: bottom; }

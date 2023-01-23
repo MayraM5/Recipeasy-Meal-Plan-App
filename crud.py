@@ -1,6 +1,6 @@
 '''CRUD operations functions'''
 from model import db, User, FavoriteRecipe, MealPlan, GroceryItem, Recipe, RecipeIngredient, connect_to_db
-
+# from passlib.hash import pbkdf2_sha256
 
 def create_user(first_name, last_name, email, password):
     """Create and return a new user"""
@@ -8,6 +8,26 @@ def create_user(first_name, last_name, email, password):
     user = User(first_name=first_name, last_name=last_name, email=email, password=password)
     
     return user
+
+# def create_hash_account(email, password):
+#     """Hash password"""
+
+#     hash_password = pbkdf2_sha256.hash("password")
+
+#     user = User(email=email, password=hash_password)
+
+#     return user
+
+
+# def verify_hash_account(email, password):
+#     """Verify hash password"""
+
+#     user = get_user_by_email(email)
+
+#     if pbkdf2_sha256.verify(password, user.password):
+#         return user
+#     else:
+#         return False
 
 
 def get_user_by_email(email):

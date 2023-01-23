@@ -24,7 +24,7 @@
       <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-12">
         <div class="card" id="div_{{ id }}">
         {% if recipe.image %}  
-          <a href="/recipe-details-{{ id }}"><img src="{{ recipe.image }}" alt="recipe image" class="card-img-top" class="recipe_image"></a>
+          <a href="/recipe-details-{{ id }}"><img src="{{ recipe.image }}" width="556" height="370" alt="recipe image" class="card-img-top" class="recipe_image"></a>
         {% else %}
           <a href="/recipe-details-{{ id }}"><img src="/static/images/no_recipe_img.jpg" alt="recipe image" class="card-img-top" class="recipe_image"></a>
         {% endif %}
