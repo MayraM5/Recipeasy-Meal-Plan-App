@@ -35,3 +35,9 @@ _recipeasy_ is a fullstack web application for meal planning. Integration of the
 
 ## Tech Stack
 Python | SQLAlchemy | PostgreSQL | Flask | Jinja | JavaScript | Ajax | Bootstrap | HTML | CSS
+
+## For Version 2.0
+- Password hashing
+- Add Nutrition, Diet, and Taste details
+- Add download/print recipe option
+- Integrate Google Calendars API so that users can add meal plan to their Google Calendar
